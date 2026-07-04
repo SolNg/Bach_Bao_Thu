@@ -1,0 +1,114 @@
+14028: title: "删除地点",
+14042: ge(" 删除「" + A(h.value?.name) + "」", 1),
+14048: [ge(",及其下属 " + A(Le.value) + " 个地点", 1)],
+14053: (K[21] = ge("。此操作写入最新摘要,删除楼层可回退。 ", -1)),
+14186: if (!e) return (Qe("SillyTavern 上下文不可用", "error"), !1);
+14187: if (e.groupId) return (Qe("群聊暂不支持带数据建新对话", "warning"), !1);
+14189: if (!t.length) return (Qe("当前对话没有可携带的数据", "warning"), !1);
+14191: if (!n) return (Qe("无法创建新对话(ST 接口不可用)", "error"), !1);
+14205: return (Qe("当前对话没有可携带的数据", "warning"), !1);
+14215: console.warn("[柏宝书向量] 建 bundle 失败(新对话将不带源向量召回):", S);
+14222: `创建新对话失败:${S instanceof Error ? S.message : String(S)}`,
+14230: if (!S) throw new Error("新对话上下文不可用");
+14286: `已创建新对话:携带 AI ${u.filter((N) => !N.is_user).length} 条,旧剧情摘要 ${c ? "1" : "0"} 条`,
+14294: `写入新对话失败:${S instanceof Error ? S.message : String(S)}`,
+14323: const lk = "个把条块张根口份枚只颗支件套双对碗杯盘盆串束扎",
+14324: xc = /[(（]\s*(\d+(?:\.\d+)?)\s*[a-zA-Z一-鿿]*\s*[)）]\s*$/,
+14327: /[(（](已消耗|已用完|已销毁|已銷毀|消耗殆尽|消耗殆盡|消耗|用尽|用盡|consumed|used\s*up|destroyed|depleted)[)）]/i,
+14328: ak = /[(（]\s*0\s*[a-zA-Z一-鿿]*\s*[)）]\s*$/;
+14391: const a = i.type === "Huyền Niệm" || i.type === "懸念" ? "suspense" : "plan";
+14430: if (!e) return (Qe("SillyTavern 上下文不可用", "error"), !1);
+14432: return (Qe("请先进入一个聊天再迁移", "warning"), !1);
+14434: if (!t.length) return (Qe("当前聊天为空,无可迁移数据", "warning"), !1);
+14436: return (Qe("未在当前聊天检测到 Horae 旧数据", "warning"), !1);
+14541: `迁移完成:叶子 ${i.size} 片 / 总结 ${M.length} 条 / 物品 ${d.length} / 计划 ${u?.add?.length ?? 0}`,
+14548: Qe(`迁移失败:${s instanceof Error ? s.message : String(s)}`, "error"),
+14549: console.error("[柏宝书] Horae 迁移失败:", s),
+14589: (s.onerror = () => n(s.error ?? new Error("读取文件失败"))),
+14603: (s.onerror = () => n(new Error("图片解码失败"))),
+14616: if (!a) throw new Error("canvas 不可用");
+14623: if (!e.type.startsWith("image/")) throw new Error("请选择图片文件");
+14627: throw new Error(`GIF 不能超过 ${Math.round(Sc / 1024 / 1024)}MB`);
+14630: if (!t) throw new Error("图片处理失败");
+14632: if (!o) throw new Error("SillyTavern 未就绪,请稍后再试");
+14648: throw new Error(a || `上传失败(${l.status})`);
+14651: if (!i.path) throw new Error("服务器未返回图片路径");
+14816: "aria-label": "编辑渠道",
+14852: "aria-label": "编辑排除名单",
+14866: "aria-label": "编辑排除世界书名单",
+14880: { value: "auto", label: "自动" },
+14881: { value: "top", label: "顶部" },
+14882: { value: "bottom", label: "底部" },
+14895: ((ie.orbImage = await _k(y)), Qe("悬浮球图标已更新", "success"));
+14897: Qe(_e instanceof Error ? _e.message : "上传失败", "error");
+14968: ce.value[D.id] = "测试中…";
+14980: b.length || (ce.value[D.id] = "未返回任何模型"));
+15015: label: "摘要提示词",
+15016: hint: "把单楼对话整理成结构化记忆(摘要正文 + 时间/地点/物品/计划)。",
+15022: label: "总结提示词",
+15023: hint: "把多条楼层摘要压成一条 L1 总结(普通总结,固定 300-500 字)。",
+15029: label: "二次总结提示词",
+15030: hint: "把多条总结再压一层(L1+ → 更上层)。目标字数按输入规模动态放宽({{target}}),少丢信息。",
+15036: label: "破限提示词",
+15037: hint: "作为置顶 system 附加在摘要/总结请求里,降低副 API 拒答率。留空则用内置默认。",
+15043: label: "固定提示词(时间标签)",
+15044: hint: "注入主对话,要求 AI 每条正文前后输出时间标签,作为剧情时间锚点(摘要与新剧情据此对齐,不再错乱)。需开启下方「正文时间标签」开关。留空用内置默认。",
+15071: { key: "embedding", label: "Embedding(向量化,必填)" },
+15072: { key: "rerank", label: "Rerank(重排)" },
+15073: { key: "queryRewrite", label: "Query 重写" },
+15087: ? "请先填 Embedding 地址"
+15088: : "请先填本角色或 Embedding 的地址";
+15096: y.length || (g.value[D] = "未返回任何模型"));
+15142: (await jg(), D?.success?.("更新成功,正在刷新页面…", "Bách Bảo Thư"));
+15145: `更新失败:${b instanceof Error ? b.message : String(b)}`,
+15159: ? `已索引 ${D} 条新摘要。`
+15160: : "没有需要新增的索引(已是最新)。";
+15162: Ce.value = `索引失败:${D instanceof Error ? D.message : String(D)}`;
+15179: Ce.value = `已清空当前聊天向量索引(删除 ${D} 条)。可点「重建」从头索引。`;
+15181: Ce.value = `清空失败:${D instanceof Error ? D.message : String(D)}`;
+15195: it.value = D ? "已创建新对话。" : "创建未完成(详见提示)。";
+15197: it.value = `创建失败:${D instanceof Error ? D.message : String(D)}`;
+15208: ? "当前聊天已有柏宝书数据,迁移会覆盖现有摘要并在各楼写入数据。继续吗?"
+15209: : "将把当前聊天里的 Horae 旧数据迁移成柏宝书记忆。继续吗?",
+15215: He.value = D ? "迁移完成。" : "迁移未完成(详见提示)。";
+15217: He.value = `迁移失败:${D instanceof Error ? D.message : String(D)}`;
+15347: const Xf = { full: "全文", brief: "Tóm Tắt", drop: "丢弃" },
+15350: return D.includes("失败")
+15352: : D.includes("进行中")
+15354: : D.includes("未召回") || D.includes("未注入")
+15369: "设置",
+15379: title: T(rt).checking ? "正在检查更新" : "点击检查更新",
+15395: title: `更新到 v${T(rt).latest}`,
+15398: A(T(rt).updating ? "更新中…" : "更新"),
+15425: "柏宝书 · 记忆引擎",
+15437: title: T(E).enabled ? "点击停用" : "点击启用",
+15456: { title: "基本设置", open: !1 },
+15464: [r("span", { class: "bbs-field-label" }, "主题")],
+15505: [r("span", { class: "bbs-field-label" }, "导航位置")],
+15539: "移动端点当前页导航关窗",
+15561: "移动端再点一下当前所在页的导航按钮即可关闭整个窗口,省得去够右上角的 ×。怕误触可关。",
+15569: "在 ST 顶栏显示按钮",
+15591: "在酒馆顶部导航栏(用户设定管理左侧)加一个快速打开柏宝书的按钮,免去每次点左下角魔杖。左下角魔杖入口照旧保留。",
+15599: "在聊天框上方显示按钮",
+15621: "在输入框上方(与快速回复同位)加一个「柏宝书」按钮,跟随酒馆主题美化。",
+15629: "启用楼层界面",
+15651: "在每条 AI 楼层下方加一个界面:查看该楼摘要与数据变动,并可一键标记「番外」。标为番外的楼层被记忆系统彻底忽略(不摘要、不总结、不注入),适合小剧场/番外篇;取消番外即恢复。",
+15656: { title: "屏幕悬浮球", open: !1 },
+15664: "显示屏幕悬浮球",
+15686: "在屏幕边缘挂一枚可拖动的悬浮球,点击即开柏宝书。拖到中间可常驻悬浮,拖近左右边缘则吸附贴边。",
+15700: "形状",
+15748: "静止透明度",
+15782: "悬浮球静止时的不透明度;鼠标悬停 / 拖动时一律全显。",
+15795: "大小",
+15842: alt: "悬浮球图标预览",
+15864: ? "上传中…"
+15866: ? "更换图标"
+15867: : "上传图标",
+15882: "恢复默认",
+15906: "支持静态图与 GIF 动图(GIF 保留动画,≤2MB)。图标上传到酒馆服务器、跨设备同步;留空则用默认书签图标。",
+15919: { title: "副 API", open: !1 },
+15928: "摘要使用",
+15945: "跟随主 API",
+15978: "总结使用",
+15995: "跟随主 API",
+16028: "不指派渠道时跟随主 API:直接借用你主界面当前正在用的 API(聊天补全/文本补全)执行摘要,无需额外配置。想用不同模型再在下方建副渠道指派。",
