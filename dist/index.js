@@ -5305,7 +5305,7 @@ function jm(e) {
     key: typeof e.key == "string" ? e.key : "",
     model: typeof e.model == "string" ? e.model : "",
     temperature: typeof e.temperature == "number" ? e.temperature : 1,
-    maxTokens: typeof e.maxTokens == "number" ? e.maxTokens : 8192,
+    maxTokens: typeof e.maxTokens == "number" ? e.maxTokens : 65535,
     stream: typeof e.stream == "boolean" ? e.stream : !1,
     prefill: typeof e.prefill == "boolean" ? e.prefill : !0,
     excludeParams: Array.isArray(e.excludeParams)
@@ -5409,7 +5409,7 @@ function Um() {
       key: "",
       model: "",
       temperature: 1,
-      maxTokens: 8192,
+      maxTokens: 65535,
       stream: !1,
       prefill: !0,
       excludeParams: [],
@@ -5485,7 +5485,7 @@ async function ud(e, t, n = {}) {
       model: e.model,
       messages: l,
       temperature: e.temperature ?? 1,
-      max_tokens: e.maxTokens ?? 8192,
+      max_tokens: e.maxTokens ?? 65535,
       stream: o,
       presence_penalty: 0,
       frequency_penalty: 0,
@@ -5559,7 +5559,7 @@ function dd(e) {
     ""
   ).trim();
 }
-const Jm = 8192;
+const Jm = 65535;
 function Gm() {
   return typeof pe()?.generateRaw == "function";
 }
@@ -9618,7 +9618,7 @@ async function Ky(e) {
           messages: l,
           temperature: 0.1,
           top_p: 0.8,
-          max_tokens: 8192,
+          max_tokens: 65535,
           stream: !1,
           enable_thinking: !1,
         }),
@@ -14128,6 +14128,40 @@ const Bg = At({
     },
   }),
   ht = Mt(ek, [["__scopeId", "data-v-6919f995"]]);
+function sortJson_bbs(value) {
+  if (Array.isArray(value)) return value.map(sortJson_bbs);
+  if (value && typeof value === 'object') {
+    const out = {};
+    for (const key of Object.keys(value).sort()) {
+      const v = value[key];
+      if (v !== undefined) out[key] = sortJson_bbs(v);
+    }
+    return out;
+  }
+  return value;
+}
+function deltaHasData_bbs(delta) {
+  return !!(
+    delta.time ||
+    delta.location ||
+    delta.locationPath?.length ||
+    delta.items?.add?.length ||
+    delta.items?.update?.length ||
+    delta.items?.remove?.length ||
+    delta.scenes?.add?.length ||
+    delta.scenes?.update?.length ||
+    delta.scenes?.reparent?.length ||
+    delta.scenes?.remove?.length ||
+    delta.npcs?.add?.length ||
+    delta.npcs?.update?.length ||
+    delta.npcs?.remove?.length ||
+    delta.plans?.add?.length ||
+    delta.plans?.resolve?.length ||
+    delta.plans?.remove?.length ||
+    delta.plans?.reopen?.length ||
+    delta.varOps?.length
+  );
+}
 function tk(e) {
   const t = {};
   (e.state.time && (t.time = e.state.time),
@@ -14144,6 +14178,15 @@ function tk(e) {
         location: s.location,
       })),
     }),
+    e.scenes.length &&
+    (t.scenes = {
+      add: [...e.scenes]
+        .sort((s, o) => s.path.length - o.path.length || s.createdAt - o.createdAt || s.name.localeCompare(o.name))
+        .map((s) => ({
+          path: [...s.path],
+          desc: s.desc,
+        })),
+    }),
     e.npcs.length &&
     (t.npcs = {
       add: e.npcs.map((s) => ({
@@ -14159,18 +14202,21 @@ function tk(e) {
       })),
     }));
   const n = e.plans.filter((s) => s.status === "open");
-  return (
-    n.length &&
-    (t.plans = {
+  if (n.length) {
+    t.plans = {
       add: n.map((s) => ({
         kind: s.kind,
         content: s.content,
         createdTime: s.createdTime,
         targetTime: s.targetTime,
       })),
-    }),
-    t
-  );
+    };
+  }
+  const initVars = Qn(null).vars;
+  if (JSON.stringify(sortJson_bbs(e.vars)) !== JSON.stringify(sortJson_bbs(initVars))) {
+    t.varOps = [{ op: "set", path: "", value: JSON.parse(JSON.stringify(e.vars)) }];
+  }
+  return t;
 }
 function nk(e) {
   const t = JSON.parse(JSON.stringify(e));
@@ -14189,7 +14235,8 @@ function sk() {
     const a = t[i];
     a && ((a.is_system && a.extra?.type) || (s++, a.is_user || o++));
   }
-  const l = Do(jo(q.summaries, t, n));
+  const l = Do(jo(q.summaries, t, n)),
+    seedDelta = tk(Qn(t, n));
   return {
     carryStart: n,
     carryCount: s,
@@ -14199,9 +14246,7 @@ function sk() {
       t.length > 0 &&
       (s > 0 ||
         l.length > 0 ||
-        q.items.length > 0 ||
-        q.npcs.length > 0 ||
-        q.plans.length > 0),
+        deltaHasData_bbs(seedDelta)),
   };
 }
 async function ok() {
@@ -14224,7 +14269,7 @@ async function ok() {
     const x = t[S];
     x && ((x.is_system && x.extra?.type) || u.push(nk(x)));
   }
-  if (!c && !u.length && !a.items && !a.npcs && !a.plans)
+  if (!c && !u.length && !deltaHasData_bbs(a))
     return (Qe("Cuộc đối thoại hiện tại không có dữ liệu nào có thể mang theo", "warning"), !1);
   let f = null;
   const v = vs();
@@ -17937,7 +17982,7 @@ const kk = { class: "bbs-page" },
                   (b[138] = r(
                     "p",
                     { class: "bbs-field-hint" },
-                    " Đóng gói 「cửa sổ toàn văn gần đây + tóm tắt lịch sử gộp + trạng thái hiện tại (vật phẩm / kế hoạch)」 của cuộc trò chuyện hiện tại để chuyển sang cuộc trò chuyện mới được tạo. Cuộc trò chuyện mới sẽ khôi phục trạng thái thông qua việc phát lại từ một 「lá hạt giống」, cốt truyện cũ đi kèm dưới dạng tóm tắt; nếu bật ký ức vector, cuộc trò chuyện cũ sẽ được chụp nhanh lại, cuộc trò chuyện mới có thể triệu hồi vector nội dung từ đó (cộng dồn qua từng đợt, các nhánh cũng tự động kế thừa). ",
+                    " Đóng gói 「cửa sổ toàn văn gần đây + tóm tắt lịch sử gộp + trạng thái hiện tại (thời gian/địa điểm, bối cảnh, vật phẩm, nhân vật, kế hoạch, biến số)」 của cuộc trò chuyện hiện tại để chuyển sang cuộc trò chuyện mới được tạo. Cuộc trò chuyện mới sẽ khôi phục trạng thái thông qua việc phát lại từ một 「lá hạt giống」, cốt truyện cũ đi kèm dưới dạng tóm tắt; nếu bật ký ức vector, cuộc trò chuyện cũ sẽ được chụp nhanh lại, cuộc trò chuyện mới có thể triệu hồi vector nội dung từ đó (cộng dồn qua từng đợt, các nhánh cũng tự động kế thừa). ",
                     -1,
                   )),
                   Ut.value
