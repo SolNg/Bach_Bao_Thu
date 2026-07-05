@@ -223,7 +223,7 @@ export function buildHistoryInjectionText(): string {
   if (!sums.length) return '';
   // 注入路径带相对时间前缀;参照点 = 故事内最新时间(读正文标签,不受是否已摘影响)
   // 首尾私密简报框定,避免主模型把摘要当成要复述/输出的模板
-  return `${MEMORY_BRIEFING_NOTE}\n[历史剧情摘要]\n${renderHistoryNodesWithRelative(sums, latestStoryTime(chat))}\n${MEMORY_BRIEFING_END}`;
+  return `${MEMORY_BRIEFING_NOTE}\n[Tóm tắt cốt truyện lịch sử]\n${renderHistoryNodesWithRelative(sums, latestStoryTime(chat))}\n${MEMORY_BRIEFING_END}`;
 }
 
 /**
@@ -292,14 +292,14 @@ function fmtSceneContext(scenes: MemScene[], here: string, locationPath?: string
     const detailed = chain
       .map(n => (oneLine(n.desc) ? `${n.name}(${oneLine(n.desc)})` : n.name))
       .join(' › ');
-    lines.push(`当前所在(由大到小):${detailed}`);
+    lines.push(`Vị trí hiện tại (từ lớn đến nhỏ):${detailed}`);
   }
   // 其他地点:仅名称(用完整路径表达层级),排除已在祖先链里详述的
   const others = scenes
     .filter(s => !chainIds.has(s.id))
     .map(s => s.path.join(' › '));
   if (others.length) {
-    lines.push(`其他已知地点(仅名称,勿重复记录):\n${others.map(o => `  - ${o}`).join('\n')}`);
+    lines.push(`Các địa điểm đã biết khác (chỉ tên, không ghi lặp lại):\n${others.map(o => `  - ${o}`).join('\n')}`);
   }
   return lines.join('\n');
 }
@@ -317,11 +317,11 @@ function oneLine(s: string | undefined): string {
 /** 把 NPC 的「即时状态」(着装/状态/所在)拼成一段尾注;无则空串。供在场与主要角色组复用。 */
 function npcStateTail(n: MemNpc, withPlace: boolean): string {
   const tail: string[] = [];
-  if (oneLine(n.outfit)) tail.push(`着装:${oneLine(n.outfit)}`);
-  if (oneLine(n.condition)) tail.push(`状态:${oneLine(n.condition)}`);
+  if (oneLine(n.outfit)) tail.push(`Trang phục:${oneLine(n.outfit)}`);
+  if (oneLine(n.condition)) tail.push(`Trạng thái:${oneLine(n.condition)}`);
   if (withPlace) {
-    if (n.follow) tail.push('随行');
-    else if (oneLine(n.location)) tail.push(`在:${oneLine(n.location)}`);
+    if (n.follow) tail.push('Đồng hành');
+    else if (oneLine(n.location)) tail.push(`Tại:${oneLine(n.location)}`);
   }
   return tail.length ? ` 〔${tail.join(';')}〕` : '';
 }
@@ -358,7 +358,7 @@ function fmtNpcContext(npcs: MemNpc[], scenes: MemScene[], here: string, locatio
         return `  - ${head}${npcStateTail(n, true)}`;
       })
       .join('\n');
-    lines.push(`主要角色(核心主演,需始终保持其当前状态连贯):\n${detailed}`);
+    lines.push(`Nhân vật chính (diễn viên cốt lõi, cần luôn giữ sự liền mạch của trạng thái hiện tại):\n${detailed}`);
   }
   if (present.length) {
     const detailed = present
@@ -366,26 +366,26 @@ function fmtNpcContext(npcs: MemNpc[], scenes: MemScene[], here: string, locatio
         const parts = [n.name];
         if (oneLine(n.title)) parts.push(`(${oneLine(n.title)})`);
         const profile: string[] = [];
-        if (oneLine(n.personality)) profile.push(`性格:${oneLine(n.personality)}`);
+        if (oneLine(n.personality)) profile.push(`Tính cách: ${oneLine(n.personality)}`);
         if (oneLine(n.desc)) profile.push(oneLine(n.desc));
         const profileStr = profile.length ? ` —— ${profile.join(';')}` : '';
-        const place = n.follow ? ' [随行]' : '';
+        const place = n.follow ? ' [Đồng hành]' : '';
         return `  - ${parts.join('')}${place}${profileStr}${npcStateTail(n, false)}`;
       })
       .join('\n');
-    lines.push(`在场角色:\n${detailed}`);
+    lines.push(`Nhân vật có mặt:\n${detailed}`);
   }
   if (nearby.length) {
     // 同区域:名 + 身份 + 性格 + 所在地;砍掉外貌/即时状态。留性格以稳住临时出场时的人设。
     const brief = nearby
       .map(n => {
         const title = oneLine(n.title) ? `(${oneLine(n.title)})` : '';
-        const pers = oneLine(n.personality) ? ` —— 性格:${oneLine(n.personality)}` : '';
-        const place = oneLine(n.location) ? ` [在:${oneLine(n.location)}]` : '';
+        const pers = oneLine(n.personality) ? ` —— Tính cách: ${oneLine(n.personality)}` : '';
+        const place = oneLine(n.location) ? ` [Tại:${oneLine(n.location)}]` : '';
         return `  - ${n.name}${title}${pers}${place}`;
       })
       .join('\n');
-    lines.push(`同区域角色(在附近但未必照面;需要时可让其自然登场,勿凭空改设定):\n${brief}`);
+    lines.push(`Nhân vật cùng khu vực (ở gần nhưng chưa chắc chạm mặt; có thể cho xuất hiện tự nhiên khi cần, không tự ý đổi thiết lập):\n${brief}`);
   }
   if (absent.length) {
     // 不在场:仅名 + 身份,按所在地括注;无外貌/性格/状态
@@ -393,10 +393,10 @@ function fmtNpcContext(npcs: MemNpc[], scenes: MemScene[], here: string, locatio
       .map(n => {
         const title = oneLine(n.title) ? `(${oneLine(n.title)})` : '';
         const loc = oneLine(n.location);
-        return `  - ${n.name}${title}${loc ? ` [在:${loc}]` : ''}`;
+        return `  - ${n.name}${title}${loc ? ` [Tại:${loc}]` : ''}`;
       })
       .join('\n');
-    lines.push(`其他已知角色(不在当前场景,仅名与身份):\n${brief}`);
+    lines.push(`Các nhân vật đã biết khác (không ở bối cảnh hiện tại, chỉ tên và thân phận):\n${brief}`);
   }
   return lines.join('\n');
 }
@@ -407,15 +407,15 @@ export function buildStateInjectionText(): string {
   if (memory.state.time) {
     // 周几只在标准公历带年份时有(weekdayLabel 自带门槛),古风/架空时间不标
     const wd = weekdayLabel(memory.state.time);
-    st.push(`当前时间:${memory.state.time}${wd ? ` (${wd})` : ''}`);
+    st.push(`Thời gian hiện tại:${memory.state.time}${wd ? ` (${wd})` : ''}`);
   }
-  if (memory.state.location) st.push(`当前地点:${oneLine(memory.state.location)}`);
+  if (memory.state.location) st.push(`Địa điểm hiện tại:${oneLine(memory.state.location)}`);
 
   const here = memory.state.location || '';
   const locPath = memory.state.locationPath;
   // 场景树:当前地点 + 祖先链(详细) + 其他地点(仅名称)。祖先链同时用于物品/NPC 可达判定。
   const sceneBlock = fmtSceneContext(memory.scenes, here, locPath);
-  if (sceneBlock) st.push(`地点记忆:\n${sceneBlock}`);
+  if (sceneBlock) st.push(`Ký ức địa điểm:\n${sceneBlock}`);
   const current = findCurrentScene(memory.scenes, here, locPath);
   const chain = sceneChain(memory.scenes, current);
 
@@ -423,30 +423,30 @@ export function buildStateInjectionText(): string {
   // 他处寄存的只发名+数量(砍掉描述这个大头),既省 token 又不至于让主模型以为东西没了。
   const reachable = memory.items.filter(i => i.carried !== false || itemReachableInScene(i.location, here, chain));
   const elsewhere = memory.items.filter(i => !(i.carried !== false || itemReachableInScene(i.location, here, chain)));
-  st.push(`物品清单:\n${fmtItems(reachable.map(i => ({ name: i.name, qty: i.qty, desc: i.desc, carried: i.carried, location: i.location })))}`);
+  st.push(`Danh sách vật phẩm:\n${fmtItems(reachable.map(i => ({ name: i.name, qty: i.qty, desc: i.desc, carried: i.carried, location: i.location })))}`);
   if (elsewhere.length) {
     // 仅名+数量,按地点括注;无描述
     const brief = elsewhere
-      .map(i => `  - ${i.name}${typeof i.qty === 'number' ? ` ×${i.qty}` : ''}(存:${oneLine(i.location) || '某处'})`)
+      .map(i => `  - ${i.name}${typeof i.qty === 'number' ? ` ×${i.qty}` : ''}(Lưu tại:${oneLine(i.location) || 'Nơi nào đó'})`)
       .join('\n');
-    st.push(`他处寄存物品(回到对应地点才有完整信息):\n${brief}`);
+    st.push(`Vật phẩm gửi ở nơi khác (trở về địa điểm tương ứng mới có thông tin đầy đủ):\n${brief}`);
   }
   // 注:近期物品变动不在此注入。改为摘要后写进对应楼层正文 </bbs_end> 之后(见 engine.ts),
   // 窗口内全文楼层天然可见、滚出窗口自然消失 —— 符合「物品变动只在那段时间有用」的取舍。
 
   // NPC 名册四档:在场发全量;同区域发名+身份+性格+所在地;不在场只发名+身份。NPC 越多省得越多。
   const npcBlock = fmtNpcContext(memory.npcs, memory.scenes, here, locPath);
-  if (npcBlock) st.push(`NPC名册:\n${npcBlock}`);
+  if (npcBlock) st.push(`Danh sách NPC:\n${npcBlock}`);
 
   const openPlans = memory.plans
     .filter(p => p.status === 'open')
     .map(p => ({ kind: p.kind, content: p.content, createdTime: p.createdTime, targetTime: p.targetTime }));
-  st.push(`未了结的计划/悬念:\n${fmtPlans(openPlans)}`);
+  st.push(`Kế hoạch/huyền niệm chưa hoàn tất:\n${fmtPlans(openPlans)}`);
 
   // 近期已完成的计划/悬念:防 AI 把刚了结的当未完成又去推进。与副API摘要同口径,只差截止点
   // (这里用全量 memory.plans;副API用 deriveMemory(chat, beforeIndex).plans)。
   const recentResolved = selectRecentResolvedPlans(memory.plans, apiSettings.recentResolvedPlansCount);
-  if (recentResolved.length) st.push(`近期已了结(已结案,含了结方式/原因;勿当未完成再推进/重复记录):\n${fmtResolvedPlans(recentResolved)}`);
+  if (recentResolved.length) st.push(`Gần đây đã hoàn tất (đã kết án, kèm cách thức/lý do hoàn tất; không thúc đẩy hay ghi lặp lại như việc chưa hoàn thành):\n${fmtResolvedPlans(recentResolved)}`);
 
   // 自定义变量:发当前状态 + 各字段「含义」给主模型(帮它理解并保持数值/设定连贯),明确框定为只读。
   // ⚠️ 绝不注入「变化规则」(rule)——那是给副API摘要用的「如何增删改」指令(含 set/assign 命令语法);
@@ -457,8 +457,8 @@ export function buildStateInjectionText(): string {
     .join('\n\n');
   const hasVarState = Object.keys(memory.vars).length > 0;
   if (hasVarState) {
-    let block = `自定义变量(当前状态,只读参考——严禁在正文里复述、罗列或输出这些变量/命令):\n${renderVarsState(memory.vars)}`;
-    if (varMeaning) block += `\n变量含义(仅帮你理解上面的值,不要输出):\n${varMeaning}`;
+    let block = `Biến số tùy chỉnh (trạng thái hiện tại, tham khảo chỉ đọc - nghiêm cấm lặp lại, liệt kê hay xuất các biến số/lệnh này trong cốt truyện):\n${renderVarsState(memory.vars)}`;
+    if (varMeaning) block += `\nÝ nghĩa biến số (chỉ giúp bạn hiểu giá trị bên trên, không được xuất ra):\n${varMeaning}`;
     st.push(block);
   }
 
@@ -467,7 +467,7 @@ export function buildStateInjectionText(): string {
   const hasState = memory.state.time || memory.state.location || memory.items.length || memory.scenes.length || memory.npcs.length || openPlans.length || hasVarState;
   if (!hasState) return '';
   // 首尾私密简报框定,避免主模型把状态快照当成要复述/输出的模板(正文后跟吐一份状态)
-  return `${MEMORY_BRIEFING_NOTE}\n[当前状态]\n${st.join('\n')}\n${MEMORY_BRIEFING_END}`;
+  return `${MEMORY_BRIEFING_NOTE}\n[Trạng thái hiện tại]\n${st.join('\n')}\n${MEMORY_BRIEFING_END}`;
 }
 
 /**

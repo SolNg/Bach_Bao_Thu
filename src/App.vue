@@ -28,7 +28,7 @@ const navPlacement = computed<'top' | 'bottom'>(() => {
 
 const current = computed(() => getPage(ui.activePage));
 
-// —— 遮罩点击关闭:仅当按下与松开都在遮罩本身。
+// —— 遮罩点击Đóng:仅当按下与松开都在遮罩本身。
 // 避免:1) 移动端打开手势的合成 click 穿透秒关;2) 窗内按下拖到窗外误关。
 let pressedOnOverlay = false;
 
@@ -42,12 +42,12 @@ function onOverlayClick(e: MouseEvent) {
   pressedOnOverlay = false;
 }
 
-// —— 移动端:下滑关闭抽屉 ——
+// —— 移动端:下滑Đóng抽屉 ——
 const dragY = ref(0); // 当前下拉位移(px)
 const dragging = ref(false);
 let startY = 0;
 let activePointer: number | null = null;
-const CLOSE_THRESHOLD = 110; // 超过此位移松手即关闭
+const CLOSE_THRESHOLD = 110; // 超过此位移松手即Đóng
 
 function onHandleDown(e: PointerEvent) {
   if (!narrowFlag.value) return;
@@ -88,7 +88,7 @@ const windowStyle = computed(() => {
     <!-- 弹窗 Teleport 宿主:.bbs-root 直接子级,在 .bbs-body 滚动容器之外。
          各页弹窗 Teleport 到此,避开 iOS「可滚动祖先内 fixed 后代定位错乱」(详见 state/ui.ts)。 -->
     <div ref="modalHost"></div>
-    <!-- 悬浮球:留在 shadow 内才能用 --bbs-* 主题变量;自身 position:fixed 贴边,不受 host 影响 -->
+    <!-- 悬浮球:留在 shadow 内才能用 --bbs-* 主题Biến số;自身 position:fixed 贴边,不受 host 影响 -->
     <FloatingOrb v-if="ui.showOrb" />
     <Transition name="bbs-fade">
       <div
@@ -103,8 +103,8 @@ const windowStyle = computed(() => {
              嵌套 Transition 在父子 v-if 同时翻转时,子的 leave 不会触发(实测窗口直接随父被移除,
              无任何动画)。改由遮罩 Transition 的 class 作后代选择器驱动窗口的进出场动画
              (见 <style> 里 .bbs-fade-enter-from/.bbs-fade-leave-to 下的 .bbs-window)。 -->
-        <div class="bbs-window" :style="windowStyle" role="dialog" aria-modal="true" aria-label="柏宝书">
-            <!-- 移动端抓手:可下滑关闭 -->
+        <div class="bbs-window" :style="windowStyle" role="dialog" aria-modal="true" aria-label="Bách Bảo Thư">
+            <!-- 移动端抓手:可下滑Đóng -->
             <div
               v-if="navPlacement !== 'top' || narrowFlag"
               class="bbs-grabber"
@@ -118,12 +118,12 @@ const windowStyle = computed(() => {
 
             <!-- 题首 -->
             <header class="bbs-head">
-              <span class="bbs-brand-name">柏宝书</span>
+              <span class="bbs-brand-name">Bách Bảo Thư</span>
               <div class="bbs-head-actions">
-                <button class="bbs-icon-btn" type="button" :title="`切换主题:${nextTheme.label}`" @click="cycleTheme">
+                <button class="bbs-icon-btn" type="button" :title="`Chuyển chủ đề:${nextTheme.label}`" @click="cycleTheme">
                   <Icon :name="nextTheme.icon" />
                 </button>
-                <button class="bbs-icon-btn" type="button" title="关闭" @click="closeBook">
+                <button class="bbs-icon-btn" type="button" title="Đóng" @click="closeBook">
                   <Icon name="close" />
                 </button>
               </div>
@@ -229,7 +229,7 @@ const windowStyle = computed(() => {
 }
 
 /* 窗口过渡:进出场(transform+opacity)与拖动回弹(transform)共用;
-   拖动跟手时由内联 style 的 transition:none 覆盖,松手回弹再走这条。 */
+   拖动跟手时由内联 style 的 transition:none 覆盖,松手回弹再走这mục。 */
 .bbs-window {
   transition:
     transform var(--bbs-dur) var(--bbs-ease),

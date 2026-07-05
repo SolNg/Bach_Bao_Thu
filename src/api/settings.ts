@@ -3,10 +3,10 @@ import { normalizeTemplate, type VarTemplate } from '@/memory/types';
 import { reactive, watch } from 'vue';
 
 /**
- * 副 API 设置(全局,跨聊天)。存进 ST 的 extension_settings(→ 服务器 settings.json),
- * 因而跨设备同步:手机/局域网另一端打开同一 ST 账户即可见到同一份设置。
+ * 副 API Cài đặt(全局,跨聊天)。存进 ST 的 extension_settings(→ 服务器 settings.json),
+ * 因而跨设备同步:手机/局域网另一端打开同一 ST 账户即可见到同一份Cài đặt。
  * (旧版本曾存浏览器 localStorage,只在本机生效;见 hydrateSettings 的一次性迁移。)
- * 渠道可配多个;两类摘要任务各指派一个渠道:summary=摘要,resummary=总结。
+ * 渠道可配多个;两类Tóm tắt任务各指派一个渠道:summary=Tóm tắt,resummary=总结。
  */
 
 export interface ApiChannel {
@@ -26,12 +26,12 @@ export interface ApiChannel {
   /** 流式传输(默认关);开启后按 SSE 增量拼接 */
   stream: boolean;
   /**
-   * 发送预填充(默认开)。摘要/批量请求末尾带一条 assistant 预填充消息,引导模型从思维链续写、
-   * 并压制拒答。Claude 等原生支持预填充的后端收益明显;若端点要求「最后一条必须是 user」
-   * 或为纯 OpenAI 端点(预填充不被续写、形同浪费),可关掉——关掉只是不发那条尾 assistant,
+   * 发送预填充(默认开)。Tóm tắt/批量请求末尾带一mục assistant 预填充消息,引导模型从思维链续写、
+   * 并压制拒答。Claude 等原生支持预填充的后端收益明显;若端点要求「最后一mục必须是 user」
+   * 或为纯 OpenAI 端点(预填充不被续写、形同浪费),可关掉——关掉只是不发那mục尾 assistant,
    * 思维链引导仍由 system 检查清单承担,不影响功能。 */
   prefill: boolean;
-  /** 排除参数:这些字段名会在构造请求体时从 body 中删除,
+  /** 排除参数:这些字段名会在构造请求体时从 body 中Xóa,
    *  用于规避不接受某些参数(如 temperature/max_tokens)的兼容端点报错。 */
   excludeParams: string[];
 }
@@ -41,18 +41,18 @@ export type TaskType = 'summary' | 'resummary';
 /** 自定义提示词:空串表示沿用 prompts.ts 内置模板,非空则整体覆盖该任务的模板。 */
 export interface CustomPrompts {
   summary: string;
-  /** 普通总结(L0 叶子 → L1):把多条楼层摘要压成一条 L1 总结。 */
+  /** 普通总结(L0 叶子 → L1):把多mục楼层Tóm tắt压成一mục L1 总结。 */
   resummary: string;
-  /** 二次总结(L1+ → 更上层):把多条总结再压一层,字数按输入规模动态放宽以少丢信息。 */
+  /** 二次总结(L1+ → 更上层):把多mục总结再压一层,字数按输入规模动态放宽以少丢信息。 */
   resummary2: string;
-  /** 破限提示词:附加在摘要/总结请求里;空串=不附加。 */
+  /** 破限提示词:附加在Tóm tắt/总结请求里;空串=不附加。 */
   jailbreak: string;
-  /** 固定提示词(时间标签):注入**主对话**模型,要求每条正文前后输出时间标签;空=用内置默认。 */
+  /** 固定提示词(时间标签):注入**主对话**模型,要求每mục正文前后输出时间标签;空=用内置默认。 */
   timeTag: string;
 }
 
 /**
- * 单个向量角色的端点配置(扁平:自带地址+密钥+模型,不再经「渠道」中转)。
+ * 单个向量Nhân vật的端点配置(扁平:自带地址+密钥+模型,不再经「渠道」中转)。
  * embedding 为基准必填;rerank/queryRewrite 的 url 留空 = 整体复用 embedding 的端点与模型。
  */
 export interface VectorEndpoint {
@@ -62,7 +62,7 @@ export interface VectorEndpoint {
   key: string;
   /** 模型名 */
   model: string;
-  /** 单次请求超时(秒)。超时即中断该次请求;各角色默认不同(见 defaults),不随地址复用回落。 */
+  /** 单次请求超时(秒)。超时即中断该次请求;各Nhân vật默认不同(见 defaults),不随地址复用回落。 */
   timeoutSec: number;
   /** 失败自动重试次数:仅超时/网络异常/服务端 5xx/限流 429 才重试;4xx 不重试。非负整数。 */
   retries: number;
@@ -71,32 +71,32 @@ export interface VectorEndpoint {
 /**
  * 召回参数。召回管线:
  *  ① 所有向量索引各算一次 embedding 相似度,**纯按得分排序取前 N(rerankCandidates)进入 rerank**——
- *     这一步不套 embedding 阈值,哪怕前 N 全是低分(0.4/0.3…)也照样进候选;阈值只在 ② 的摘要档准入用。
+ *     这一步不套 embedding 阈值,哪怕前 N 全是低分(0.4/0.3…)也照样进候选;阈值只在 ② 的Tóm tắt档准入用。
  *  ② rerank 打分后分两档:
- *     · 全文档 = rerank 得分 ≥ rerankThreshold,取前 fullTextCount 条(发原文全文);
- *     · 摘要档 = rerank 得分 < rerankThreshold 但 embedding 得分 ≥ embeddingThreshold(发叶子摘要);
- *  ③ 最终召回条数 ≤ finalRecallCount(上限):先放全文档,不足再用摘要档补,补不满也无妨。
+ *     · 全文档 = rerank 得分 ≥ rerankThreshold,取前 fullTextCount mục(发原文全文);
+ *     · Tóm tắt档 = rerank 得分 < rerankThreshold 但 embedding 得分 ≥ embeddingThreshold(发叶子Tóm tắt);
+ *  ③ 最终召回mục数 ≤ finalRecallCount(上限):先放全文档,不足再用Tóm tắt档补,补不满也无妨。
  */
 export interface VectorRecallSettings {
   /** 进入 rerank 的候选数:纯按 embedding 相似度取 top-N(不套阈值过滤) */
   rerankCandidates: number;
-  /** embedding 相似度阈值:仅用于 ② 摘要档准入门槛(低于此连摘要都不召回);不影响 ① 取候选 */
+  /** embedding 相似度阈值:仅用于 ② Tóm tắt档准入门槛(低于此连Tóm tắt都不召回);不影响 ① 取候选 */
   embeddingThreshold: number;
-  /** rerank 得分阈值:≥ 进全文档,< 退摘要档 */
+  /** rerank 得分阈值:≥ 进全文档,< 退Tóm tắt档 */
   rerankThreshold: number;
-  /** 召回全文数:全文档取前 N 条(发原文) */
+  /** 召回全文数:全文档取前 N mục(发原文) */
   fullTextCount: number;
-  /** 最终召回条数(上限):全文档 + 摘要档合计不超过它 */
+  /** 最终召回mục数(上限):全文档 + Tóm tắt档合计不超过它 */
   finalRecallCount: number;
   /**
    * 召回起始 AI 楼数:当前聊天 AI 消息数少于此值时**不触发召回**(0=不限制)。
    * 用 AI 消息数计(与 keepRecent 同口径),避免和「楼层」混淆。
-   * 早期剧情还没多少旧记忆可召,跳过可省额度/延迟;「带数据建新对话」的旧档不受此限(始终召回)。
+   * 早期剧情还没多少旧记忆可召,跳过可省额度/延迟;「带数据建新对话」的Hồ sơ cũ不受此限(始终召回)。
    */
   minAiFloors: number;
 }
 
-/** 向量记忆设置。embedding 为基准,rerank/queryRewrite 的 url 留空则整体复用 embedding。 */
+/** 向量记忆Cài đặt。embedding 为基准,rerank/queryRewrite 的 url 留空则整体复用 embedding。 */
 export interface VectorSettings {
   /** 向量记忆开关 */
   enabled: boolean;
@@ -106,7 +106,7 @@ export interface VectorSettings {
   rerank: VectorEndpoint;
   /** 查询重写端点;url 留空复用 embedding */
   queryRewrite: VectorEndpoint;
-  /** 召回参数(候选数/阈值/条数) */
+  /** 召回参数(候选数/阈值/mục数) */
   recall: VectorRecallSettings;
 }
 
@@ -116,33 +116,33 @@ export interface UiPrefs {
   theme: string;
   /** 导航位置:top/bottom/auto */
   navPosition: string;
-  /** 移动端:再点当前页导航按钮即关闭整窗。默认开;怕误触的用户可关。 */
+  /** 移动端:再点当前页导航按钮即Đóng整窗。默认开;怕误触的用户可关。 */
   navTapClose: boolean;
   /** 在 ST 顶栏注入一个快速打开按钮(魔杖菜单入口照旧保留)。默认关。 */
   showTopBar: boolean;
-  /** 在聊天框上方注入「快速回复」式按钮,点击打开柏宝书。默认关。 */
+  /** 在聊天框上方注入「快速回复」式按钮,点击Mở Bách Bảo Thư。默认关。 */
   showQuickReply: boolean;
-  /** 在每条 AI 楼层内注入摘要锚点(查看该楼摘要数据 + 标记番外)。默认关。 */
+  /** 在每mục AI 楼层内注入Tóm tắt锚点(查看该楼Tóm tắt数据 + 标记番外)。默认关。 */
   showFloorPanel: boolean;
-  /** 屏幕边缘悬浮球,点击打开柏宝书。默认关。 */
+  /** 屏幕边缘悬浮球,点击Mở Bách Bảo Thư。默认关。 */
   showOrb: boolean;
-  /** 悬浮球自定义图标:ST 服务器图片路径(saveBase64AsFile 返回的短串);空=用默认书签图标。跨设备同步。 */
+  /** 悬浮球自定义图标:ST 服务器图片路径(saveBase64AsFile 返回的短串);空=用默认Thẻ sách图标。跨设备同步。 */
   orbImage: string;
-  /** 悬浮球形状:bookmark 书签(默认)/ circle 圆 / square 方。 */
+  /** 悬浮球形状:bookmark Thẻ sách(默认)/ circle 圆 / square 方。 */
   orbShape: string;
   /** 悬浮球静止时不透明度(百分比 20–100,默认 62)。唤起/拖动时一律全显。 */
   orbOpacity: number;
-  /** 悬浮球基准尺寸(px,32–80,默认 48)。书签按比例放宽高,圆/方为等边边长。 */
+  /** 悬浮球基准尺寸(px,32–80,默认 48)。Thẻ sách按比例放宽高,圆/方为等边边长。 */
   orbSize: number;
 }
 
-/** 字数详尽档位:detailed=详细(默认),concise=精简(摘要/总结/二次总结字数一并降低)。仅影响内置模板。 */
+/** 字数详尽档位:detailed=详细(默认),concise=精简(Tóm tắt/总结/二次总结字数一并降低)。仅影响内置模板。 */
 export type Verbosity = 'detailed' | 'concise';
 
 export interface ApiSettings {
-  /** 插件总开关。关闭后停止一切自动注入/摘要/总结/隐藏;ST 菜单入口仍在,可重新打开界面再开启。 */
+  /** 插件总开关。Đóng后停止一切自动注入/Tóm tắt/总结/隐藏;ST 菜单入口仍在,可重新打开界面再开启。 */
   enabled: boolean;
-  /** 界面偏好(主题/导航位置),随设置存进 extension_settings → 跨设备同步 */
+  /** 界面偏好(主题/导航位置),随Cài đặt存进 extension_settings → 跨设备同步 */
   ui: UiPrefs;
   /** 自定义提示词模板(空=用内置) */
   prompts: CustomPrompts;
@@ -153,51 +153,51 @@ export interface ApiSettings {
   channels: ApiChannel[];
   /** 各任务指派的渠道 id */
   assignments: Record<TaskType, string>;
-  /** 自动摘要开关。开启即一并启用:自动隐藏、正文时间标签、积压拦截(不再各自独立开关)。 */
+  /** 自动Tóm tắt开关。开启即一并启用:自动隐藏、正文时间标签、积压拦截(不再各自独立开关)。 */
   autoSummaryEnabled: boolean;
-  /** 保留最近 N 条 AI 消息发全文(滑动窗口);更早的自动摘要并隐藏 */
+  /** 保留最近 N mục AI 消息发全文(滑动窗口);更早的自动Tóm tắt并隐藏 */
   keepRecent: number;
-  /** 排除的角色名:这些名字(含重名卡)的聊天里,记忆系统所有功能都不生效 */
+  /** 排除的Nhân vật名:这些名字(含重名卡)的聊天里,记忆系统所有功能都不生效 */
   excludedChars: string[];
-  /** 摘要/总结时**整本排除**的世界书文件名:这些书的所有激活条目都不进摘要上下文。
-   *  用于全局挂载的附加知识书等——它们对当前剧情摘要无用,排除可省 token。仅影响副API。 */
+  /** Tóm tắt/总结时**整本排除**的世界书文件名:这些书的所有激活mục目都不进Tóm tắt上下文。
+   *  用于全局挂载的附加知识书等——它们对当前剧情Tóm tắt无用,排除可省 token。仅影响副API。 */
   excludedWorldNames: string[];
-  /** 摘要/总结时按**条目名(comment)**过滤的规则:命中任一规则的条目不进摘要上下文。
-   *  每条当正则编译(普通名字天然=包含匹配),编译失败降级为字面子串包含。仅影响副API。 */
+  /** Tóm tắt/总结时按**mục目名(comment)**过滤的规则:命中任一规则的mục目不进Tóm tắt上下文。
+   *  每mục当正则编译(普通名字天然=包含匹配),编译失败降级为字面子串包含。仅影响副API。 */
   excludedWorldInfoPatterns: string[];
-  /** 内置默认条目名规则是否已「播种」进上面的列表(见 DEFAULT_WI_PATTERNS / hydrateSettings)。
+  /** 内置默认mục目名规则是否已「播种」进上面的列表(见 DEFAULT_WI_PATTERNS / hydrateSettings)。
    *  只发放一次:老用户首次载入时补进默认规则并置 true;之后用户删空也不再补回,尊重其选择。 */
   wiPatternsSeeded: boolean;
-  /** 叶子摘要积累到 N 条时,压成一条 L1 总结(L0→L1 阈值,0=关闭) */
+  /** 叶子Tóm tắt积累到 N mục时,压成一mục L1 总结(L0→L1 阈值,0=Đóng) */
   leafBatchThreshold: number;
-  /** L1 及以上每积累到 N 条时,压成上一层总结(L≥1→L+1 阈值,0=关闭) */
+  /** L1 及以上每积累到 N mục时,压成上一层总结(L≥1→L+1 阈值,0=Đóng) */
   resummaryThreshold: number;
-  /** 状态快照里附带「近期已完成计划/悬念」的条数:**计划、悬念各取最近 N 条**(0=不附带)。
-   *  防 AI 把刚了结的计划当未完成又去推进/重新 add;注入与副API摘要两端同口径附带。 */
+  /** 状态快照里附带「近期已完成计划/Huyền niệm」的mục数:**计划、Huyền niệm各取最近 N mục**(0=不附带)。
+   *  防 AI 把刚了结的计划当未完成又去推进/重新 add;注入与副APITóm tắt两端同口径附带。 */
   recentResolvedPlansCount: number;
-  /** 摘要/总结失败(请求报错或 JSON 解析失败)的最大重试次数。0=不重试;默认 1(最多再试一次)。 */
+  /** Tóm tắt/总结失败(请求报错或 JSON 解析失败)的最大重试次数。0=不重试;默认 1(最多再试一次)。 */
   summaryMaxRetries: number;
   /** 批量补摘:每批最大正文字符数(清洗后)。攒够即切块,控制单次请求规模(防 AI 注意力涣散)。 */
   batchMaxChars: number;
   /** 批量补摘:每批最大楼数兜底。即便字符没到上限,楼数到此也切块。 */
   batchMaxFloors: number;
   /**
-   * 用户自定义「整块删除」标签名(只填标签名,不带尖括号,如 snow)。清洗正文时
+   * 用户自定义「整块Xóa」标签名(只填标签名,不带尖括号,如 snow)。清洗正文时
    * `<snow>…</snow>` 连同内部内容一并删掉。用于剔除其它插件/世界书写进正文的状态栏、
    * 旁注等格式。改动对**召回时**即时生效(向量库存的是原文,召回再清洗),无需重建索引。
    */
   customStripTags: string[];
-  /** 全局变量模板:所有角色所有聊天共享的初始 JSON 结构 + 说明(值仍每聊天独立)。见 memory 的 VarTier。 */
+  /** 全局Biến số模板:所有Nhân vật所有聊天共享的初始 JSON 结构 + 说明(值仍每聊天独立)。见 memory 的 VarTier。 */
   varsGlobalTemplate: VarTemplate;
-  /** 角色变量模板:键=角色卡 avatar 文件名,值=该角色所有聊天共享的初始模板(值仍每聊天独立)。 */
+  /** Nhân vậtBiến số模板:键=Nhân vật卡 avatar 文件名,值=该Nhân vật所有聊天共享的初始模板(值仍每聊天独立)。 */
   varsTemplateByChar: Record<string, VarTemplate>;
 }
 
 // extension_settings 里的命名空间键;localStorage 是旧版残留,仅用于一次性迁移。
 const SETTINGS_KEY = 'baibai_book';
 
-/** 条目名过滤的内置默认规则:首次载入时「播种」进用户列表(见 hydrateSettings),之后用户可自由增删。
- *  \[mvu…\] = 过滤变量框架 MVU 的机制条目(对剧情摘要是纯噪音)。大小写不敏感(engine 编译带 i)。 */
+/** mục目名过滤的内置默认规则:首次载入时「播种」进用户列表(见 hydrateSettings),之后用户可自由增删。
+ *  \[mvu…\] = 过滤Biến số框架 MVU 的机制mục目(对剧情Tóm tắt是纯噪音)。大小写不敏感(engine 编译带 i)。 */
 const DEFAULT_WI_PATTERNS = ['\\[mvu[\\s\\S]*?\\]'];
 const LEGACY_STORAGE_KEY = 'bbs.api.v1';
 // 旧版界面偏好(主题/导航位置/分页)曾单独存这里;现把主题+导航迁进 ui,分页仍留本机(见 state/ui.ts)。
@@ -236,7 +236,7 @@ function defaults(): ApiSettings {
     verbosity: 'detailed',
     vector: {
       enabled: false,
-      // 默认填硅基流动地址 + 各角色模型,用户只需在 embedding 填一次 key 即可跑通:
+      // 默认填硅基流动地址 + 各Nhân vật模型,用户只需在 embedding 填一次 key 即可跑通:
       // rerank/queryRewrite 的 url/key 留空会回落复用 embedding 的(见 resolveVectorModel)。
       embedding: { url: 'https://api.siliconflow.cn/v1', key: '', model: 'Qwen/Qwen3-Embedding-8B', timeoutSec: 10, retries: 1 },
       rerank: { url: '', key: '', model: 'Qwen/Qwen3-Reranker-4B', timeoutSec: 20, retries: 1 },
@@ -306,7 +306,7 @@ function normalize(raw: unknown): ApiSettings {
   merged.excludedChars = Array.isArray(merged.excludedChars)
     ? merged.excludedChars.filter((x): x is string => typeof x === 'string')
     : [];
-  // 排除世界书/条目名规则:字符串数组,去空,旧数据缺失/非法回退空数组
+  // 排除世界书/mục目名规则:字符串数组,去空,旧数据缺失/非法回退空数组
   merged.excludedWorldNames = Array.isArray(merged.excludedWorldNames)
     ? merged.excludedWorldNames.filter((x): x is string => typeof x === 'string' && x.trim().length > 0)
     : [];
@@ -316,7 +316,7 @@ function normalize(raw: unknown): ApiSettings {
   // 播种标记:布尔,缺失(老数据无此键)回退 false,让 hydrateSettings 首次补发默认规则
   merged.wiPatternsSeeded = typeof merged.wiPatternsSeeded === 'boolean' ? merged.wiPatternsSeeded : false;
   // vector 同为嵌套对象(且内含子对象),逐层兜底,老数据缺字段时回退默认。
-  // 注:旧结构曾有 vector.channels + {channel,model};扁平化后弃用,逐角色按 url/key/model 兜底,
+  // 注:旧结构曾有 vector.channels + {channel,model};扁平化后弃用,逐Nhân vật按 url/key/model 兜底,
   // 老数据缺这些字段会回退空串(等于「未配置」,用户重填一次即可)。
   const rv = ((raw as Partial<ApiSettings>).vector ?? {}) as Partial<VectorSettings>;
   merged.vector = {
@@ -336,7 +336,7 @@ function normalize(raw: unknown): ApiSettings {
   merged.channels = (Array.isArray(merged.channels) ? merged.channels : []).map(normalizeChannel);
   // 字数档位:仅两个合法值,旧数据缺失/非法回退详细(= 老用户行为不变)
   merged.verbosity = merged.verbosity === 'concise' ? 'concise' : 'detailed';
-  // 近期已完成计划条数:非负整数,缺失/非法回退默认 5(计划/悬念各取 N;0=不附带)
+  // 近期已完成计划mục数:非负整数,缺失/非法回退默认 5(计划/Huyền niệm各取 N;0=不附带)
   merged.recentResolvedPlansCount =
     Number.isFinite(merged.recentResolvedPlansCount) && merged.recentResolvedPlansCount >= 0
       ? Math.floor(merged.recentResolvedPlansCount)
@@ -367,7 +367,7 @@ function normalize(raw: unknown): ApiSettings {
       ),
     )
     : [];
-  // 变量模板:全局深规整;角色按 avatar 键逐份规整(丢弃空模板的键,保持存储干净)
+  // Biến số模板:全局深规整;Nhân vật按 avatar 键逐份规整(丢弃空模板的键,保持存储干净)
   merged.varsGlobalTemplate = normalizeTemplate((raw as Partial<ApiSettings>).varsGlobalTemplate);
   const rawByChar = (raw as Partial<ApiSettings>).varsTemplateByChar;
   const byChar: Record<string, VarTemplate> = {};
@@ -405,8 +405,8 @@ function normalizeVectorEndpoint(
     url: typeof o.url === 'string' ? o.url : '',
     key: typeof o.key === 'string' ? o.key : '',
     model: typeof o.model === 'string' ? o.model : '',
-    // 超时/重试老数据可能缺:各角色默认值不同(embedding 10s / rerank 20s / query 90s),
-    // 必须按传入的角色默认回退,不能统一回退一个值。
+    // 超时/重试老数据可能缺:各Nhân vật默认值不同(embedding 10s / rerank 20s / query 90s),
+    // 必须按传入的Nhân vật默认回退,不能统一回退一个值。
     timeoutSec:
       typeof o.timeoutSec === 'number' && Number.isFinite(o.timeoutSec) && o.timeoutSec > 0
         ? o.timeoutSec
@@ -422,7 +422,7 @@ function normalizeVectorEndpoint(
 function normalizeChannel(c: Partial<ApiChannel>): ApiChannel {
   return {
     id: typeof c.id === 'string' ? c.id : `ch_${Date.now()}_${++chanSeq}`,
-    name: typeof c.name === 'string' ? c.name : '新渠道',
+    name: typeof c.name === 'string' ? c.name : 'Kênh mới',
     url: typeof c.url === 'string' ? c.url : '',
     key: typeof c.key === 'string' ? c.key : '',
     model: typeof c.model === 'string' ? c.model : '',
@@ -439,7 +439,7 @@ function normalizeChannel(c: Partial<ApiChannel>): ApiChannel {
 // import 阶段 ST 往往尚未就绪,先以默认值建 reactive;真实值由 hydrateSettings 灌入。
 export const apiSettings = reactive<ApiSettings>(defaults());
 
-// 守门标志:hydrate 完成前不回写,避免「默认值」覆盖服务器上已存的设置。
+// 守门标志:hydrate 完成前不回写,避免「默认值」覆盖服务器上已存的Cài đặt。
 let ready = false;
 
 // hydrate 完成后要通知的订阅者(如 ui.ts:settings 就绪后才能拿到同步过来的主题/导航位置)。
@@ -484,7 +484,7 @@ function persist(): void {
 }
 
 /**
- * ST 就绪后调用:从 extension_settings 载入真实设置;
+ * ST 就绪后调用:从 extension_settings 载入真实Cài đặt;
  * 若那里还没有、但 localStorage 有旧值,则迁移过去(老用户不丢配置),迁移后清掉旧键。
  * 完成后放行 watch 回写。可安全重复调用(只在首次真正 hydrate)。
  */
@@ -496,7 +496,7 @@ export function hydrateSettings(): void {
   const stored = ctx.extensionSettings[SETTINGS_KEY];
   if (stored && typeof stored === 'object') {
     applyInto(apiSettings, normalize(stored));
-    // 老用户:server 已有 api 设置但还没同步过界面偏好 → 把旧 localStorage 的主题/导航迁进来并落盘一次
+    // 老用户:server 已有 api Cài đặt但还没同步过界面偏好 → 把旧 localStorage 的主题/导航迁进来并落盘一次
     if (!('ui' in (stored as object))) {
       migrateLegacyUiPrefs(apiSettings);
       ctx.extensionSettings[SETTINGS_KEY] = JSON.parse(JSON.stringify(apiSettings));
@@ -530,7 +530,7 @@ export function hydrateSettings(): void {
     }
   }
 
-  // 播种内置默认条目名规则:仅当从未发放过(老用户/新用户首次)才补进列表,并置标记 + 落盘。
+  // 播种内置默认mục目名规则:仅当从未发放过(老用户/新用户首次)才补进列表,并置标记 + 落盘。
   // 只发一次——用户之后删空也不会被反复塞回。追加而非覆盖,不动用户已有的自定义规则。
   if (!apiSettings.wiPatternsSeeded) {
     for (const pat of DEFAULT_WI_PATTERNS) {
@@ -554,7 +554,7 @@ export function hydrateSettings(): void {
 watch(
   apiSettings,
   () => {
-    if (!ready) return; // hydrate 前不回写,防止默认值覆盖服务器设置
+    if (!ready) return; // hydrate 前不回写,防止默认值覆盖服务器Cài đặt
     persist();
   },
   { deep: true },
@@ -565,7 +565,7 @@ export function newChannel(): ApiChannel {
   chanSeq += 1;
   return {
     id: `ch_${Date.now()}_${chanSeq}`,
-    name: '新渠道',
+    name: 'Kênh mới',
     url: '',
     key: '',
     model: '',
@@ -577,11 +577,11 @@ export function newChannel(): ApiChannel {
   };
 }
 
-/** 当前单角色聊天的角色名;群聊或未进入聊天时返回 null(群聊不参与排除)。 */
+/** 当前单Nhân vật聊天的Nhân vật名;群聊或未进入聊天时返回 null(群聊不参与排除)。 */
 export function currentCharName(): string | null {
   const ctx = getContext();
   if (!ctx) return null;
-  if (ctx.groupId) return null; // 群聊:多角色,不按单名排除
+  if (ctx.groupId) return null; // 群聊:多Nhân vật,不按单名排除
   const idx = ctx.characterId;
   if (idx === undefined || idx === null || idx === '') return null;
   const ch = ctx.characters?.[Number(idx)];
@@ -589,12 +589,12 @@ export function currentCharName(): string | null {
 }
 
 /**
- * 当前角色的稳定键:avatar 文件名(唯一,重名卡也不冲突);取不到回退角色名。
- * 用于角色层变量定义的存储键(varsByChar[key])。群聊 / 未进入聊天返回 null(角色层此时不适用)。
+ * 当前Nhân vật的稳定键:avatar 文件名(唯一,重名卡也不冲突);取不到回退Nhân vật名。
+ * 用于Nhân vật层Biến số定义的存储键(varsByChar[key])。群聊 / 未进入聊天返回 null(Nhân vật层此时不适用)。
  */
 export function currentCharKey(): string | null {
   const ctx = getContext();
-  if (!ctx || ctx.groupId) return null; // 群聊无单一角色
+  if (!ctx || ctx.groupId) return null; // 群聊无单一Nhân vật
   const idx = ctx.characterId;
   if (idx === undefined || idx === null || idx === '') return null;
   const ch = ctx.characters?.[Number(idx)] as { avatar?: string; name?: string } | undefined;
@@ -602,7 +602,7 @@ export function currentCharKey(): string | null {
 }
 
 /**
- * 当前聊天是否被排除(该角色名在排除名单里)。被排除则记忆系统所有功能停用。
+ * 当前聊天是否被排除(该Nhân vật名在排除名单里)。被排除则记忆系统所有功能停用。
  * 按「名字」匹配:同名的重名卡会被一并排除——符合用户「这批重名卡一起排除」的诉求。
  */
 export function isCurrentChatExcluded(): boolean {
@@ -611,7 +611,7 @@ export function isCurrentChatExcluded(): boolean {
   return name !== null && apiSettings.excludedChars.includes(name);
 }
 
-/** 引擎是否在当前聊天生效:总开关开着且当前角色未被排除。各功能闸门统一走它。 */
+/** 引擎是否在当前聊天生效:总开关开着且当前Nhân vật未被排除。各功能闸门统一走它。 */
 export function engineActiveHere(): boolean {
   return apiSettings.enabled && !isCurrentChatExcluded();
 }
@@ -623,8 +623,8 @@ export function getChannelForTask(task: TaskType): ApiChannel | null {
 }
 
 /**
- * 解析某个向量角色实际使用的端点(url/key/model)。
- * 三个角色的**模型各自独立**(embedding/rerank/query 模型本就不同),从不复用;
+ * 解析某个向量Nhân vật实际使用的端点(url/key/model)。
+ * 三个Nhân vật的**模型各自独立**(embedding/rerank/query 模型本就不同),从不复用;
  * 能复用的只有**地址与密钥**:rerank/queryRewrite 的 url/key 各自留空时,分别回落到 embedding 的。
  */
 export function resolveVectorModel(role: 'embedding' | 'rerank' | 'queryRewrite'): VectorEndpoint {
@@ -636,7 +636,7 @@ export function resolveVectorModel(role: 'embedding' | 'rerank' | 'queryRewrite'
     url: cfg.url.trim() || base.url, // 地址留空 → 复用 embedding 地址
     key: cfg.key.trim() || base.key, // 密钥留空 → 复用 embedding 密钥
     model: cfg.model, // 模型始终独立,不回落
-    timeoutSec: cfg.timeoutSec, // 超时/重试始终独立,不回落(各角色默认本就不同)
+    timeoutSec: cfg.timeoutSec, // 超时/重试始终独立,不回落(各Nhân vật默认本就不同)
     retries: cfg.retries,
   };
 }

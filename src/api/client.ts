@@ -43,13 +43,13 @@ export async function requestCompletion(
   opts: RequestOptions = {},
 ): Promise<string> {
   const ctx = getContext();
-  if (!ctx) throw new ApiError('SillyTavern 上下文不可用');
-  if (!channel.url || !channel.model) throw new ApiError('副 API 渠道未配置完整(缺 url 或 model)');
+  if (!ctx) throw new ApiError('Ngữ cảnh SillyTavern không khả dụng');
+  if (!channel.url || !channel.model) throw new ApiError('Kênh API phụ chưa cấu hình đầy đủ (thiếu url hoặc model)');
 
   const stream = channel.stream ?? false;
-  // 预填充开关(默认开):关闭时丢掉末尾那条 assistant 预填充消息。
-  // 摘要/批量请求会在末尾追加一条 assistant 预填充引导思维链;对不支持预填充(不续写)的端点
-  // 形同浪费、个别端点还要求「最后一条须为 user」。关掉只是不发它,思维链引导仍由 system 清单承担。
+  // 预填充开关(默认开):Đóng时丢掉末尾那mục assistant 预填充消息。
+  // Tóm tắt/批量请求会在末尾追加一mục assistant 预填充引导思维链;对不支持预填充(不续写)的端点
+  // 形同浪费、个别端点还要求「最后一mục须为 user」。关掉只是不发它,思维链引导仍由 system 清单承担。
   const outMessages =
     channel.prefill === false && messages[messages.length - 1]?.role === 'assistant'
       ? messages.slice(0, -1)
@@ -85,23 +85,23 @@ export async function requestCompletion(
 
   if (!resp.ok) {
     const text = await resp.text().catch(() => '');
-    throw new ApiError(`副 API 请求失败 (${resp.status}): ${text.slice(0, 300)}`);
+    throw new ApiError(`Yêu cầu API phụ thất bại (${resp.status}): ${text.slice(0, 300)}`);
   }
 
   // 流式:按 SSE 增量拼接;非流式:直接解析 JSON。
   if (stream) {
     const content = await readSseContent(resp);
-    if (!content) throw new ApiError('副 API 返回空内容');
+    if (!content) throw new ApiError('API phụ trả về nội dung trống');
     return content;
   }
 
   const data = await resp.json();
   if (data?.error) {
-    throw new ApiError(data.error.message || '副 API 返回错误');
+    throw new ApiError(data.error.message || 'API phụ trả về lỗi');
   }
 
   const content = extractContent(data);
-  if (!content) throw new ApiError('副 API 返回空内容');
+  if (!content) throw new ApiError('API phụ trả về nội dung trống');
   return content;
 }
 
@@ -133,7 +133,7 @@ async function readSseContent(resp: Response): Promise<string> {
       if (payload === '[DONE]') continue;
       try {
         const json = JSON.parse(payload);
-        if (json?.error) throw new ApiError(json.error.message || '副 API 返回错误');
+        if (json?.error) throw new ApiError(json.error.message || 'API phụ trả về lỗi');
         const delta = json?.choices?.[0]?.delta?.content ?? json?.choices?.[0]?.message?.content ?? json?.choices?.[0]?.text;
         if (typeof delta === 'string') out += delta;
       } catch (e) {
@@ -155,13 +155,13 @@ function extractContent(data: any): string {
   ).trim();
 }
 
-/* ============ 跟随主 API(主界面当前在用的 API 设置) ============ */
+/* ============ 跟随主 API(主界面当前在用的 API Cài đặt) ============ */
 
-/** 摘要/总结跟随主 API 时的响应上限:够装下思维链 + JSON,避免被主 API 默认 max tokens 截断。 */
+/** Tóm tắt/总结跟随主 API 时的响应上限:够装下思维链 + JSON,避免被主 API 默认 max tokens 截断。 */
 const MAIN_API_RESPONSE_LENGTH = 65535;
 
 /**
- * 是否具备「跟随主 API」的条件:ST 暴露了 generateRaw(稳定 API)即可。
+ * 是否具备「跟随主 API」的mục件:ST 暴露了 generateRaw(稳定 API)即可。
  * 不再依赖连接管理/连接档——直接借用主界面当前正在用的 API。
  */
 export function mainApiAvailable(): boolean {
@@ -169,25 +169,25 @@ export function mainApiAvailable(): boolean {
 }
 
 /**
- * 用「当前主 API」(主界面正在用的聊天补全/文本补全设置)发一次补全。
- * 走 ST 的 generateRaw:只发我们给的这几条消息,不带聊天历史/角色卡;无需连接档。
+ * 用「当前主 API」(主界面正在用的聊天补全/文本补全Cài đặt)发一次补全。
+ * 走 ST 的 generateRaw:只发我们给的这几mục消息,不带聊天历史/Nhân vật卡;无需连接档。
  * quiet 类型内部强制非流式,返回清洗后的整段文本;失败抛 ApiError。
  */
 export async function requestViaMainApi(messages: ChatMsg[], _opts: RequestOptions = {}): Promise<string> {
   const ctx = getContext();
   if (typeof ctx?.generateRaw !== 'function') {
-    throw new ApiError('当前 ST 版本不支持 generateRaw,无法跟随主 API');
+    throw new ApiError('Phiên bản ST hiện tại không hỗ trợ generateRaw, không thể đi theo API chính');
   }
   const content = (await ctx.generateRaw({ prompt: messages, responseLength: MAIN_API_RESPONSE_LENGTH }))?.trim();
-  if (!content) throw new ApiError('主 API 返回空内容');
+  if (!content) throw new ApiError('API chính trả về nội dung trống');
   return content;
 }
 
-/** 连通性测试:发一条极短请求 */
+/** 连通性测试:发一mục极短请求 */
 export async function testChannel(channel: ApiChannel): Promise<{ ok: boolean; message: string }> {
   try {
-    const reply = await requestCompletion(channel, [{ role: 'user', content: '回复"ok"两个字符即可。' }]);
-    return { ok: true, message: `连通正常,返回:${reply.slice(0, 40)}` };
+    const reply = await requestCompletion(channel, [{ role: 'user', content: 'Chỉ cần trả lời 2 ký tự "ok" là được.' }]);
+    return { ok: true, message: `Kết nối bình thường, trả về:${reply.slice(0, 40)}` };
   } catch (e) {
     return { ok: false, message: e instanceof Error ? e.message : String(e) };
   }
@@ -201,8 +201,8 @@ const STATUS_URL = '/api/backends/chat-completions/status';
  */
 export async function fetchModels(channel: Pick<ApiChannel, 'url' | 'key'>): Promise<string[]> {
   const ctx = getContext();
-  if (!ctx) throw new ApiError('SillyTavern 上下文不可用');
-  if (!channel.url) throw new ApiError('请先填写 API 地址');
+  if (!ctx) throw new ApiError('Ngữ cảnh SillyTavern không khả dụng');
+  if (!channel.url) throw new ApiError('Vui lòng điền địa chỉ API trước');
 
   const body = {
     chat_completion_source: 'openai',
@@ -218,12 +218,12 @@ export async function fetchModels(channel: Pick<ApiChannel, 'url' | 'key'>): Pro
 
   if (!resp.ok) {
     const text = await resp.text().catch(() => '');
-    throw new ApiError(`拉取模型失败 (${resp.status}): ${text.slice(0, 200)}`);
+    throw new ApiError(`Tải danh sách mô hình thất bại (${resp.status}): ${text.slice(0, 200)}`);
   }
 
   const data = await resp.json();
   if (data?.error && !Array.isArray(data?.data)) {
-    throw new ApiError(data?.message || '拉取模型失败');
+    throw new ApiError(data?.message || 'Tải danh sách mô hình thất bại');
   }
 
   const list: unknown = data?.data ?? data?.models ?? [];

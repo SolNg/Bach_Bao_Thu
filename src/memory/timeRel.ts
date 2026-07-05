@@ -13,6 +13,7 @@
 
 /** 中文周几(0=周日) */
 const WEEKDAY_NAMES = ['日', '一', '二', '三', '四', '五', '六'];
+const WEEKDAY_NAMES_VN = ['Chủ nhật', 'Thứ hai', 'Thứ ba', 'Thứ tư', 'Thứ năm', 'Thứ sáu', 'Thứ bảy'];
 
 /** 解析出的故事日期:standard 可精确换算,fantasy 仅同月可比 */
 interface StoryDate {
@@ -272,7 +273,7 @@ export function weekdayLabel(timeStr?: string): string {
   if (!d || d.type !== 'standard' || d.year == null || d.calendarPrefix) return '';
   const obj = new Date(0);
   obj.setFullYear(d.year, (d.month ?? 1) - 1, d.day ?? 1);
-  return `周${WEEKDAY_NAMES[obj.getDay()]}`;
+  return `${WEEKDAY_NAMES_VN[obj.getDay()]}`;
 }
 
 /**
@@ -288,13 +289,13 @@ export function relativeTimeLabel(eventTime?: string, nowTime?: string): string 
   const days = calculateRelativeDays(ev, now);
   if (days === null || days === undefined) return '';
 
-  if (days === 0) return '今天';
-  if (days === 1) return '昨天';
-  if (days === 2) return '前天';
-  if (days === 3) return '大前天';
-  if (days === -1) return '明天';
-  if (days === -2) return '后天';
-  if (days === -3) return '大后天';
+  if (days === 0) return 'Hôm nay';
+  if (days === 1) return 'Hôm qua';
+  if (days === 2) return 'Hôm kia';
+  if (days === 3) return '3 ngày trước';
+  if (days === -1) return 'Ngày mai';
+  if (days === -2) return 'Ngày kia';
+  if (days === -3) return '3 ngày sau';
 
   // 「上周X/上个月X号/去年X月X日」等是公历口语,套到带历法前缀的古风/赛博时间(元持/庆历/星历…)上
   // 既出戏、对小年份的 getDay() 还是乱算的。故带前缀时不取 pair → 跳过这些档,降级为通用「N天前/N个月前/N年前」。
@@ -305,51 +306,51 @@ export function relativeTimeLabel(eventTime?: string, nowTime?: string): string 
 
   if (days > 0) {
     // 过去方向
-    if (days < 4) return `${days}天前`;
+    if (days < 4) return `${days} ngày trước`;
     if (days >= 4 && days <= 13 && pair) {
       const wd = weekDiffByMonday(pair.from, pair.to);
-      if (wd === 1) return `上周${WEEKDAY_NAMES[pair.from.getDay()]}`;
-      if (wd === 2) return `上上周${WEEKDAY_NAMES[pair.from.getDay()]}`;
+      if (wd === 1) return `Tuần trước (${WEEKDAY_NAMES_VN[pair.from.getDay()]})`;
+      if (wd === 2) return `Hai tuần trước (${WEEKDAY_NAMES_VN[pair.from.getDay()]})`;
     }
     if (days >= 7 && days < 60 && pair && monthDiff(pair.from, pair.to) === 1) {
-      return `上个月${pair.from.getDate()}号`;
+      return `Ngày ${pair.from.getDate()} tháng trước`;
     }
     if (days >= 300 && pair) {
       const yearDiff = pair.to.getFullYear() - pair.from.getFullYear();
-      if (yearDiff === 1) return `去年${pair.from.getMonth() + 1}月${pair.from.getDate()}日`;
-      if (yearDiff === 2) return `前年${pair.from.getMonth() + 1}月${pair.from.getDate()}日`;
+      if (yearDiff === 1) return `Ngày ${pair.from.getDate()} tháng ${pair.from.getMonth() + 1} năm ngoái`;
+      if (yearDiff === 2) return `Ngày ${pair.from.getDate()} tháng ${pair.from.getMonth() + 1} năm kia`;
     }
-    if (days < 30) return `${days}天前`;
+    if (days < 30) return `${days} ngày trước`;
     if (days < 365) {
       const md = pair ? monthDiff(pair.from, pair.to) : 0;
       const months = md > 0 ? md : Math.floor(days / 30);
-      return `${months}个月前`;
+      return `${months} tháng trước`;
     }
     const years = Math.floor(days / 365);
     const remainMonths = Math.round((days % 365) / 30);
-    if (remainMonths > 0 && years < 5) return `${years}年${remainMonths}个月前`;
-    return `${years}年前`;
+    if (remainMonths > 0 && years < 5) return `${years} năm ${remainMonths} tháng trước`;
+    return `${years} năm trước`;
   }
 
   // 未来方向
   const abs = Math.abs(days);
-  if (abs < 4) return `${abs}天后`;
+  if (abs < 4) return `${abs} ngày sau`;
   if (abs >= 4 && abs <= 13 && pair) {
     const wd = weekDiffByMonday(pair.from, pair.to);
-    if (wd === -1) return `下周${WEEKDAY_NAMES[pair.from.getDay()]}`;
-    if (wd === -2) return `下下周${WEEKDAY_NAMES[pair.from.getDay()]}`;
+    if (wd === -1) return `Tuần sau (${WEEKDAY_NAMES_VN[pair.from.getDay()]})`;
+    if (wd === -2) return `Hai tuần sau (${WEEKDAY_NAMES_VN[pair.from.getDay()]})`;
   }
   if (abs >= 7 && abs < 60 && pair && monthDiff(pair.from, pair.to) === -1) {
-    return `下个月${pair.from.getDate()}号`;
+    return `Ngày ${pair.from.getDate()} tháng sau`;
   }
-  if (abs < 30) return `${abs}天后`;
+  if (abs < 30) return `${abs} ngày sau`;
   if (abs < 365) {
     const md = pair ? monthDiff(pair.from, pair.to) : 0;
     const months = md < 0 ? Math.abs(md) : Math.floor(abs / 30);
-    return `${months}个月后`;
+    return `${months} tháng sau`;
   }
   const years = Math.floor(abs / 365);
   const remainMonths = Math.round((abs % 365) / 30);
-  if (remainMonths > 0 && years < 5) return `${years}年${remainMonths}个月后`;
-  return `${years}年后`;
+  if (remainMonths > 0 && years < 5) return `${years} năm ${remainMonths} tháng sau`;
+  return `${years} năm sau`;
 }

@@ -1,15 +1,15 @@
 /**
  * 向量召回的查询重写(Query Rewrite)。
  *
- * 复刻 Horae 的「小模型把当前剧情重写成 INTENT + 多条检索 Q」思路与提示词(用户已优化版),
- * 但**上下文构造是柏宝书自己的**(见 .carryover-plan.md「查询重写上下文构造」):
- *  结构 = [历史剧情摘要] + 最近窗口全文 + [状态快照] + [用户输入]
+ * 复刻 Horae 的「小模型把当前剧情重写成 INTENT + 多mục检索 Q」思路与提示词(用户已优化版),
+ * 但**上下文构造是Bách Bảo Thư自己的**(见 .carryover-plan.md「查询重写上下文构造」):
+ *  结构 = [历史剧情Tóm tắt] + 最近窗口全文 + [状态快照] + [用户输入]
  *  - 状态一律走 deriveMemory(不假设 getLatestState 干净);
  *  - 状态快照精确放置:从窗口起点扫到第一个「无有效叶子」的楼停下,
  *    快照 = deriveMemory(chat, 洞楼index),插在「连续叶子前缀末尾」之后、洞楼之前;
  *  - 快照只含**滚出窗口的 items/plans**(时间/地点/在场已在全文里,不重复)。
  *
- * 产出多条 query,各自 embed → 后端 vec/search 多路检索 + RRF 融合;INTENT 兼作 rerank 的 query。
+ * 产出多mục query,各自 embed → 后端 vec/search 多路检索 + RRF 融合;INTENT 兼作 rerank 的 query。
  * 任何失败都抛错,由召回侧 catch 后降级为「最近上下文当单 query」。
  */
 
@@ -24,15 +24,15 @@ import { memory } from '../store';
 import { cleanBody } from '../timeTag';
 import { fetchWithTimeoutRetry } from './embed';
 
-/** rewrite 模型最多取几条 query(对齐 Horae) */
+/** rewrite 模型最多取几mục query(对齐 Horae) */
 const MAX_QUERIES = 6;
-/** 单条 query 限长 */
+/** 单mục query 限长 */
 const MAX_QUERY_LEN = 220;
 
 export interface RewriteResult {
-  /** 场景意图描述(兼作 rerank 的 query) */
+  /** Bối cảnh意图描述(兼作 rerank 的 query) */
   intent: string;
-  /** 多条检索 query(已去重限长) */
+  /** 多mục检索 query(已去重限长) */
   queries: string[];
 }
 
@@ -41,7 +41,7 @@ interface ChatMsg {
   content: string;
 }
 
-/** 把楼层正文清洗成可读文本,与喂摘要模型同口径(cleanBody:裁正文段 + 整块删噪声标签 + 时间转文本)。 */
+/** 把楼层正文清洗成可读文本,与喂Tóm tắt模型同口径(cleanBody:裁正文段 + 整块删噪声标签 + 时间转文本)。 */
 function cleanFloor(m: STMessage): string {
   return cleanBody(m.mes);
 }
@@ -54,17 +54,17 @@ function buildStateSnapshot(chat: STMessage[], upTo: number): string {
   const st = deriveMemory(chat, upTo);
   const lines: string[] = [];
   if (st.items.length) {
-    lines.push(`物品清单:\n${fmtItems(st.items.map(i => ({ name: i.name, qty: i.qty, desc: i.desc, carried: i.carried, location: i.location })))}`);
+    lines.push(`Danh sách vật phẩm:\n${fmtItems(st.items.map(i => ({ name: i.name, qty: i.qty, desc: i.desc, carried: i.carried, location: i.location })))}`);
   }
   if (st.npcs.length) {
-    lines.push(`NPC名册:\n${fmtNpcs(st.npcs.map(n => ({ name: n.name, title: n.title, follow: n.follow, location: n.location })))}`);
+    lines.push(`Danh sách NPC:\n${fmtNpcs(st.npcs.map(n => ({ name: n.name, title: n.title, follow: n.follow, location: n.location })))}`);
   }
   const openPlans = st.plans.filter(p => p.status === 'open');
   if (openPlans.length) {
-    lines.push(`未了结的计划/悬念:\n${fmtPlans(openPlans.map(p => ({ kind: p.kind, content: p.content, createdTime: p.createdTime, targetTime: p.targetTime })))}`);
+    lines.push(`Kế hoạch/Huyền niệm chưa giải quyết:\n${fmtPlans(openPlans.map(p => ({ kind: p.kind, content: p.content, createdTime: p.createdTime, targetTime: p.targetTime })))}`);
   }
   if (!lines.length) return '';
-  return `[状态快照:以下为已滚出最近窗口、但仍有效的物品、NPC 与未了结计划,供你解析模糊指代]\n${lines.join('\n')}`;
+  return `[Ảnh chụp trạng thái: Dưới đây là các vật phẩm, NPC và kế hoạch chưa giải quyết đã cuộn khỏi cửa sổ gần nhất nhưng vẫn còn hiệu lực, dùng để bạn phân tích các chỉ định mơ hồ]\n${lines.join('\n')}`;
 }
 
 /**
@@ -82,18 +82,18 @@ function findSnapshotCut(chat: STMessage[], windowStart: number): number {
  * 构造发给 rewrite 模型的消息序列。
  *
  * ⚠️ 许多向量渠道要求 system 消息**仅允许出现在数组最开头**,中间不得再有 system。
- * 故对齐 Horae 的形态:**开头唯一一条 system + 中间纯 user/assistant 对话 + 结尾一条 user**。
- *  - 历史剧情摘要并入开头那条 system(属背景设定,合法地待在开头);
- *  - 状态快照不独立成 system,而是**拼进对话消息正文**(放在 cut 点前一条之后、洞楼之前),
+ * 故对齐 Horae 的形态:**开头唯一一mục system + 中间纯 user/assistant 对话 + 结尾一mục user**。
+ *  - 历史剧情Tóm tắt并入开头那mục system(属背景Thiết lập,合法地待在开头);
+ *  - 状态快照不独立成 system,而是**拼进对话消息正文**(放在 cut 点前一mục之后、洞楼之前),
  *    保持中间无 system,从而兼容「system 只能在开头」的渠道。
  */
 function buildMessages(chat: STMessage[]): ChatMsg[] {
   const windowStart = resolveKeepStart(chat);
   const cut = findSnapshotCut(chat, windowStart);
 
-  // 开头唯一 system:系统提示词 +(可选)历史剧情摘要,合并为一条,保证 system 只出现在开头
+  // 开头唯一 system:系统提示词 +(可选)历史剧情Tóm tắt,合并为一mục,保证 system 只出现在开头
   const history = renderHistoryNodes(selectHistoryNodesBefore(memory.summaries, chat, windowStart));
-  const systemContent = history ? `${QUERY_REWRITE_SYSTEM}\n\n[历史剧情摘要]\n${history}` : QUERY_REWRITE_SYSTEM;
+  const systemContent = history ? `${QUERY_REWRITE_SYSTEM}\n\n[Tóm tắt cốt truyện lịch sử]\n${history}` : QUERY_REWRITE_SYSTEM;
   const messages: ChatMsg[] = [{ role: 'system', content: systemContent }];
 
   // 平铺窗口对话(纯 user/assistant),记录原 msgIndex 以定位快照插入点
@@ -111,19 +111,19 @@ function buildMessages(chat: STMessage[]): ChatMsg[] {
   const snapshot = buildStateSnapshot(chat, cut);
   if (snapshot) {
     if (!convo.length) {
-      // 窗口无可用对话消息 → 兜底放一条 user 承载(仍非 system)
+      // 窗口无可用对话消息 → 兜底放一mục user 承载(仍非 system)
       messages.push({ role: 'user', content: snapshot });
     } else {
       const cutPos = convo.findIndex(c => c.index >= cut);
       if (cutPos === -1) {
-        // cut 在所有对话之后(窗口全有叶子)→ 拼进最后一条末尾
+        // cut 在所有对话之后(窗口全有叶子)→ 拼进最后一mục末尾
         const last = convo[convo.length - 1];
         last.content = `${last.content}\n\n${snapshot}`;
       } else if (cutPos === 0) {
-        // cut 点即首条对话(之前无对话可承载)→ 拼进它的前缀
+        // cut 点即首mục对话(之前无对话可承载)→ 拼进它的前缀
         convo[0].content = `${snapshot}\n\n${convo[0].content}`;
       } else {
-        // 拼进 cut 点前一条对话的末尾(连续叶子前缀末尾之后、洞楼之前)
+        // 拼进 cut 点前一mục对话的末尾(连续叶子前缀末尾之后、洞楼之前)
         const prev = convo[cutPos - 1];
         prev.content = `${prev.content}\n\n${snapshot}`;
       }
@@ -200,13 +200,13 @@ function sanitize(text: string): string {
  */
 export async function rewriteQuery(signal?: AbortSignal): Promise<RewriteResult> {
   const ep = resolveVectorModel('queryRewrite');
-  if (!ep.model) throw new Error('Query 重写模型未配置');
+  if (!ep.model) throw new Error('Chưa cấu hình mô hình Viết lại truy vấn');
   const endpoint = chatCompletionsEndpoint(ep.url);
-  if (!endpoint) throw new Error('Query 重写地址未配置');
+  if (!endpoint) throw new Error('Chưa cấu hình địa chỉ Viết lại truy vấn');
 
   const ctx = getContext();
   const chat = ctx?.chat ?? [];
-  if (!chat.length) throw new Error('无对话上下文可重写');
+  if (!chat.length) throw new Error('Không có ngữ cảnh đối thoại để viết lại');
 
   const messages = buildMessages(chat);
 
@@ -227,18 +227,18 @@ export async function rewriteQuery(signal?: AbortSignal): Promise<RewriteResult>
         enable_thinking: false,
       }),
     },
-    { timeoutSec: ep.timeoutSec, retries: ep.retries, label: 'Query 重写', externalSignal: signal },
+    { timeoutSec: ep.timeoutSec, retries: ep.retries, label: 'Viết lại truy vấn', externalSignal: signal },
   );
   if (!resp.ok) {
     const t = await resp.text().catch(() => '');
-    throw new Error(`Query 重写 API ${resp.status}: ${t.slice(0, 200)}`);
+    throw new Error(`Viết lại truy vấn API ${resp.status}: ${t.slice(0, 200)}`);
   }
   const json = await resp.json();
   const content = json?.choices?.[0]?.message?.content;
   const raw = typeof content === 'string' ? content : '';
-  if (!raw.trim()) throw new Error('Query 重写返回空内容');
+  if (!raw.trim()) throw new Error('Viết lại truy vấn trả về nội dung trống');
 
   const parsed = parseResponse(raw);
-  if (!parsed.queries.length) throw new Error('Query 重写未解析出任何检索 query');
+  if (!parsed.queries.length) throw new Error('Viết lại truy vấn không phân tích được bất kỳ query tìm kiếm nào');
   return parsed;
 }

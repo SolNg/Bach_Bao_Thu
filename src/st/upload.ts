@@ -2,11 +2,11 @@
  * 图片上传:把用户选的本地图片**压缩**后存到 ST 服务器,拿回一个短路径串
  * (如 /user/images/baibai_book/orb.webp)。
  *
- * 为什么不直接把 base64 存进设置:base64 会把图塞进 settings.json,大图让该文件膨胀、
+ * 为什么不直接把 base64 存进Cài đặt:base64 会把图塞进 settings.json,大图让该文件膨胀、
  * 每次保存都带上它。改存「服务器路径串」——既跨设备同步(同一 ST 实例各端共享图片),
  * 又不撑大 settings。
  *
- * 两条路:
+ * 两mục路:
  *  · 静态图(png/jpg/webp…)→ canvas 缩放压成 webp,控制体积。
  *  · GIF → **原样上传**(canvas 只取首帧会丢动画),仅做体积上限校验。
  *
@@ -26,7 +26,7 @@ function readAsDataURL(file: File): Promise<string> {
   return new Promise((resolve, reject) => {
     const fr = new FileReader();
     fr.onload = () => resolve(String(fr.result));
-    fr.onerror = () => reject(fr.error ?? new Error('读取文件失败'));
+    fr.onerror = () => reject(fr.error ?? new Error('Đọc tập tin thất bại'));
     fr.readAsDataURL(file);
   });
 }
@@ -46,7 +46,7 @@ function loadImage(src: string): Promise<HTMLImageElement> {
   return new Promise((resolve, reject) => {
     const img = new Image();
     img.onload = () => resolve(img);
-    img.onerror = () => reject(new Error('图片解码失败'));
+    img.onerror = () => reject(new Error('Giải mã hình ảnh thất bại'));
     img.src = src;
   });
 }
@@ -65,7 +65,7 @@ async function compressToBase64(file: File): Promise<string> {
   canvas.width = w;
   canvas.height = h;
   const ctx = canvas.getContext('2d');
-  if (!ctx) throw new Error('canvas 不可用');
+  if (!ctx) throw new Error('canvas không khả dụng');
   ctx.drawImage(img, 0, 0, w, h);
   const out = canvas.toDataURL('image/webp', QUALITY);
   return stripDataUrl(out);
@@ -82,14 +82,14 @@ async function compressToBase64(file: File): Promise<string> {
  */
 let seq = 0;
 export async function uploadOrbImage(file: File): Promise<string> {
-  if (!file.type.startsWith('image/')) throw new Error('请选择图片文件');
+  if (!file.type.startsWith('image/')) throw new Error('Vui lòng chọn tập tin hình ảnh');
 
   let base64: string;
   let format: string;
   if (isGif(file)) {
     // GIF 不过 canvas(只会取首帧丢动画),原样上传;先校验体积上限
     if (file.size > GIF_MAX_BYTES) {
-      throw new Error(`GIF 不能超过 ${Math.round(GIF_MAX_BYTES / 1024 / 1024)}MB`);
+      throw new Error(`GIF không được vượt quá ${Math.round(GIF_MAX_BYTES / 1024 / 1024)}MB`);
     }
     base64 = stripDataUrl(await readAsDataURL(file));
     format = 'gif';
@@ -97,11 +97,11 @@ export async function uploadOrbImage(file: File): Promise<string> {
     base64 = await compressToBase64(file);
     format = 'webp';
   }
-  if (!base64) throw new Error('图片处理失败');
+  if (!base64) throw new Error('Xử lý hình ảnh thất bại');
 
   const ctx = getContext();
   const headers = ctx?.getRequestHeaders?.();
-  if (!headers) throw new Error('SillyTavern 未就绪,请稍后再试');
+  if (!headers) throw new Error('SillyTavern chưa sẵn sàng, vui lòng thử lại sau');
 
   const res = await fetch('/api/images/upload', {
     method: 'POST',
@@ -120,9 +120,9 @@ export async function uploadOrbImage(file: File): Promise<string> {
     } catch {
       /* 响应非 JSON */
     }
-    throw new Error(detail || `上传失败(${res.status})`);
+    throw new Error(detail || `Tải lên thất bại(${res.status})`);
   }
   const data = (await res.json()) as { path?: string };
-  if (!data.path) throw new Error('服务器未返回图片路径');
+  if (!data.path) throw new Error('Máy chủ không trả về đường dẫn hình ảnh');
   return data.path;
 }

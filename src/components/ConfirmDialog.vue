@@ -1,11 +1,11 @@
 <script setup lang="ts">
 /**
  * 通用确认弹窗。替代浏览器原生 confirm()——原生弹窗在 Shadow DOM 外、样式不统一。
- * 受控:用 v-model:open 控制显隐;点确定 emit confirm,点取消/遮罩/关闭 emit cancel。
+ * 受控:用 v-model:open 控制显隐;点Xác nhận emit confirm,点Hủy bỏ/遮罩/Đóng emit cancel。
  *
  * Teleport 到 modalHost(.bbs-root 直接子级,在 .bbs-body 滚动容器之外):
  * 避开 iOS「可滚动祖先内 fixed 后代定位错乱」。宿主仍在 shadow root 内,
- * scoped 样式与 --bbs-* 变量照常生效——故 to 的是 shadow 内元素,而非 Teleport to="body"。
+ * scoped 样式与 --bbs-* Biến số照常生效——故 to 的是 shadow 内元素,而非 Teleport to="body"。
  */
 import Icon from '@/components/Icon.vue';
 import { modalHost } from '@/state/ui';
@@ -14,24 +14,24 @@ withDefaults(
   defineProps<{
     open: boolean;
     title: string;
-    /** 确定按钮文案 */
+    /** Xác nhận按钮文案 */
     confirmText?: string;
-    /** 取消按钮文案 */
+    /** Hủy bỏ按钮文案 */
     cancelText?: string;
-    /** 确定按钮风格:primary=主色,danger=危险(低调描边,hover 显红) */
+    /** Xác nhận按钮风格:primary=主色,danger=危险(低调描边,hover 显红) */
     tone?: 'primary' | 'danger';
-    /** 确定按钮前的图标名(可选,如 trash) */
+    /** Xác nhận按钮前的图标名(可选,如 trash) */
     confirmIcon?: string;
-    /** 忙碌中:禁用确定按钮并显示 busyText(供「更新中…」这类需保持弹窗的异步操作) */
+    /** 忙碌中:禁用Xác nhận按钮并显示 busyText(供「更新中…」这类需保持弹窗的异步操作) */
     busy?: boolean;
-    /** 忙碌时确定按钮文案 */
+    /** 忙碌时Xác nhận按钮文案 */
     busyText?: string;
-    /** 叠加在其它弹窗之上(更高 z-index),如渠道弹窗里再开删除确认 */
+    /** 叠加在其它弹窗之上(更高 z-index),如渠道弹窗里再开Xóa确认 */
     topLayer?: boolean;
   }>(),
   {
-    confirmText: '确定',
-    cancelText: '取消',
+    confirmText: 'Xác nhận',
+    cancelText: 'Hủy bỏ',
     tone: 'primary',
     confirmIcon: '',
     busy: false,

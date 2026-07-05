@@ -41,7 +41,7 @@ const HOST_ID = 'bbs-app-host';
       await runVectorRecall();
     }
   } catch (e) {
-    console.error('[柏宝书] 生成拦截器异常(放行本次生成)', e);
+    console.error('[Bách Bảo Thư] Lỗi bộ chặn tạo văn bản (cho phép tạo lần này)', e);
   }
 };
 
@@ -119,15 +119,15 @@ $(() => {
     () => ui.showQuickReply,
     on => syncQuickReplyButton(on),
   );
-  // 记忆系统:等 ST 的 getContext 就绪后再绑定(加载顺序不确定时轮询)
+  // 记忆系统:等 ST 的 getContext 就绪后再绑定(加载顺序不Xác nhận时轮询)
   bindMemoryWhenReady();
 });
 
 function bindMemoryWhenReady(attempt = 0) {
   if (window.SillyTavern?.getContext) {
     try {
-      console.log('[柏宝书] 启动链开始绑定(getContext 就绪)');
-      // 设置先 hydrate:从 extension_settings 载入(或从旧 localStorage 迁移),之后才跨设备同步
+      console.log('[Bách Bảo Thư] Bắt đầu liên kết chuỗi khởi động (getContext sẵn sàng)');
+      // Cài đặt先 hydrate:从 extension_settings 载入(或从旧 localStorage 迁移),之后才跨设备同步
       hydrateSettings();
       bindChatLifecycle();
       bindEngine();
@@ -135,13 +135,13 @@ function bindMemoryWhenReady(attempt = 0) {
       syncTimeTagRegex();
       // 首屏:把当前聊天已有的记忆挂上注入
       refreshInjection();
-      // 楼内摘要锚点:按设置开关注入(bindFloorPanel 内 watch 开关 + 主题,immediate 首次同步)
+      // 楼内Tóm tắt锚点:按Cài đặt开关注入(bindFloorPanel 内 watch 开关 + 主题,immediate 首次同步)
       bindFloorPanel();
       // 后台检测更新(实时比对本地/远端 manifest 版本;失败静默,不阻断启动)
       void checkForUpdate();
-      console.log('[柏宝书] 启动链绑定完成');
+      console.log('[Bách Bảo Thư] Liên kết chuỗi khởi động hoàn tất');
     } catch (e) {
-      console.error('[柏宝书] 记忆系统绑定失败', e);
+      console.error('[Bách Bảo Thư] Liên kết hệ thống ký ức thất bại', e);
     }
     return;
   }

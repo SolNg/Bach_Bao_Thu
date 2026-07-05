@@ -2,12 +2,12 @@
  * 带数据创建新对话(Carryover)。
  *
  * 把当前聊天(一堆历史楼层 + 最近全文窗口)→ 新建一个对话,带过去:
- *  - 合并历史摘要(窗口之前的剧情,选最高存活压缩层拼接)= 种子叶子的 text;
+ *  - 合并历史Tóm tắt(窗口之前的剧情,选最高存活压缩层拼接)= 种子叶子的 text;
  *  - 当前结构化状态(截止窗口起点的 items/plans)→ 编码成「全量 add」delta = 种子叶子的 delta;
  *  - 最近保留窗口的楼层(原样全文 + 各自叶子)搬过去。
  *
  * 新对话靠现成重放管线(deriveMemory:空白起步逐叶子 fold)还原状态——无需特殊载体,
- * 只要造一片把状态编码成全量 add 的「种子叶子」挂在 #0,并另置一条 L2 总结收纳它(承载合并摘要文本)。
+ * 只要造一片把状态编码成全量 add 的「种子叶子」挂在 #0,并另置一mục L2 总结收纳它(承载合并Tóm tắt文本)。
  *
  * 同时(若向量记忆开):把源聊天的向量快照成一个 bundle,哈希写进新聊天 metadata.bbs_bundles(累加),
  * 使新对话能向量召回源聊天的旧剧情。
@@ -29,11 +29,11 @@ import { appendBundleHash, BUNDLES_META_KEY, currentBundleHashes, currentVectorD
 export interface CarryoverPlan {
   /** 保留窗口起点(此索引起的楼层搬去新对话) */
   carryStart: number;
-  /** 实际要搬的消息条数(窗口内非系统楼) */
+  /** 实际要搬的消息mục数(窗口内非系统楼) */
   carryCount: number;
-  /** 其中 AI 楼条数 */
+  /** 其中 AI 楼mục数 */
   aiCount: number;
-  /** 合并历史摘要字符数(0 = 无历史可摘) */
+  /** 合并历史Tóm tắt字符数(0 = 无历史可摘) */
   recapLen: number;
   /** 当前是否有可携带数据 */
   hasData: boolean;
@@ -146,7 +146,7 @@ function encodeStateAsDelta(state: ReturnType<typeof deriveMemory>): StoredDelta
   return delta;
 }
 
-/** 深拷贝一条要搬运的消息,取消隐藏、保留叶子。 */
+/** 深拷贝一mục要搬运的消息,Hủy bỏ隐藏、保留叶子。 */
 function sanitizeCarryMessage(m: STMessage): STMessage {
   const clone: STMessage = JSON.parse(JSON.stringify(m));
   clone.is_system = false;
@@ -192,22 +192,22 @@ export function computeCarryoverPlan(): CarryoverPlan {
 export async function createNewChatWithCarryover(): Promise<boolean> {
   const ctx = getContext();
   if (!ctx) {
-    toast('SillyTavern 上下文不可用', 'error');
+    toast('Ngữ cảnh SillyTavern không khả dụng', 'error');
     return false;
   }
   if (ctx.groupId) {
-    toast('群聊暂不支持带数据建新对话', 'warning');
+    toast('Trò chuyện nhóm tạm thời không hỗ trợ tạo đối thoại mới mang theo dữ liệu', 'warning');
     return false;
   }
   const sourceChat = ctx.chat ?? [];
   if (!sourceChat.length) {
-    toast('当前对话没有可携带的数据', 'warning');
+    toast('Cuộc trò chuyện hiện tại không có dữ liệu để mang theo', 'warning');
     return false;
   }
 
   const doNewChat = await getDoNewChat();
   if (!doNewChat) {
-    toast('无法创建新对话(ST 接口不可用)', 'error');
+    toast('Không thể tạo đối thoại mới (Giao diện ST không khả dụng)', 'error');
     return false;
   }
 
@@ -220,13 +220,13 @@ export async function createNewChatWithCarryover(): Promise<boolean> {
   const stateBefore = deriveMemory(sourceChat, carryStart);
   const seedDelta = encodeStateAsDelta(stateBefore);
 
-  // 合并历史摘要(窗口之前的剧情) = 种子叶子 text
+  // 合并历史Tóm tắt(窗口之前的剧情) = 种子叶子 text
   const mergedSummary = renderHistoryNodes(selectHistoryNodesBefore(memory.summaries, sourceChat, carryStart));
 
   // 种子叶子的时间锚:截止窗口前的状态时间(无则故事最新时间)
   const seedTime = stateBefore.state.time || latestStoryTime(sourceChat) || '';
 
-  // 搬运的窗口楼层(深拷贝、取消隐藏、保留叶子)
+  // 搬运的窗口楼层(深拷贝、Hủy bỏ隐藏、保留叶子)
   const carryMessages: STMessage[] = [];
   for (let i = carryStart; i < sourceChat.length; i++) {
     const m = sourceChat[i];
@@ -236,7 +236,7 @@ export async function createNewChatWithCarryover(): Promise<boolean> {
   }
 
   if (!mergedSummary && !carryMessages.length && !deltaHasData(seedDelta)) {
-    toast('当前对话没有可携带的数据', 'warning');
+    toast('Cuộc trò chuyện hiện tại không có dữ liệu để mang theo', 'warning');
     return false;
   }
 
@@ -250,7 +250,7 @@ export async function createNewChatWithCarryover(): Promise<boolean> {
         newBundleHash = hash;
       }
     } catch (e) {
-      console.warn('[柏宝书向量] 建 bundle 失败(新对话将不带源向量召回):', e);
+      console.warn('[Vectơ Bách Bảo Thư] Tạo bundle thất bại (đối thoại mới sẽ không kèm triệu hồi vectơ nguồn):', e);
     }
   }
 
@@ -259,20 +259,20 @@ export async function createNewChatWithCarryover(): Promise<boolean> {
     await ctx.saveChat();
     await doNewChat({ deleteCurrentChat: false });
   } catch (e) {
-    toast(`创建新对话失败:${e instanceof Error ? e.message : String(e)}`, 'error');
+    toast(`Tạo hội thoại mới thất bại: ${e instanceof Error ? e.message : String(e)}`, 'error');
     return false;
   }
 
   // ===== 4. 写入新对话(此刻 ctx.chat 已指向新聊天) =====
   try {
     const targetCtx = getContext();
-    if (!targetCtx) throw new Error('新对话上下文不可用');
+    if (!targetCtx) throw new Error('Ngữ cảnh đối thoại mới không khả dụng');
     const targetChat = targetCtx.chat ?? [];
 
-    // 确保有 #0 锚点楼:种子叶子(承载全量状态 delta + 合并摘要文本)必须挂在一条 #0 上。
+    // 确保有 #0 锚点楼:种子叶子(承载全量状态 delta + 合并Tóm tắt文本)必须挂在一mục #0 上。
     // 卡有开场白 → 复用 #0 当锚点(清空正文、设系统楼,删其余开场白);
-    // 卡**空开场白** → getChat 不会 push 任何楼,targetChat 为空,此处主动造一条锚点楼。
-    //   (这是之前漏掉的分支:空开场白卡会让整个锚点块被跳过,导致窗口外摘要/状态全丢。)
+    // 卡**空开场白** → getChat 不会 push 任何楼,targetChat 为空,此处主动造一mục锚点楼。
+    //   (这是之前漏掉的分支:空开场白卡会让整个锚点块被跳过,导致窗口外Tóm tắt/状态全丢。)
     let anchor: STMessage;
     if (targetChat.length > 0) {
       // 只在「新对话是全新无 user 楼」时清开场白,避免误删用户已有内容
@@ -282,7 +282,7 @@ export async function createNewChatWithCarryover(): Promise<boolean> {
       }
       anchor = targetChat[0];
     } else {
-      // 空开场白卡:造一条锚点楼放进 #0
+      // 空开场白卡:造一mục锚点楼放进 #0
       anchor = {
         name: targetCtx.name2 || '',
         is_user: false,
@@ -307,7 +307,7 @@ export async function createNewChatWithCarryover(): Promise<boolean> {
     };
     anchor.extra = { ...(anchor.extra ?? {}), bbs_leaf: seedLeaf };
 
-    // 新对话森林:重置后放一条 L2 总结收纳种子叶子(承载合并摘要文本)。
+    // 新对话森林:重置后放一mục L2 总结收纳种子叶子(承载合并Tóm tắt文本)。
     memory.summaries.splice(0, memory.summaries.length);
     if (mergedSummary) {
       const l2: MemSummary = {
@@ -345,10 +345,10 @@ export async function createNewChatWithCarryover(): Promise<boolean> {
     if (typeof targetCtx.reloadCurrentChat === 'function') await targetCtx.reloadCurrentChat();
     refreshInjection();
 
-    toast(`已创建新对话:携带 AI ${carryMessages.filter(m => !m.is_user).length} 条,旧剧情摘要 ${mergedSummary ? '1' : '0'} 条`, 'success');
+    toast(`Đã tạo hội thoại mới: mang theo ${carryMessages.filter(m => !m.is_user).length} tin nhắn AI, ${mergedSummary ? '1' : '0'} tóm tắt cốt truyện cũ`, 'success');
     return true;
   } catch (e) {
-    toast(`写入新对话失败:${e instanceof Error ? e.message : String(e)}`, 'error');
+    toast(`Ghi vào hội thoại mới thất bại: ${e instanceof Error ? e.message : String(e)}`, 'error');
     return false;
   }
 }

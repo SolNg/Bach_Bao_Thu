@@ -34,10 +34,10 @@ export const derivedMeta = reactive<{ hasLeaf: boolean; leaves: LeafView[]; pend
   hasLeaf: false,
   leaves: [],
   pendingFloors: [],
-  // 故事内最新时间:从正文标签实时读(不依赖是否已摘),供摘要页展示与相对时间参照
+  // 故事内最新时间:从正文标签实时读(不依赖是否已摘),供Tóm tắt页展示与相对时间参照
   latestStoryTime: '',
   // 递增版本号:每次 recomputeDerived 都 +1。chat 非 reactive,楼内面板等外部视图读它即可
-  // 追踪「派生已重算」——无论重算由 ST 事件、主界面摘要、还是楼内编辑触发,都能统一刷新。
+  // 追踪「派生已重算」——无论重算由 ST 事件、主界面Tóm tắt、还是楼内编辑触发,都能统一刷新。
   rev: 0,
 });
 
@@ -45,7 +45,7 @@ export const derivedMeta = reactive<{ hasLeaf: boolean; leaves: LeafView[]; pend
 export function recomputeDerived(): void {
   const ctx = getContext();
   // 欢迎页(未进入任何聊天)getCurrentChatId 为空,但 chat 里可能残留上次的 #0,
-  // 不属于任何聊天的楼层不该被判为「未摘要」,故此时视作无 chat。
+  // 不属于任何聊天的楼层不该被判为「未Tóm tắt」,故此时视作无 chat。
   const chat = ctx?.getCurrentChatId?.() ? ctx.chat ?? null : null;
   const d = deriveMemory(chat);
   memory.state.time = d.state.time;
@@ -65,7 +65,7 @@ export function recomputeDerived(): void {
   if (chat) {
     for (let i = 0; i < chat.length; i++) {
       const m = chat[i];
-      if (m?.extra?.bbs_omit) continue; // 番外楼:不进摘要页叶子列表
+      if (m?.extra?.bbs_omit) continue; // 番外楼:不进Tóm tắt页叶子列表
       const leaf = getLeaf(m);
       if (!leaf) continue;
       const valid = leafValid(m);
@@ -85,7 +85,7 @@ export function recomputeDerived(): void {
   derivedMeta.leaves = leaves;
   derivedMeta.hasLeaf = leaves.some(l => !l.stale);
   derivedMeta.latestStoryTime = latestStoryTime(chat);
-  // 待摘要楼层(AI 楼且无有效叶子),供摘要页「未摘要楼层」列表逐楼补摘
+  // 待Tóm tắt楼层(AI 楼且无有效叶子),供Tóm tắt页「未Tóm tắt楼层」列表逐楼补摘
   derivedMeta.pendingFloors = chat ? pendingAiFloors(chat) : [];
   derivedMeta.rev++; // 通知外部视图(楼内面板)派生已刷新
 }
@@ -94,7 +94,7 @@ export function recomputeDerived(): void {
 
 let flushTimer: ReturnType<typeof setTimeout> | null = null;
 
-/** 防抖落盘叶子(写进 chat 文件)。合并连续多楼摘要为一次 saveChat。 */
+/** 防抖落盘叶子(写进 chat 文件)。合并连续多楼Tóm tắt为一次 saveChat。 */
 export function scheduleLeafFlush(): void {
   const ctx = getContext();
   if (!ctx?.saveChat) return;
@@ -116,8 +116,8 @@ export function flushLeavesNow(): void {
 }
 
 /**
- * 把森林(压缩节点)+ **仅 chat 层**变量模板写回 chat_metadata 并持久化。
- * 全局/角色层的模板不在这里(它们存 extension_settings,由 replaceVarsTemplate 落盘)。叶子也不在这里。
+ * 把森林(压缩节点)+ **仅 chat 层**Biến số模板写回 chat_metadata 并持久化。
+ * 全局/Nhân vật层的模板不在这里(它们存 extension_settings,由 replaceVarsTemplate 落盘)。叶子也不在这里。
  */
 export function saveMemory() {
   const ctx = getContext();
@@ -136,7 +136,7 @@ export function saveMemory() {
 /**
  * v2(叶子在森林、带 coveredIndices+delta)→ v3(叶子搬到消息 extra)。
  * 需 chat 上下文;无 chat 时返回 null(延后,下次 CHAT_CHANGED 重跑)。
- * 搬不动的叶子(索引越界/消息已删)其 delta 合并进一条兜底叶子挂到最后 AI 楼,保结构化 1:1。
+ * 搬不动的叶子(索引越界/消息已删)其 delta 合并进一mục兜底叶子挂到最后 AI 楼,保结构化 1:1。
  */
 function migrateV2toV3(raw: Record<string, unknown>, chat: STMessage[] | null): BaibaiMemory | null {
   if (!chat || chat.length === 0) return null; // 延后
@@ -184,7 +184,7 @@ function migrateV2toV3(raw: Record<string, unknown>, chat: STMessage[] | null): 
     chat[target].extra = { ...(chat[target].extra ?? {}), bbs_leaf: leaf };
   }
 
-  // 1b) 兜底叶子:把搬不动的 delta 合并挂到最后一条 AI 楼
+  // 1b) 兜底叶子:把搬不动的 delta 合并挂到最后一mục AI 楼
   if (orphanDeltas.length) {
     let last = -1;
     for (let i = chat.length - 1; i >= 0; i--) {
@@ -200,7 +200,7 @@ function migrateV2toV3(raw: Record<string, unknown>, chat: STMessage[] | null): 
         ...(chat[last].extra ?? {}),
         bbs_leaf: {
           id: `leaf_migrate_${Date.now().toString(36)}`,
-          text: '(迁移:历史结构化状态)',
+          text: '(Di chuyển: Trạng thái cấu trúc lịch sử)',
           delta: merged,
           createdAt: Date.now(),
           v: 1,
@@ -259,7 +259,7 @@ function assignForest(target: BaibaiMemory, summaries: MemSummary[], varTemplate
   target.varTemplates = varTemplates;
 }
 
-/** 读三层变量模板(chat 来自传入的 chatMetadata 原始值;global/char 来自 settings)。 */
+/** 读三层Biến số模板(chat 来自传入的 chatMetadata 原始值;global/char 来自 settings)。 */
 function loadVarTemplates(rawChatTemplate: unknown): Record<VarTier, VarTemplate> {
   const key = currentCharKey();
   return {
@@ -269,13 +269,13 @@ function loadVarTemplates(rawChatTemplate: unknown): Record<VarTier, VarTemplate
   };
 }
 
-/** 从当前聊天载入森林 + 三层变量模板 + 重算派生(必要时迁移) */
+/** 从当前聊天载入森林 + 三层Biến số模板 + 重算派生(必要时迁移) */
 export function loadMemory() {
   const ctx = getContext();
   const meta = ctx?.chatMetadata as Record<string, unknown> | undefined;
   const raw = meta?.[MEMORY_KEY] as Record<string, unknown> | undefined;
   const chat = ctx?.chat ?? null;
-  // 变量模板与 summary 迁移正交:chat 层从 metadata 直读,再取全局/角色层(缺失=空模板)
+  // Biến số模板与 summary 迁移正交:chat 层从 metadata 直读,再取全局/Nhân vật层(缺失=空模板)
   const varTemplates = loadVarTemplates(raw?.varsTemplate);
 
   if (raw && typeof raw === 'object') {
@@ -304,11 +304,11 @@ export function loadMemory() {
 }
 
 /**
- * 替换某一层的变量模板(供变量页编辑器保存):写回对应存储 → 更新内存 → 重算派生。
+ * 替换某一层的Biến số模板(供Biến số页编辑器保存):写回对应存储 → 更新内存 → 重算派生。
  *  - global → apiSettings.varsGlobalTemplate(跨设备同步);
- *  - char → apiSettings.varsTemplateByChar[avatar](无当前角色则忽略,UI 已禁用);
+ *  - char → apiSettings.varsTemplateByChar[avatar](无当前Nhân vật则忽略,UI 已禁用);
  *  - chat → chatMetadata(经 saveMemory)。
- * 模板变化只改「初始状态」,历史命令照旧重放(所以改初始值会影响整条聊天的当前值)。
+ * 模板变化只改「初始状态」,历史命令照旧重放(所以改初始值会影响整mục聊天的当前值)。
  * 注:注入刷新由调用方(页面)负责 refreshInjection —— store 不引 inject 避免循环依赖。
  */
 export function replaceVarsTemplate(tier: VarTier, tpl: VarTemplate): void {

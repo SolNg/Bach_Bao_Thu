@@ -8,7 +8,7 @@ import { getContext } from '@/st/context';
 
 const BASE_URL = '/api/plugins/baibaoku/v1';
 
-/** upsert 单条向量项(向量为 base64 编码的 float32 小端) */
+/** upsert 单mục向量项(向量为 base64 编码的 float32 小端) */
 export interface VecItem {
   leafId: string;
   docHash: string;
@@ -20,7 +20,7 @@ export interface VecItem {
   msgIndex?: number | null;
 }
 
-/** search 单条命中 */
+/** search 单mục命中 */
 export interface VecHit {
   leafId: string;
   scope: string;
@@ -51,7 +51,7 @@ async function request<T>(action: string, body: Record<string, unknown>): Promis
     | { ok: false; error?: { code?: string; message?: string } }
     | null;
   if (!resp.ok || !payload?.ok) {
-    const msg = (payload && !payload.ok && payload.error?.message) || `柏宝库请求失败:${action}`;
+    const msg = (payload && !payload.ok && payload.error?.message) || `Yêu cầu Bách Bảo Khố thất bại:${action}`;
     const err = new Error(msg) as Error & { code?: string };
     if (payload && !payload.ok) err.code = payload.error?.code;
     throw err;

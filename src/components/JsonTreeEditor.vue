@@ -1,11 +1,11 @@
 <script setup lang="ts">
 /**
- * 可视化 JSON 结构编辑器(递归)。免手搓:点选类型、填值、增删字段。
- * 只编辑「结构与初始值」——用于变量初始模板,支持 对象/数组/文本/数值/真假 五类,够覆盖势力表这类结构。
- * 受控:modelValue 进,update:modelValue 出(每次改动 emit 一份新对象/数组,父级整体持有)。
+ * 可视化 JSON 结构Chỉnh sửa器(递归)。免手搓:点选Loại、填Giá trị、增删字段。
+ * 只Chỉnh sửa「结构与初始Giá trị」——用于Biến số初始模板,支持 对象/数组/文本/数Giá trị/真假 五类,够覆盖势力表这类结构。
+ * 受控:modelValue 进,update:modelValue 出(每次改动 emit 一份新对象/数组,父级整体持Có)。
  *
- * 设计:标量的「值」与它的「类型选择」同处一行(不再拆成独立递归子实例——那正是旧版误显真假开关的根因);
- * 只有对象/数组才向下递归成缩进子块。
+ * 设计:标量的「Giá trị」与它的「Loại选择」同处一行(不再拆成独立递归子实例——那正是旧版误显真假开关的根因);
+ * 只Có对象/数组才向下递归成缩进子块。
  */
 import Icon from '@/components/Icon.vue';
 import type { JsonValue } from '@/memory/types';
@@ -16,11 +16,11 @@ const emit = defineEmits<{ 'update:modelValue': [JsonValue] }>();
 
 type JType = 'object' | 'array' | 'string' | 'number' | 'boolean';
 const TYPE_OPTS: { v: JType; label: string }[] = [
-  { v: 'string', label: '文本' },
-  { v: 'number', label: '数值' },
-  { v: 'boolean', label: '真假' },
-  { v: 'object', label: '对象' },
-  { v: 'array', label: '数组' },
+  { v: 'string', label: 'Văn bản' },
+  { v: 'number', label: 'Số' },
+  { v: 'boolean', label: 'Boolean' },
+  { v: 'object', label: 'Đối tượng' },
+  { v: 'array', label: 'Mảng' },
 ];
 
 function typeOf(v: JsonValue): JType {
@@ -43,7 +43,7 @@ const asObject = computed(() => (props.modelValue && typeof props.modelValue ===
 const objKeys = computed(() => Object.keys(asObject.value));
 const asArray = computed(() => (Array.isArray(props.modelValue) ? props.modelValue : []));
 
-/* —— 对象:增删改键 / 改子值 —— */
+/* —— 对象:增删改Khóa / 改子Giá trị —— */
 function setObjChild(key: string, v: JsonValue) {
   emit('update:modelValue', { ...asObject.value, [key]: v });
 }
@@ -59,9 +59,9 @@ function renameKey(oldKey: string, ev: Event) {
 }
 function addObjField() {
   const o = { ...asObject.value };
-  let name = '新字段';
+  let name = 'Trường mới';
   let i = 2;
-  while (name in o) name = `新字段${i++}`;
+  while (name in o) name = `Trường mới ${i++}`;
   o[name] = '';
   emit('update:modelValue', o);
 }
@@ -87,7 +87,7 @@ function removeArrItem(idx: number) {
   emit('update:modelValue', a);
 }
 
-/* —— 标量取值:输入事件 → 规整值 —— */
+/* —— 标量取Giá trị:输入事件 → 规整Giá trị —— */
 function strVal(ev: Event): JsonValue { return (ev.target as HTMLInputElement).value; }
 function numVal(ev: Event): JsonValue {
   const n = Number((ev.target as HTMLInputElement).value);
@@ -100,22 +100,22 @@ function numVal(ev: Event): JsonValue {
   <div v-if="rootType === 'object'" class="bbs-jte">
     <div v-for="k in objKeys" :key="k" class="bbs-jte-field">
       <div class="bbs-jte-row">
-        <input class="bbs-input bbs-jte-key" type="text" :value="k" placeholder="字段名" @change="renameKey(k, $event)" />
+        <input class="bbs-input bbs-jte-key" type="text" :value="k" placeholder="Tên trường" @change="renameKey(k, $event)" />
         <select class="bbs-input bbs-jte-type" :value="typeOf(asObject[k])" @change="changeObjType(k, $event)">
           <option v-for="t in TYPE_OPTS" :key="t.v" :value="t.v">{{ t.label }}</option>
         </select>
-        <!-- 标量值就地编辑;容器则本行只留类型,值在下方缩进块 -->
-        <input v-if="typeOf(asObject[k]) === 'string'" class="bbs-input bbs-jte-val" type="text" :value="asObject[k] as string" placeholder="值" @input="setObjChild(k, strVal($event))" />
+        <!-- 标量Giá trị就地Chỉnh sửa;容器则本行只留Loại,Giá trị在下方缩进块 -->
+        <input v-if="typeOf(asObject[k]) === 'string'" class="bbs-input bbs-jte-val" type="text" :value="asObject[k] as string" placeholder="Giá trị" @input="setObjChild(k, strVal($event))" />
         <input v-else-if="typeOf(asObject[k]) === 'number'" class="bbs-input bbs-jte-val" type="number" :value="asObject[k] as number" @input="setObjChild(k, numVal($event))" />
-        <button v-else-if="typeOf(asObject[k]) === 'boolean'" class="bbs-jte-bool" :class="{ on: asObject[k] === true }" type="button" @click="setObjChild(k, asObject[k] !== true)">{{ asObject[k] === true ? '是' : '否' }}</button>
-        <span v-else class="bbs-jte-containertag">{{ typeOf(asObject[k]) === 'array' ? '数组' : '对象' }}</span>
-        <button class="bbs-jte-del" type="button" title="删除字段" @click="removeObjKey(k)"><Icon name="close" /></button>
+        <button v-else-if="typeOf(asObject[k]) === 'boolean'" class="bbs-jte-bool" :class="{ on: asObject[k] === true }" type="button" @click="setObjChild(k, asObject[k] !== true)">{{ asObject[k] === true ? 'Có' : 'Không' }}</button>
+        <span v-else class="bbs-jte-containertag">{{ typeOf(asObject[k]) === 'array' ? 'Mảng' : 'Đối tượng' }}</span>
+        <button class="bbs-jte-del" type="button" title="Xóa trường" @click="removeObjKey(k)"><Icon name="close" /></button>
       </div>
       <div v-if="isContainerVal(asObject[k])" class="bbs-jte-nest">
         <JsonTreeEditor :model-value="asObject[k]" @update:model-value="v => setObjChild(k, v)" />
       </div>
     </div>
-    <button class="bbs-jte-add" type="button" @click="addObjField"><Icon name="plus" />加字段</button>
+    <button class="bbs-jte-add" type="button" @click="addObjField"><Icon name="plus" />Thêm trường</button>
   </div>
 
   <!-- 数组:项列表 -->
@@ -126,17 +126,17 @@ function numVal(ev: Event): JsonValue {
         <select class="bbs-input bbs-jte-type" :value="typeOf(item)" @change="changeArrType(idx, $event)">
           <option v-for="t in TYPE_OPTS" :key="t.v" :value="t.v">{{ t.label }}</option>
         </select>
-        <input v-if="typeOf(item) === 'string'" class="bbs-input bbs-jte-val" type="text" :value="item as string" placeholder="值" @input="setArrItem(idx, strVal($event))" />
+        <input v-if="typeOf(item) === 'string'" class="bbs-input bbs-jte-val" type="text" :value="item as string" placeholder="Giá trị" @input="setArrItem(idx, strVal($event))" />
         <input v-else-if="typeOf(item) === 'number'" class="bbs-input bbs-jte-val" type="number" :value="item as number" @input="setArrItem(idx, numVal($event))" />
-        <button v-else-if="typeOf(item) === 'boolean'" class="bbs-jte-bool" :class="{ on: item === true }" type="button" @click="setArrItem(idx, item !== true)">{{ item === true ? '是' : '否' }}</button>
-        <span v-else class="bbs-jte-containertag">{{ typeOf(item) === 'array' ? '数组' : '对象' }}</span>
-        <button class="bbs-jte-del" type="button" title="删除项" @click="removeArrItem(idx)"><Icon name="close" /></button>
+        <button v-else-if="typeOf(item) === 'boolean'" class="bbs-jte-bool" :class="{ on: item === true }" type="button" @click="setArrItem(idx, item !== true)">{{ item === true ? 'Có' : 'Không' }}</button>
+        <span v-else class="bbs-jte-containertag">{{ typeOf(item) === 'array' ? 'Mảng' : 'Đối tượng' }}</span>
+        <button class="bbs-jte-del" type="button" title="Xóa mục" @click="removeArrItem(idx)"><Icon name="close" /></button>
       </div>
       <div v-if="isContainerVal(item)" class="bbs-jte-nest">
         <JsonTreeEditor :model-value="item" @update:model-value="v => setArrItem(idx, v)" />
       </div>
     </div>
-    <button class="bbs-jte-add" type="button" @click="addArrItem"><Icon name="plus" />加一项</button>
+    <button class="bbs-jte-add" type="button" @click="addArrItem"><Icon name="plus" />Thêm một mục</button>
   </div>
 </template>
 
@@ -168,7 +168,7 @@ function numVal(ev: Event): JsonValue {
   color: var(--bbs-ink-muted);
   min-width: 30px;
 }
-/* 类型选择:自绘小三角(与插件其它 select 同款 SVG),右内边距留够、不贴边 */
+/* Loại选择:自绘小三角(与插件其它 select 同款 SVG),右内边距留够、不贴边 */
 .bbs-jte-type {
   flex: 0 0 auto;
   width: 74px;
@@ -203,7 +203,7 @@ function numVal(ev: Event): JsonValue {
   border-color: var(--bbs-accent);
   color: var(--bbs-accent);
 }
-/* 容器项(对象/数组):本行值位只标个类型,真正内容在下方缩进块 */
+/* 容器项(对象/数组):本行Giá trị位只标个Loại,真正Nội dung在下方缩进块 */
 .bbs-jte-containertag {
   flex: 1 1 auto;
   font-size: 11px;

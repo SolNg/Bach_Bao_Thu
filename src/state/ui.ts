@@ -4,8 +4,8 @@ import { reactive, ref, watch } from 'vue';
 /**
  * 弹窗 Teleport 宿主:由 App.vue 挂在 .bbs-root 的直接子级(在 .bbs-body 滚动容器之外)。
  * 所有 .bbs-modal-mask 弹窗都 Teleport 到这里,避开 iOS Safari 的老问题——
- * 「可滚动祖先内的 position:fixed 后代」会相对滚动内容而非视口定位,设置页滚动后弹窗顶出屏幕。
- * 仍在 shadow root 内,scoped 样式与 --bbs-* 主题变量照常生效(故不能用 Teleport to="body")。
+ * 「可滚动祖先内的 position:fixed 后代」会相对滚动内容而非视口定位,Cài đặt页滚动后弹窗顶出屏幕。
+ * 仍在 shadow root 内,scoped 样式与 --bbs-* 主题Biến số照常生效(故不能用 Teleport to="body")。
  */
 export const modalHost = ref<HTMLElement | null>(null);
 
@@ -13,10 +13,10 @@ export const modalHost = ref<HTMLElement | null>(null);
 export type NavPosition = 'top' | 'bottom' | 'auto';
 
 /**
- * 主题。新增主题只需:
- *   1) theme.css 里加一套 .bbs-root[data-theme='xxx'] 变量;
- *   2) 这里给 ThemeName 加上 'xxx',并往 THEMES 注册表加一条。
- * 设置页与题首切换按钮都从 THEMES 自动读取,无需再改别处。
+ * 主题。Thêm mới主题只需:
+ *   1) theme.css 里加一套 .bbs-root[data-theme='xxx'] Biến số;
+ *   2) 这里给 ThemeName 加上 'xxx',并往 THEMES 注册表加一mục。
+ * Cài đặt页与题首切换按钮都从 THEMES 自动读取,无需再改别处。
  */
 export type ThemeName = 'day' | 'night' | 'pastel' | 'green' | 'st';
 
@@ -28,11 +28,11 @@ export interface ThemeDef {
 }
 
 export const THEMES: ThemeDef[] = [
-  { value: 'day', label: '日间', icon: 'sun' },
-  { value: 'night', label: '夜间', icon: 'moon' },
-  { value: 'pastel', label: '粉彩', icon: 'sparkles' },
-  { value: 'green', label: '木白', icon: 'sparkles' },
-  { value: 'st', label: '跟随ST', icon: 'plug' },
+  { value: 'day', label: 'Ban ngày', icon: 'sun' },
+  { value: 'night', label: 'Ban đêm', icon: 'moon' },
+  { value: 'pastel', label: 'Phấn màu', icon: 'sparkles' },
+  { value: 'green', label: 'Gỗ trắng', icon: 'sparkles' },
+  { value: 'st', label: 'Theo ST', icon: 'plug' },
 ];
 
 interface UiState {
@@ -47,11 +47,11 @@ interface UiState {
   showTopBar: boolean;
   /** 聊天框上方快速回复式按钮(默认关) */
   showQuickReply: boolean;
-  /** 楼层内摘要锚点(查看该楼数据 + 标番外,默认关) */
+  /** 楼层内Tóm tắt锚点(查看该楼数据 + 标番外,默认关) */
   showFloorPanel: boolean;
   /** 屏幕边缘悬浮球(默认关) */
   showOrb: boolean;
-  /** 悬浮球自定义图标(ST 服务器图片路径;空=默认书签图标) */
+  /** 悬浮球自定义图标(ST 服务器图片路径;空=默认Thẻ sách图标) */
   orbImage: string;
   /** 悬浮球形状:bookmark / circle / square */
   orbShape: OrbShape;
@@ -64,16 +64,16 @@ interface UiState {
 /** 悬浮球形状 */
 export type OrbShape = 'bookmark' | 'circle' | 'square';
 export const ORB_SHAPES: { value: OrbShape; label: string }[] = [
-  { value: 'bookmark', label: '书签' },
-  { value: 'circle', label: '圆形' },
-  { value: 'square', label: '方形' },
+  { value: 'bookmark', label: 'Thẻ sách' },
+  { value: 'circle', label: 'Hình tròn' },
+  { value: 'square', label: 'Hình vuông' },
 ];
 function validOrbShape(s: string): OrbShape {
   return s === 'bookmark' || s === 'circle' || s === 'square' ? s : 'bookmark';
 }
 
 // activePage(上次停在哪一页)是纯本机临时导航态,跨设备同步无意义、且翻页即回写服务器太频繁,
-// 故仍存本机 localStorage;主题/导航位置是真·设置,改存进 apiSettings.ui(→ ST 跨设备同步)。
+// 故仍存本机 localStorage;主题/导航位置是真·Cài đặt,改存进 apiSettings.ui(→ ST 跨设备同步)。
 const PAGE_STORAGE_KEY = 'bbs.ui.page.v1';
 
 function loadActivePage(): string {
@@ -165,7 +165,7 @@ watch(
 );
 
 /**
- * 窗口最近一次打开的时间戳。用于在打开瞬间忽略遮罩关闭——
+ * 窗口最近一次打开的时间戳。用于在打开瞬间忽略遮罩Đóng——
  * 移动端打开手势末尾合成的 click 会穿透到刚渲染的遮罩,造成"秒关"。
  */
 export let lastOpenedAt = 0;

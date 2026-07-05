@@ -3,7 +3,7 @@ import { openBook } from '@/state/ui';
 const MENU_ITEM_ID = 'bbs-menu-item';
 
 /**
- * 往 ST 的 #extensionsMenu(魔杖菜单)末尾注入"柏宝书"入口。
+ * 往 ST 的 #extensionsMenu(魔杖菜单)末尾注入"Bách Bảo Thư"入口。
  * 菜单是懒加载的,用轮询等它出现;注入一次即可。
  */
 export function injectMenuButton() {
@@ -14,9 +14,9 @@ export function injectMenuButton() {
 
     const $item = $(`
       <div class="extension_container interactable" tabindex="0">
-        <a id="${MENU_ITEM_ID}" class="list-group-item" href="#" title="柏宝书">
+        <a id="${MENU_ITEM_ID}" class="list-group-item" href="#" title="Bách Bảo Thư">
           <i class="fa-solid fa-book-bookmark"></i>
-          <span>柏宝书</span>
+          <span>Bách Bảo Thư</span>
         </a>
       </div>
     `);

@@ -21,9 +21,9 @@ function norm(s: string): string {
   return s.trim().toLowerCase();
 }
 
-/* ============ 确定性 id ============ */
+/* ============ Xác nhận性 id ============ */
 
-/** 物品 id:按规范化名,故重放幂等、手动 op 可稳定引用 */
+/** Vật phẩm id:按规范化名,故重放幂等、手动 op 可稳定引用 */
 export function itemId(name: string): string {
   return `item:${norm(name)}`;
 }
@@ -36,28 +36,28 @@ export function planId(leafId: string, addIndex: number): string {
   return `plan:${leafId}#${addIndex}`;
 }
 
-/** 从一条 resolve 指令取稳定 plan id(兼容裸字符串旧数据) */
+/** 从一mục resolve 指令取稳定 plan id(兼容裸字符串旧数据) */
 export function resolveEntryId(r: PlanResolveItem): string {
   return typeof r === 'string' ? r : r.id;
 }
 
-/** 规范化场景路径:逐段 trim,丢弃空段。返回干净的原文路径(保留大小写,仅去首尾空白) */
+/** 规范化Bối cảnh路径:逐段 trim,丢弃空段。返回干净的原文路径(保留大小写,仅去首尾空白) */
 export function normScenePath(path: string[] | undefined): string[] {
   if (!Array.isArray(path)) return [];
   return path.map(s => String(s ?? '').trim()).filter(Boolean);
 }
-/** 场景 id:按规范化路径(小写、'/'分隔),故重放幂等、手动 op 可稳定引用 */
+/** Bối cảnh id:按规范化路径(小写、'/'分隔),故重放幂等、手动 op 可稳定引用 */
 export function sceneId(path: string[]): string {
   return `scene:${normScenePath(path).map(norm).join('/')}`;
 }
 
 /**
- * 当前地点 ↔ 场景树的「权威定位」:返回当前所在节点 id(找不到返回 '')。
- * 注入端与场景页**共用此函数**,杜绝两处分叉导致页面/提示词不一致。
+ * 当前地点 ↔ Bối cảnh树的「权威定位」:返回当前所在节点 id(找不到返回 '')。
+ * 注入端与Bối cảnh页**共用此函数**,杜绝两处分叉导致页面/提示词不一致。
  *
  * 定位优先级:
  *  1. locationPath(AI 给的权威路径):精确命中树里某节点 → 用它;否则按**最长存在前缀**回退
- *     (path 比树更细时,停在能确定的那一级,如 ["杭州市","滨江区某老小区","302室屋内"] 树里
+ *     (path 比树更细时,停在能Xác nhận的那一级,如 ["杭州市","滨江区某老小区","302室屋内"] 树里
  *      只到 "302室屋内" 就用它,只到上级也接受)。
  *  2. 无 locationPath / 它在树里完全落空:退回按 location 字符串的**收紧模糊匹配**——
  *     仅比「本级名」和「完整路径串」,**不再拿单个祖先段去比**(那正是「302室门口」靠祖先
@@ -87,7 +87,7 @@ export function findCurrentSceneId(scenes: MemScene[], here: string, locationPat
 }
 
 /**
- * 两个场景节点路径的相对关系,以 pPath(主角当前节点)为基准。供 NPC 在场分档用:
+ * 两个Bối cảnh节点路径的相对关系,以 pPath(主角当前节点)为基准。供 NPC 在场分档用:
  *  - 'same':同一节点。
  *  - 'near':N 是 P 的直接父(上一级)/ N 是 P 的后代(向下不封顶)/ 旁支且共享直接父。
  *  - 'far' :N 是 P 更上级祖先(≥2 级)/ 旁支且公共祖先更远。
@@ -123,7 +123,7 @@ export function classifyNpcPresence(
   locationPath?: string[],
 ): NpcPresence {
   if (npc.follow === true) return 'present';
-  // 主角当前节点:走权威 findCurrentSceneId(优先 locationPath 精确定位,再模糊兜底)
+  // 主角当前节点:走权威 findCurrentSceneId(优先 locationPath 精Xác nhận位,再模糊兜底)
   const cur = scenes.find(s => s.id === findCurrentSceneId(scenes, here, locationPath)) ?? null;
   if (!cur) return sceneNameReachable(npc.location, here) ? 'present' : 'absent';
   // NPC 所在地同样解析成节点后比路径
@@ -151,7 +151,7 @@ export function makeLeafId(): string {
 
 // 正文清洗已统一到 timeTag.ts 的 cleanBody / clampToTimeTags(整块删噪声标签,不再「裸删标签留内容」)。
 
-/** 取消息上的叶子(不校验有效性) */
+/** Hủy bỏ息上的叶子(不校验有效性) */
 export function getLeaf(m: STMessage | undefined): LeafExtra | undefined {
   return m?.extra?.bbs_leaf as LeafExtra | undefined;
 }
@@ -193,8 +193,8 @@ function msgSwipe(m: STMessage): number {
  * 叶子是否对「当前显示的这一页」有效:结构完整 + 页码归属当前 swipe。
  *
  * 页码校验解决多页串扰:ST 生成新 swipe 时 structuredClone 旧 extra,会把上一页的 bbs_leaf
- * 复制进新页;靠「叶子 swipe ≠ 当前 swipe_id」识别并失效——翻到没摘过的页正确显示「缺摘要」,
- * 翻回原页页码又匹配、摘要恢复。叶子数据始终留在各自 swipe 的 extra 里,不删除。
+ * 复制进新页;靠「叶子 swipe ≠ 当前 swipe_id」识别并失效——翻到没摘过的页正确显示「缺Tóm tắt」,
+ * 翻回原页页码又匹配、Tóm tắt恢复。叶子数据始终留在各自 swipe 的 extra 里,不Xóa。
  *
  * ⚠️ 不比对正文哈希:改正文(错字/润色)不改 swipe_id,故不会因此失效——这正是用页码而非
  * srcHash 的好处。代价同前:编辑正文不自动重摘,沿用旧叶子;需要时手动删叶子再重摘。
@@ -209,16 +209,16 @@ export function leafValid(m: STMessage | undefined): boolean {
 /* ============ 重放引擎 ============ */
 
 /**
- * 把一条叶子的 StoredDelta 施加到派生记忆 mem 上。无副作用地 fold。
+ * 把一mục叶子的 StoredDelta 施加到派生记忆 mem 上。无副作用地 fold。
  * 施加顺序(同一叶子内):items(add→update→remove)→ plans(add→resolve→reopen→remove)。
  * 顺序保证「同叶子内先添加后操作」成立(如手动在最新叶子里删掉刚加的项)。
  *
- * 副作用:每条物品变动往 mem.itemLog 追加一条带「故事内时间」的记录(leaf.time)。
- * 按楼层序重放,故 itemLog 天然时序有序;deriveMemory 末尾再截最近若干条。
+ * 副作用:每mụcVật phẩm变动往 mem.itemLog 追加一mục带「故事内时间」的记录(leaf.time)。
+ * 按楼层序重放,故 itemLog 天然时序有序;deriveMemory 末尾再截最近若干mục。
  */
 /**
- * 把 delta 里的随身/地点信息施加到物品上(仅在 delta 明确给了才覆盖,last-write-wins)。
- * carried=true 时清掉 location(随身物品无存放地);carried=false 时保留/采用 location。
+ * 把 delta 里的随身/地点信息施加到Vật phẩm上(仅在 delta 明确给了才覆盖,last-write-wins)。
+ * carried=true 时清掉 location(随身Vật phẩm无存放地);carried=false 时保留/采用 location。
  */
 function applyPlacement(it: { carried?: boolean; location?: string }, src: ItemDelta): void {
   if (typeof src.carried === 'boolean') {
@@ -237,7 +237,7 @@ function applyPlacement(it: { carried?: boolean; location?: string }, src: ItemD
 /**
  * 把 delta 里的随行/所在地信息施加到 NPC 上(仅在 delta 明确给了才覆盖,last-write-wins)。
  * follow=true 时清掉 location(随行 NPC 无固定所在地);follow=false 时保留/采用 location。
- * 与物品 applyPlacement 同构(carried↔follow)。
+ * 与Vật phẩm applyPlacement 同构(carried↔follow)。
  */
 function applyNpcPlacement(n: { follow?: boolean; location?: string }, src: NpcDelta): void {
   if (typeof src.follow === 'boolean') {
@@ -265,10 +265,10 @@ function applyNpcState(n: { outfit?: string; condition?: string; important?: boo
 }
 
 /**
- * 逐级 upsert 一条场景路径到派生场景树。
+ * 逐级 upsert 一mụcBối cảnh路径到派生Bối cảnh树。
  * 遍历 path 的每个前缀确保每级节点存在(缺则创建,父 id 由上一级前缀算出);
  * 仅**最末级**节点采用 desc(setDesc 为真=update 覆盖;否则 add 仅在原本无描述时补)。
- * 父子关系由确定性 id 隐式成立,无需 childIds。
+ * 父子关系由Xác nhận性 id 隐式成立,无需 childIds。
  */
 function upsertScenePath(mem: BaibaiMemory, path: string[], desc: string | undefined, setDesc: boolean, t: number): void {
   const clean = normScenePath(path);
@@ -296,7 +296,7 @@ function upsertScenePath(mem: BaibaiMemory, path: string[], desc: string | undef
   }
 }
 
-/** 移除一条场景路径及其所有后代(按 id 前缀匹配) */
+/** 移除一mụcBối cảnh路径及其所有后代(按 id 前缀匹配) */
 function removeScenePath(mem: BaibaiMemory, path: string[]): void {
   const clean = normScenePath(path);
   if (!clean.length) return;
@@ -367,7 +367,7 @@ function reparentScenePath(mem: BaibaiMemory, r: SceneReparent, t: number): void
   }
 }
 
-/* ============ 自定义变量:JSON 树 + 路径命令(仿 MVU) ============ */
+/* ============ 自定义Biến số:JSON 树 + 路径命令(仿 MVU) ============ */
 
 function isPlainObj(v: unknown): v is Record<string, JsonValue> {
   return !!v && typeof v === 'object' && !Array.isArray(v);
@@ -401,14 +401,14 @@ export function mergeTemplates(t: Record<VarTier, VarTemplate>): Record<string, 
 }
 
 /**
- * 在**重放起点(seed)**展开变量模板里的 ST 宏({{user}}/{{char}}/… 全套,走 substituteParams)。
+ * 在**重放起点(seed)**展开Biến số模板里的 ST 宏({{user}}/{{char}}/… 全套,走 substituteParams)。
  * 深走整棵 JSON:对象的**键**与所有**字符串值**都替换;数字/布尔/null 原样。
  *
  * 为何只在 seed 展开(而非注入时):宏只可能来自用户填的模板;AI 与手动命令产出的永远是真实值。
  * 故把「字面模板」在合并成初始状态的那一刻替换成真实名,之后 fold 各楼 VarOps 全程真实名、
  * 天然对齐——无需把 AI 输出的真实名反向映射回 {{user}}(那会因同名/群聊/改名而脆)。
- * 模板本身仍存字面宏(saveMemory 只存模板,mem.vars 是派生缓存不落盘),故全局变量跨角色可移植:
- * 切角色后重新 seed 即得新角色名。ST 未就绪 / 无 substituteParams 时原样返回(降级不炸)。
+ * 模板本身仍存字面宏(saveMemory 只存模板,mem.vars 是派生缓存不落盘),故全局Biến số跨Nhân vật可移植:
+ * 切Nhân vật后重新 seed 即得新Nhân vật名。ST 未就绪 / 无 substituteParams 时原样返回(降级不炸)。
  */
 export function expandVarMacros(json: Record<string, JsonValue>): Record<string, JsonValue> {
   const sub = getContext()?.substituteParams;
@@ -469,7 +469,7 @@ function locate(root: Record<string, JsonValue>, segs: (string | number)[], crea
   return { parent: cur, last: segs[segs.length - 1] };
 }
 
-/** 施加一条路径命令到 JSON 根(就地改)。坏命令由调用方 try/catch 兜住。 */
+/** 施加一mục路径命令到 JSON 根(就地改)。坏命令由调用方 try/catch 兜住。 */
 function applyVarOp(root: Record<string, JsonValue>, op: VarOp): void {
   const segs = parsePath(op.path);
 
@@ -528,7 +528,7 @@ function applyVarOp(root: Record<string, JsonValue>, op: VarOp): void {
 }
 /* eslint-enable @typescript-eslint/no-explicit-any */
 
-/** 依序施加一批命令;单条坏命令跳过不致命。 */
+/** 依序施加一批命令;单mục坏命令跳过不致命。 */
 export function applyVarOps(root: Record<string, JsonValue>, ops: VarOp[] | undefined): void {
   if (!ops?.length) return;
   for (const op of ops) {
@@ -536,7 +536,7 @@ export function applyVarOps(root: Record<string, JsonValue>, ops: VarOp[] | unde
   }
 }
 
-/** 变量值 → 紧凑单行串(对象/数组 JSON 化;折叠换行;超长截断)。供旁注/面板展示。 */
+/** Biến số值 → 紧凑单行串(对象/数组 JSON 化;折叠换行;超长截断)。供旁注/面板展示。 */
 function fmtVarValue(v: JsonValue | undefined): string {
   if (v === undefined) return '';
   let s: string;
@@ -547,21 +547,21 @@ function fmtVarValue(v: JsonValue | undefined): string {
 }
 
 /**
- * 把一条变量命令描述成可读的「主文本 + 副文本」——楼层正文旁注与楼内面板**共用同一来源**,
+ * 把一mụcBiến số命令描述成可读的「主文本 + 副文本」——楼层正文旁注与楼内面板**共用同一来源**,
  * 保证两处措辞一致。主文本=被改的路径(assign/remove 带 key 时拼到尾),副文本=值/增量。
  */
 export function describeVarOp(op: VarOp): { text: string; sub?: string } {
-  const path = op.path || '(根)';
+  const path = op.path || '(Gốc)';
   switch (op.op) {
     case 'set':
-      return { text: path, sub: `设为 ${fmtVarValue(op.value)}` };
+      return { text: path, sub: `Đặt thành ${fmtVarValue(op.value)}` };
     case 'add': {
       const d = typeof op.delta === 'number' ? op.delta : 0;
       return { text: path, sub: `${d >= 0 ? '+' : ''}${d}` };
     }
     case 'assign': {
       const key = op.key !== undefined ? String(op.key) : '';
-      const full = key ? (op.path ? `${op.path}.${key}` : key) : `${path}[追加]`;
+      const full = key ? (op.path ? `${op.path}.${key}` : key) : `${path}[Thêm]`;
       return { text: full, sub: `= ${fmtVarValue(op.value)}` };
     }
     case 'remove': {
@@ -574,13 +574,13 @@ export function describeVarOp(op: VarOp): { text: string; sub?: string } {
 }
 
 /**
- * 把本楼变量命令渲染成 <bbs_vars> 旁注的多行文本(每行一条,带动词前缀)。
- * 与 fmtItemLogInline 同角色:让窗口内全文楼层的主模型看到「本楼已改过这些变量」,防重复改。
+ * 把本楼Biến số命令渲染成 <bbs_vars> 旁注的多行文本(每行一mục,带动词前缀)。
+ * 与 fmtItemLogInline 同Nhân vật:让窗口内全文楼层的主模型看到「本楼已改过这些Biến số」,防重复改。
  * 空则返回空串(调用方据此不写块)。
  */
 export function fmtVarOpsInline(ops: VarOp[] | undefined): string {
   if (!ops?.length) return '';
-  const verb: Record<VarOp['op'], string> = { set: '设定', add: '变更', assign: '新增', remove: '删除' };
+  const verb: Record<VarOp['op'], string> = { set: 'Thiết lập', add: 'Thay đổi', assign: 'Thêm mới', remove: 'Xóa' };
   return ops
     .map(op => {
       const { text, sub } = describeVarOp(op);
@@ -618,16 +618,16 @@ function applyStoredDeltaTo(mem: BaibaiMemory, d: StoredDelta, leaf: { id: strin
   if (typeof d.time === 'string' && d.time.trim()) mem.state.time = d.time.trim();
   if (typeof d.location === 'string' && d.location.trim()) {
     mem.state.location = d.location.trim();
-    // location 一变,locationPath 跟随同一条 delta:AI 给了就采用,没给则清空(避免 path 比 location 旧)
+    // location 一变,locationPath 跟随同一mục delta:AI 给了就采用,没给则清空(避免 path 比 location 旧)
     const lp = normScenePath(d.locationPath);
     mem.state.locationPath = lp.length ? lp : undefined;
   } else if (d.locationPath !== undefined) {
-    // 少见:只更新 path 不动 location(手动场景);采用或清空
+    // 少见:只更新 path 不动 location(手动Bối cảnh);采用或清空
     const lp = normScenePath(d.locationPath);
     mem.state.locationPath = lp.length ? lp : undefined;
   }
 
-  // 物品(一切计数:add 默认 +1,带符号累加,数量 ≤0 自动移除)
+  // Vật phẩm(一切计数:add 默认 +1,带符号累加,数量 ≤0 自动移除)
   if (d.items) {
     for (const add of d.items.add ?? []) {
       if (!add?.name?.trim()) continue;
@@ -660,7 +660,7 @@ function applyStoredDeltaTo(mem: BaibaiMemory, d: StoredDelta, leaf: { id: strin
         mem.items.push(it);
         log('add', add.name.trim(), undefined, step);
       }
-      // step ≤0 且物品不存在:无可减,忽略
+      // step ≤0 且Vật phẩm不存在:无可减,忽略
     }
     for (const upd of d.items.update ?? []) {
       if (!upd?.name?.trim()) continue;
@@ -668,7 +668,7 @@ function applyStoredDeltaTo(mem: BaibaiMemory, d: StoredDelta, leaf: { id: strin
       if (!it) continue; // 容错:更新不存在的项则忽略
       const before = it.qty;
       if (upd.desc) it.desc = upd.desc;
-      applyPlacement(it, upd); // 随身/地点变更(移动物品)
+      applyPlacement(it, upd); // 随身/地点Thay đổi(移动Vật phẩm)
       if (typeof upd.qty === 'number') {
         if (upd.qty <= 0) {
           mem.items.splice(mem.items.indexOf(it), 1); // 设为 ≤0 → 移除
@@ -690,7 +690,7 @@ function applyStoredDeltaTo(mem: BaibaiMemory, d: StoredDelta, leaf: { id: strin
     }
   }
 
-  // 场景 / 地点。施加序:add → update → reparent → remove
+  // Bối cảnh / 地点。施加序:add → update → reparent → remove
   // (reparent 在 add 之后,保证被引用节点已存在;remove 最后,避免移动刚被删的节点)。
   if (d.scenes) {
     for (const a of d.scenes.add ?? []) upsertScenePath(mem, a.path, a.desc, false, t);
@@ -737,7 +737,7 @@ function applyStoredDeltaTo(mem: BaibaiMemory, d: StoredDelta, leaf: { id: strin
       if (upd.desc) n.desc = upd.desc.trim();
       if (upd.personality) n.personality = upd.personality.trim();
       applyNpcState(n, upd); // 即时层(着装/状态/重要性)覆盖刷新
-      applyNpcPlacement(n, upd); // 随行/所在地变更(NPC 移动)
+      applyNpcPlacement(n, upd); // 随行/所在地Thay đổi(NPC 移动)
       n.updatedAt = t;
     }
     for (const name of d.npcs.remove ?? []) {
@@ -747,7 +747,7 @@ function applyStoredDeltaTo(mem: BaibaiMemory, d: StoredDelta, leaf: { id: strin
     }
   }
 
-  // 计划 / 悬念
+  // 计划 / Huyền niệm
   if (d.plans) {
     (d.plans.add ?? []).forEach((add, addIdx) => {
       if (!add?.content?.trim()) return;
@@ -791,13 +791,13 @@ function applyStoredDeltaTo(mem: BaibaiMemory, d: StoredDelta, leaf: { id: strin
     }
   }
 
-  // 自定义变量:按顺序把本楼路径命令施加到 JSON 状态
+  // 自定义Biến số:按顺序把本楼路径命令施加到 JSON 状态
   if (d.varOps?.length) applyVarOps(mem.vars, d.varOps);
 }
 
 /**
  * 从 chat 重放出结构化状态。
- * 按**楼层物理顺序**扫 chat,对每条有效叶子 fold 其 delta(楼层序即叙事序,删消息后天然正确)。
+ * 按**楼层物理顺序**扫 chat,对每mục有效叶子 fold 其 delta(楼层序即叙事序,删消息后天然正确)。
  * 压缩节点只压文本、不带 delta、不参与重放。
  * @param upToExclusive 仅重放索引 < 该值的楼层(截断到被分析楼之前;省略=全部)。
  */
@@ -806,7 +806,7 @@ export function deriveMemory(
   upToExclusive?: number,
 ): Pick<BaibaiMemory, 'state' | 'items' | 'plans' | 'scenes' | 'npcs' | 'itemLog' | 'vars'> {
   const mem = createEmptyMemory();
-  // 变量从三层合并模板起算(无 chat 也返回初始状态);seed 时展开模板里的 ST 宏({{user}} 等)
+  // Biến số从三层合并模板起算(无 chat 也返回初始状态);seed 时展开模板里的 ST 宏({{user}} 等)
   mem.vars = expandVarMacros(mergeTemplates(memory.varTemplates));
   if (!chat) return { state: mem.state, items: mem.items, plans: mem.plans, scenes: mem.scenes, npcs: mem.npcs, itemLog: mem.itemLog, vars: mem.vars };
   const end = typeof upToExclusive === 'number' ? Math.min(upToExclusive, chat.length) : chat.length;
@@ -818,17 +818,17 @@ export function deriveMemory(
     const time = leaf.timeEnd?.trim() || leaf.timeStart?.trim() || leaf.timeLabel?.trim() || '';
     applyStoredDeltaTo(mem, leaf.delta, { id: leaf.id, createdAt: leaf.createdAt, time });
   }
-  // 只留最近若干条变动(注入/喂模型够用即可,省 token)
+  // 只留最近若干mục变动(注入/喂模型够用即可,省 token)
   if (mem.itemLog.length > ITEM_LOG_KEEP) mem.itemLog = mem.itemLog.slice(-ITEM_LOG_KEEP);
   return { state: mem.state, items: mem.items, plans: mem.plans, scenes: mem.scenes, npcs: mem.npcs, itemLog: mem.itemLog, vars: mem.vars };
 }
 
-/** 变动日志保留的最近条数(注入与喂摘要共用)。 */
+/** 变动日志保留的最近mục数(注入与喂Tóm tắt共用)。 */
 export const ITEM_LOG_KEEP = 8;
 
 /**
- * 算「单条 delta 相对给定先前物品状态」产生的物品变动条目(供写进该楼正文)。
- * 复用 applyStoredDeltaTo:用先前物品播种一个临时 mem,只施加这一条 delta,
+ * 算「单mục delta 相对给定先前Vật phẩm状态」产生的Vật phẩm变动mục目(供写进该楼正文)。
+ * 复用 applyStoredDeltaTo:用先前Vật phẩm播种一个临时 mem,只施加这一mục delta,
  * 捕获其 itemLog 即本楼净变动(带 from→to)。time 由调用方传入(本楼故事结束时间)。
  */
 export function itemChangesOf(
@@ -837,7 +837,7 @@ export function itemChangesOf(
   time: string,
 ): ItemLogEntry[] {
   const mem = createEmptyMemory();
-  // 深拷贝先前物品作起点(避免污染调用方);只关心 items,plans/state 不影响 itemLog
+  // 深拷贝先前Vật phẩm作起点(避免污染调用方);只关心 items,plans/state 不影响 itemLog
   mem.items = priorItems.map(i => ({ ...i }));
   applyStoredDeltaTo(mem, { items: delta.items }, { id: 'tmp', createdAt: 0, time });
   return mem.itemLog;
@@ -846,8 +846,8 @@ export function itemChangesOf(
 /* ============ <bbs_items> 旁注 ↔ delta 反向同步(用户改正文) ============ */
 
 /**
- * 解析 <bbs_items> 块的「动词式」多行文本 → 带符号物品增量。
- * 每行:`<动词> <名字> [数量]`。动词:获得=+,消耗/失去=-。缺数量默认 1。
+ * 解析 <bbs_items> 块的「动词式」多行文本 → 带符号Vật phẩm增量。
+ * 每行:`<动词> <名字> [数量]`。动词:Nhận được=+,消耗/失去=-。缺数量默认 1。
  * 名字可含空格(取动词后、末尾可选数字前的全部);非法行忽略。
  * 返回 add 形式(qty 带符号,复用 applyStoredDeltaTo 的带符号累加 + ≤0 移除语义)。
  */
@@ -856,9 +856,9 @@ export function parseItemLogText(text: string): { name: string; qty: number }[] 
   for (const raw of String(text ?? '').split('\n')) {
     const line = raw.trim();
     if (!line) continue;
-    const m = line.match(/^(获得|消耗|失去)\s+(.+?)(?:\s+(\d+))?$/);
+    const m = line.match(/^(Nhận được|消耗|Tiêu hao|失去|Mất|获得)\s+(.+?)(?:\s+(\d+))?$/);
     if (!m) continue;
-    const sign = m[1] === '获得' ? 1 : -1;
+    const sign = m[1] === 'Nhận được' ? 1 : -1;
     const name = m[2].trim();
     if (!name) continue;
     const n = m[3] ? Number(m[3]) : 1;
@@ -872,12 +872,12 @@ export function parseItemLogText(text: string): { name: string; qty: number }[] 
  * 用户编辑了某楼正文后,把其中 <bbs_items> 旁注的改动反向同步回该楼叶子的 delta.items。
  *
  * 一致性判定走「同一渲染管线」:把叶子现有 delta 渲染成规范旁注,与正文里的旁注比对;
- * 相等 → 用户没动物品(只改了别处正文)→ 跳过,不碰 delta、不重写正文(避免误改/抖动)。
+ * 相等 → 用户没动Vật phẩm(只改了别处正文)→ 跳过,不碰 delta、不重写正文(避免误改/抖动)。
  * 不等 → 以正文为准:解析成带符号 add,**替换**该叶子 delta 的 items 部分(time/location/plans 保留),
  *        重算派生、删坏链,并把正文旁注重写成规范格式(顺手清掉用户的非规范写法),最后落盘。
  *
  * 注:旁注不承载描述/数量绝对值,反解析按「增量」表达;故用户改旁注会丢失原 delta 里的 desc(可接受,
- * 描述请走物品列表编辑)。无 <bbs_items> 块(用户删了整块)→ 视作清空该楼物品变动。
+ * 描述请走Vật phẩm列表编辑)。无 <bbs_items> 块(用户删了整块)→ 视作清空该楼Vật phẩm变动。
  * 返回是否发生了改写。
  */
 export function syncItemLogFromMessage(index: number): boolean {
@@ -885,7 +885,7 @@ export function syncItemLogFromMessage(index: number): boolean {
   const leaf = getLeaf(chat?.[index]);
   if (!chat || !leaf || !leaf.delta) return false;
 
-  // 该楼之前的物品状态(用于把 delta 渲染成与正文同口径的旁注做比对)
+  // 该楼之前的Vật phẩm状态(用于把 delta 渲染成与正文同口径的旁注做比对)
   const prior = deriveMemory(chat, index).items;
   const time = leaf.timeEnd?.trim() || leaf.timeStart?.trim() || leaf.timeLabel?.trim() || '';
   const currentInline = fmtItemLogInline(itemChangesOf(leaf.delta, prior, time));
@@ -893,10 +893,10 @@ export function syncItemLogFromMessage(index: number): boolean {
   const tagText = readItemsTagText(chat[index].mes); // null = 无块
   const editedInline = tagText === null ? '' : fmtItemLogInline(parsedToLog(parseItemLogText(tagText), prior));
 
-  if (currentInline === editedInline) return false; // 物品旁注未变,跳过
+  if (currentInline === editedInline) return false; // Vật phẩm旁注未变,跳过
 
   // 以正文为准:解析成带符号 add,替换 delta 的 items 部分。
-  // 旁注不承载随身/地点,按物品名从旧 delta 的 add/update 里继承回来,避免改数量误清空间信息。
+  // 旁注不承载随身/地点,按Vật phẩm名从旧 delta 的 add/update 里继承回来,避免改数量误清空间信息。
   const placeBefore = new Map<string, { carried?: boolean; location?: string }>();
   for (const e of [...(leaf.delta.items?.add ?? []), ...(leaf.delta.items?.update ?? [])]) {
     if (e.carried !== undefined || e.location !== undefined) {
@@ -949,7 +949,7 @@ export function finalizeDelta(delta: SummaryDelta, openPlansOrdered: { id: strin
   const out: StoredDelta = {};
   if (typeof delta.time === 'string' && delta.time.trim()) out.time = delta.time.trim();
   if (typeof delta.location === 'string' && delta.location.trim()) out.location = delta.location.trim();
-  // 权威定位路径:规范化后非空才固化(只有给了 location 才有意义,但不强制——手动场景可单独给)
+  // 权威定位路径:规范化后非空才固化(只有给了 location 才有意义,但不强制——手动Bối cảnh可单独给)
   const lp = normScenePath(delta.locationPath);
   if (lp.length) out.locationPath = lp;
 
@@ -962,7 +962,7 @@ export function finalizeDelta(delta: SummaryDelta, openPlansOrdered: { id: strin
   }
 
   if (delta.scenes) {
-    // 规范化路径;「desc 必填」:add/update 缺描述的条目丢弃(写不出描述=不值得记)。
+    // 规范化路径;「desc 必填」:add/update 缺描述的mục目丢弃(写不出描述=不值得记)。
     const clean = (arr?: SceneDelta[]): SceneDelta[] =>
       (arr ?? [])
         .map(s => ({ path: normScenePath(s.path), desc: s.desc?.trim() || undefined }))
@@ -1052,7 +1052,7 @@ export function finalizeDelta(delta: SummaryDelta, openPlansOrdered: { id: strin
 
 /* ============ 写入压缩节点(森林) ============ */
 
-/** 追加一条压缩节点(level≥1)。叶子不走这里(在消息 extra 上)。 */
+/** 追加一mục压缩节点(level≥1)。叶子不走这里(在消息 extra 上)。 */
 export function addSummary(
   s: Omit<MemSummary, 'id' | 'createdAt'> & Partial<Pick<MemSummary, 'id' | 'createdAt'>>,
 ): MemSummary {
@@ -1074,7 +1074,7 @@ export function addSummary(
 
 /* ============ 叶子(在消息 extra 上) ============ */
 
-/** 最新一条有效叶子(chat 里最后一条 leafValid 的消息);无则 null */
+/** 最新一mục有效叶子(chat 里最后一mục leafValid 的消息);无则 null */
 export function latestLeaf(): { index: number; leaf: LeafExtra } | null {
   const chat = getContext()?.chat ?? [];
   for (let i = chat.length - 1; i >= 0; i--) {
@@ -1096,13 +1096,13 @@ export function appendOpToLatestLeaf(op: StoredDelta): boolean {
   const d: StoredDelta = (leaf.delta ??= {});
 
   if (op.items) {
-    // 关键:同名物品在 add/update 与 remove 之间必须互斥(跨桶抵消),否则改名(remove旧+add新)
+    // 关键:同名Vật phẩm在 add/update 与 remove 之间必须互斥(跨桶抵消),否则改名(remove旧+add新)
     // 往返会让 remove 桶残留旧名,而重放固定按 add→update→remove 分组——最后的 remove 会把刚
-    // add 回来的同名物品删掉(物品离奇消失)。add 桶内仍保留 push 累加,不动「手动+1」语义。
+    // add 回来的同名Vật phẩm删掉(Vật phẩm离奇消失)。add 桶内仍保留 push 累加,不动「手动+1」语义。
     const di = (d.items ??= {});
     for (const name of op.items.remove ?? []) {
       const id = itemId(name);
-      // 删除压倒本叶子内对该名的 add/update;再登记待删(去重,prior 叶子的该物品靠它删除)
+      // Xóa压倒本叶子内对该名的 add/update;再登记待删(去重,prior 叶子的该Vật phẩm靠它Xóa)
       if (di.add) di.add = di.add.filter(a => itemId(a.name) !== id);
       if (di.update) di.update = di.update.filter(u => itemId(u.name) !== id);
       di.remove = [...(di.remove ?? []).filter(n => itemId(n) !== id), name];
@@ -1120,7 +1120,7 @@ export function appendOpToLatestLeaf(op: StoredDelta): boolean {
     if (di.remove && !di.remove.length) delete di.remove;
   }
   if (op.npcs) {
-    // 与物品同款跨桶互斥:同名 NPC 在 add/update 与 remove 之间不能并存,
+    // 与Vật phẩm同款跨桶互斥:同名 NPC 在 add/update 与 remove 之间不能并存,
     // 否则改名(remove旧+add新)往返会让 remove 桶残留旧名,重放按 add→update→remove 把刚 add 的删掉。
     const dn = (d.npcs ??= {});
     for (const name of op.npcs.remove ?? []) {
@@ -1180,8 +1180,8 @@ export function appendOpToLatestLeaf(op: StoredDelta): boolean {
 }
 
 /**
- * 手动把整棵变量状态设为 newJson(派生数据,写回最新叶子的一条根 set 命令)。
- * 供变量页「编辑当前值(JSON)」用:用户直接编辑整份 JSON,存成 set('', newJson)。
+ * 手动把整棵Biến số状态设为 newJson(派生数据,写回最新叶子的一mục根 set 命令)。
+ * 供Biến số页「编辑当前值(JSON)」用:用户直接编辑整份 JSON,存成 set('', newJson)。
  * 无有效叶子返回 false。
  */
 export function setVarsRoot(newJson: Record<string, JsonValue>): boolean {
@@ -1189,12 +1189,12 @@ export function setVarsRoot(newJson: Record<string, JsonValue>): boolean {
 }
 
 /**
- * 手动编辑一个物品(派生数据,写回最新叶子的 delta)。
- *  - 改名:物品 id 按规范化名确定,改名等于换 id → 用 remove(旧名) + add(新名,带 qty/desc/位置) 表达。
+ * 手动编辑一个Vật phẩm(派生数据,写回最新叶子的 delta)。
+ *  - 改名:Vật phẩm id 按规范化名Xác nhận,改名等于换 id → 用 remove(旧名) + add(新名,带 qty/desc/位置) 表达。
  *  - 仅改 qty/desc/位置:用 update(按原名匹配,设为新值)。
  * 两种都经 appendOpToLatestLeaf 落到最新叶子。无有效叶子时返回 false。
  *
- * 位置(carried/location):patch 未显式给时,改名场景从派生的旧物品继承——否则改个名字
+ * 位置(carried/location):patch 未显式给时,改名Bối cảnh从派生的旧Vật phẩm继承——否则改个名字
  * 就把「在武器库」这类存放信息丢了(用 add 重建会丢非 add 字段)。
  */
 export function editItem(
@@ -1205,7 +1205,7 @@ export function editItem(
   const desc = patch.desc?.trim() || undefined;
   const qty = typeof patch.qty === 'number' && Number.isFinite(patch.qty) ? patch.qty : undefined;
 
-  // 位置:patch 明确给了用 patch 的;否则从旧物品继承(改名不丢存放地)
+  // 位置:patch 明确给了用 patch 的;否则从旧Vật phẩm继承(改名不丢存放地)
   const prev = memory.items.find(i => i.id === itemId(oldName));
   const carried = patch.carried !== undefined ? patch.carried : prev?.carried;
   const location = patch.location !== undefined ? (patch.location.trim() || undefined) : prev?.location;
@@ -1215,8 +1215,8 @@ export function editItem(
     // add 是「累加」语义,只有当新名在所有叶子里都不存在时才等于「设为该值」;
     // 但改名往返(A→B→A)时,A 往往在更早的叶子里已被 add 过,remove 只作用于本次删的旧名,
     // 拦不住早期叶子对 A 的累加 —— 会把数量叠上去(3 改回后变 4)。
-    // 故再补一条 update:重放序 add→update,add 先建身份/描述/位置(哪怕误累加),
-    // update 把数量「设为绝对值」,与物品源自哪条叶子无关。qty 未给(留空=不计数)时不发 update。
+    // 故再补一mục update:重放序 add→update,add 先建身份/描述/位置(哪怕误累加),
+    // update 把数量「设为绝对值」,与Vật phẩm源自哪mục叶子无关。qty 未给(留空=不计数)时不发 update。
     return appendOpToLatestLeaf({
       items: {
         remove: [oldName],
@@ -1231,7 +1231,7 @@ export function editItem(
 
 /* ============ NPC 手动 op(写回最新叶子,与 editItem 同范式) ============ */
 
-/** 手动新增一个 NPC。无有效叶子返回 false。 */
+/** 手动Thêm mới一个 NPC。无有效叶子返回 false。 */
 export function upsertNpc(
   fields: {
     name: string;
@@ -1266,9 +1266,9 @@ export function upsertNpc(
 
 /**
  * 手动编辑一个 NPC(派生数据,写回最新叶子的 delta),与 editItem 同范式。
- *  - 改名:NPC id 按规范化名确定,改名等于换 id → remove(旧名) + add(新名,带全字段)。
+ *  - 改名:NPC id 按规范化名Xác nhận,改名等于换 id → remove(旧名) + add(新名,带全字段)。
  *  - 仅改字段:update(按原名匹配,设为新值)。
- * 随行/所在地(follow/location):patch 未显式给时,改名场景从派生的旧 NPC 继承(改名不丢位置)。
+ * 随行/所在地(follow/location):patch 未显式给时,改名Bối cảnh从派生的旧 NPC 继承(改名不丢位置)。
  * 无有效叶子返回 false。
  */
 export function editNpc(
@@ -1308,9 +1308,9 @@ export function editNpc(
 }
 
 /**
- * 切换某 NPC 的随行状态(同伴/取消同伴)。
+ * 切换某 NPC 的随行状态(同伴/Hủy bỏ同伴)。
  *  - follow=true:标记随行(applyNpcPlacement 会清掉 location)。
- *  - follow=false:取消随行;可选传入 location 指定「留在哪」,不传则保留原所在地。
+ *  - follow=false:Hủy bỏ随行;可选传入 location 指定「留在哪」,不传则保留原所在地。
  */
 export function setNpcFollow(name: string, follow: boolean, location?: string): boolean {
   const nm = name.trim();
@@ -1319,23 +1319,23 @@ export function setNpcFollow(name: string, follow: boolean, location?: string): 
   return appendOpToLatestLeaf({ npcs: { update: [{ name: nm, follow, location: loc }] } });
 }
 
-/** 切换某 NPC 的「主要角色」标记(升/降重要性);与 setNpcFollow 同范式,写回最新叶子。 */
+/** 切换某 NPC 的「主要Nhân vật」标记(升/降重要性);与 setNpcFollow 同范式,写回最新叶子。 */
 export function setNpcImportant(name: string, important: boolean): boolean {
   const nm = name.trim();
   if (!nm) return false;
   return appendOpToLatestLeaf({ npcs: { update: [{ name: nm, important }] } });
 }
 
-/** 手动删除一个 NPC(退场)。 */
+/** 手动Xóa一个 NPC(退场)。 */
 export function removeNpc(name: string): boolean {
   const nm = name.trim();
   if (!nm) return false;
   return appendOpToLatestLeaf({ npcs: { remove: [nm] } });
 }
 
-/* ============ 场景手动 op(写回最新叶子,与 editItem 同范式) ============ */
+/* ============ Bối cảnh手动 op(写回最新叶子,与 editItem 同范式) ============ */
 
-/** 手动新增/补全一个地点(逐级地理路径)。无有效叶子返回 false。 */
+/** 手动Thêm mới/补全一个地点(逐级地理路径)。无有效叶子返回 false。 */
 export function upsertScene(path: string[], desc?: string): boolean {
   const clean = normScenePath(path);
   if (!clean.length) return false;
@@ -1367,7 +1367,7 @@ export function renameScene(oldPath: string[], newName: string, desc?: string): 
 }
 
 /**
- * 手动重设父级 / 改名 / 插层(连子树平移),用一条 reparent 表达。
+ * 手动重设父级 / 改名 / 插层(连子树平移),用一mục reparent 表达。
  *  - newPath:目标完整路径(末段可与原名不同 = 顺带改名;前缀即新上级,空前缀=顶级)。
  *  - descs:newPath 上各级的描述(键=该级地名),用于补建父级 + 更新被移动节点自身的描述。
  * 复用与 AI 同一套 reparent 重放逻辑。
@@ -1380,14 +1380,14 @@ export function reparentScene(nodePath: string[], newPath: string[], descs?: Rec
   return appendOpToLatestLeaf({ scenes: { reparent: [{ node, newPath: to, descs }] } });
 }
 
-/** 手动删除一个地点(连带其后代)。 */
+/** 手动Xóa一个地点(连带其后代)。 */
 export function removeScene(path: string[]): boolean {
   const clean = normScenePath(path);
   if (!clean.length) return false;
   return appendOpToLatestLeaf({ scenes: { remove: [clean] } });
 }
 
-/** 删除某条消息上的叶子(清 extra),然后级联删坏链 + 重算 + 落盘 */
+/** Xóa某mục消息上的叶子(清 extra),然后级联删坏链 + 重算 + 落盘 */
 export function deleteLeafAt(index: number): boolean {
   const chat = getContext()?.chat;
   if (!chat || !chat[index]?.extra?.bbs_leaf) return false;
@@ -1399,8 +1399,8 @@ export function deleteLeafAt(index: number): boolean {
 }
 
 /**
- * 手动编辑某条消息上的叶子:摘要正文 + 故事内起止时间。
- * 不改 srcHash(锚定的是正文,不是摘要),故叶子仍有效。
+ * 手动编辑某mục消息上的叶子:Tóm tắt正文 + 故事内起止时间。
+ * 不改 srcHash(锚定的是正文,不是Tóm tắt),故叶子仍有效。
  * timeEnd 同步写进 delta.time(覆盖型当前状态,重放即生效);编辑后清掉旧的 timeLabel(已被起止取代)。
  */
 export function editLeafAt(index: number, text: string, timeStart: string, timeEnd: string): boolean {
@@ -1425,9 +1425,9 @@ export function editLeafAt(index: number, text: string, timeStart: string, timeE
 }
 
 /**
- * 楼内面板专用:整体编辑某楼叶子(摘要正文 + 起止时间 + 结构化 delta)。
- * 与 editLeafAt 的区别:连 delta 一起替换,一次重放。供楼内面板「改关键字段 / 删条目」用。
- * delta 由调用方在克隆上改好后整体传入(只改现有条目值 / 删条目,不涉及跨桶抵消逻辑,故直接替换即可)。
+ * 楼内面板专用:整体编辑某楼叶子(Tóm tắt正文 + 起止时间 + 结构化 delta)。
+ * 与 editLeafAt 的区别:连 delta 一起替换,一次重放。供楼内面板「改关键字段 / 删mục目」用。
+ * delta 由调用方在克隆上改好后整体传入(只改现有mục目值 / 删mục目,不涉及跨桶抵消逻辑,故直接替换即可)。
  * 时间处理与 editLeafAt 一致:timeEnd(缺则 timeStart)覆盖写进 delta.time;两端皆空则清除。
  */
 export function editLeafFull(
@@ -1450,8 +1450,8 @@ export function editLeafFull(
   else delete delta.time;
   leaf.delta = delta;
   chat[index].extra = { ...(chat[index].extra ?? {}), bbs_leaf: leaf };
-  // 编辑改了 delta → 同步重写该楼正文的 <bbs_items>/<bbs_vars> 旁注(否则旁注停留在上次摘要的旧值),
-  // 与 applyLeafForFloor 落叶时同口径:物品净变动以「本楼之前状态」为基准算 from→to,变量直接渲染命令。
+  // 编辑改了 delta → 同步重写该楼正文的 <bbs_items>/<bbs_vars> 旁注(否则旁注停留在上次Tóm tắt的旧值),
+  // 与 applyLeafForFloor 落叶时同口径:Vật phẩm净变动以「本楼之前状态」为基准算 from→to,Biến số直接渲染命令。
   rewriteFloorTags(chat, index, delta);
   recomputeDerived();
   scheduleLeafFlush();
@@ -1460,7 +1460,7 @@ export function editLeafFull(
 
 /**
  * 用叶子当前 delta 重写该楼正文的 <bbs_items>/<bbs_vars> 旁注(供楼内编辑后同步正文)。
- * 基准物品状态 = 本楼之前(deriveMemory 到 index,不含本楼),与摘要落叶时一致。
+ * 基准Vật phẩm状态 = 本楼之前(deriveMemory 到 index,不含本楼),与Tóm tắt落叶时一致。
  */
 function rewriteFloorTags(chat: STMessage[], index: number, delta: StoredDelta): void {
   const leaf = getLeaf(chat[index]);
@@ -1472,7 +1472,7 @@ function rewriteFloorTags(chat: STMessage[], index: number, delta: StoredDelta):
 }
 
 /**
- * 编辑一条计划/悬念:改 content / createdTime / targetTime。
+ * 编辑一mục计划/Huyền niệm:改 content / createdTime / targetTime。
  * 计划 id = `plan:${叶子id}#${在该叶子 add 数组里的序号}`,据此定位到产生它的叶子的 delta.plans.add[idx]。
  * 不改 srcHash(锚定正文,与 delta 无关),叶子仍有效;改完重算派生 + 落盘。
  */
@@ -1523,12 +1523,12 @@ export function editSummary(id: string, text: string): boolean {
   return true;
 }
 
-/* ============ 删除 / 拆封 ============ */
+/* ============ Xóa / 拆封 ============ */
 
 /**
- * 删除一个压缩节点。
+ * Xóa一个压缩节点。
  *  - 从所有父节点的 childIds 摘除本 id;
- *  - 数组删除本节点。其子节点因父引用断开,自动变回「散装根」。
+ *  - 数组Xóa本节点。其子节点因父引用断开,自动变回「散装根」。
  * 注意:删压缩节点不影响结构化数据(只压文本),无需 recompute,但要刷新注入。
  */
 export function deleteSummary(id: string): boolean {
@@ -1545,7 +1545,7 @@ export function deleteSummary(id: string): boolean {
 /**
  * 祖先链整删:某叶子 id 不再有效(被删/陈旧/换新 id)时,凡是(递归)包含它的压缩节点全删。
  * 判定:一个压缩节点「完好」⟺ 它的每个 child 要么是现存有效叶子 id、要么是完好的压缩节点;
- * 否则「损坏」,删除。memoized DFS。删除后 saveMemory(若有变化)。
+ * 否则「损坏」,Xóa。memoized DFS。Xóa后 saveMemory(若有变化)。
  *
  * ⚠️ 这里用 leafIntact 而非 leafValid:叶子「存活」只看物理存在(id+delta),**不看页码归属**。
  * 翻页到没摘过的 swipe 时,被压缩进 L1 的叶子虽对当前页 leafValid=false,但它仍物理存在于

@@ -7,7 +7,7 @@ import { derivedMeta, memory } from '@/memory/store';
 import type { MemNpc } from '@/memory/types';
 import { computed, nextTick, ref } from 'vue';
 
-// NPC 是从叶子摘要重放出的派生数据,手动操作写入「最新一条有效叶子」;无有效叶子时无处挂载。
+// NPC 是从叶子摘要重放出的派生数据,手动操作写入「最新一条Có效叶子」;Không cóCó效叶子时Không có处挂载。
 const hasLeaf = computed(() => derivedMeta.hasLeaf);
 
 // 触屏判定:跳过弹窗自动聚焦(移动端自动聚焦会弹输入法挡界面),与场景/摘要页一致。
@@ -15,10 +15,10 @@ const isTouch = typeof window !== 'undefined' && window.matchMedia?.('(hover: no
 
 // 在场分档:与注入端(inject.ts)共用同一权威 classifyNpcPresence —— 读 location + locationPath,
 // 杜绝两套逻辑漂移,确保「界面显示的 = AI 收到的」。四档:
-//   主要角色(置顶,不论在场)/ 在场(全量)/ 同区域(名+身份+性格)/ 不在场(名+身份)。
+//   主要Nhân vật(置顶,不论在场)/ 在场(全量)/ 同区域(名+身份+性格)/ Không có mặt(名+身份)。
 const sortByCreated = (a: MemNpc, b: MemNpc) => a.createdAt - b.createdAt;
 
-// 单趟分桶:每个非主要角色只判一次在场,避免三个 computed 各判一遍。
+// 单趟分桶:每个非主要Nhân vật只判一次在场,避免三个 computed 各判一遍。
 const buckets = computed(() => {
   const present: MemNpc[] = [];
   const nearby: MemNpc[] = [];
@@ -26,7 +26,7 @@ const buckets = computed(() => {
   const here = memory.state.location || '';
   const locPath = memory.state.locationPath;
   for (const n of memory.npcs) {
-    if (n.important) continue; // 主要角色单列,不进在场判定
+    if (n.important) continue; // 主要Nhân vật单列,不进在场判定
     const p = classifyNpcPresence(n, memory.scenes, here, locPath);
     (p === 'present' ? present : p === 'nearby' ? nearby : absent).push(n);
   }
@@ -40,17 +40,17 @@ const present = computed(() => buckets.value.present);
 const nearby = computed(() => buckets.value.nearby);
 const absent = computed(() => buckets.value.absent);
 
-/* —— 随行一键开关:随行→取消(留在当前地点);非随行→标记随行 —— */
+/* —— 随行一Khóa开关:随行→Hủy bỏ(留在Địa điểm hiện tại);非随行→标记随行 —— */
 function toggleFollow(npc: MemNpc) {
   if (npc.follow === true) {
-    // 取消随行:留在当前所在地(无则留空,成为无位置的游离 NPC)
+    // Hủy bỏ随行:留在当前所在地(Không có则留空,成为Không có位置的游离 NPC)
     setNpcFollow(npc.name, false, memory.state.location || '');
   } else {
     setNpcFollow(npc.name, true);
   }
 }
 
-/* —— 主要角色一键升/降 —— */
+/* —— 主要Nhân vật一Khóa升/降 —— */
 function toggleImportant(npc: MemNpc) {
   setNpcImportant(npc.name, !npc.important);
 }
@@ -105,7 +105,7 @@ function addNpc() {
   composerOpen.value = false;
 }
 
-/* —— 编辑弹窗 —— */
+/* —— Chỉnh sửa弹窗 —— */
 interface NpcEditing extends NpcDraft {
   oldName: string;
 }
@@ -145,7 +145,7 @@ function saveEdit() {
   editing.value = null;
 }
 
-/* —— 删除确认 —— */
+/* —— Xóa确认 —— */
 const removing = ref<MemNpc | null>(null);
 function confirmRemove() {
   if (removing.value) removeNpc(removing.value.name);
@@ -156,12 +156,12 @@ function confirmRemove() {
 <template>
   <section class="bbs-page">
     <div class="bbs-section-head">
-      <h2 class="bbs-title bbs-title-sub">角色</h2>
+      <h2 class="bbs-title bbs-title-sub">Nhân vật</h2>
       <button
         class="bbs-add-mini"
         type="button"
         :disabled="!hasLeaf"
-        :title="hasLeaf ? '手动添加角色' : '需先有摘要才能手动添加'"
+        :title="hasLeaf ? 'Thêm nhân vật thủ công' : 'Cần có tóm tắt trước để thêm thủ công'"
         @click="openComposer"
       >
         <Icon name="plus" />
@@ -171,11 +171,11 @@ function confirmRemove() {
     <hr class="bbs-rule" />
 
     <div v-if="memory.npcs.length" class="bbs-npc-groups">
-      <!-- 主要角色:核心主演,永远全量发送。这里突出「即时状态面板」(着装/状态/所在),弱化身份档案 -->
+      <!-- 主要Nhân vật:核心主演,永远全量发送。这里突出「即时状态面板」(着装/状态/所在),弱化身份档案 -->
       <div v-if="mains.length" class="bbs-npc-group">
         <div class="bbs-npc-grouphead">
-          <span class="bbs-npc-grouptag is-main"><Icon name="star" />主要角色</span>
-          <span class="bbs-npc-grouphint">始终随剧情发送,重点维护当前状态</span>
+          <span class="bbs-npc-grouptag is-main"><Icon name="star" />Nhân vật chính</span>
+          <span class="bbs-npc-grouphint">Luôn gửi theo cốt truyện, tập trung duy trì trạng thái hiện tại</span>
         </div>
         <div class="bbs-npc-list">
           <article v-for="n in mains" :key="n.id" class="bbs-npc is-present is-main">
@@ -184,19 +184,19 @@ function confirmRemove() {
                 <span class="bbs-npc-name">{{ n.name }}</span>
                 <span v-if="n.title" class="bbs-npc-flag">{{ n.title }}</span>
                 <span class="bbs-npc-acts">
-                  <button class="bbs-item-act bbs-npc-star active" type="button" title="主要角色 · 点击取消" @click="toggleImportant(n)"><Icon name="star" /></button>
-                  <button class="bbs-item-act" type="button" title="编辑" @click="openEdit(n)"><Icon name="edit" /></button>
-                  <button class="bbs-item-act bbs-item-del" type="button" title="删除" @click="askRemove(n)"><Icon name="trash" /></button>
+                  <button class="bbs-item-act bbs-npc-star active" type="button" title="Nhân vật chính · Nhấn hủy" @click="toggleImportant(n)"><Icon name="star" /></button>
+                  <button class="bbs-item-act" type="button" title="Chỉnh sửa" @click="openEdit(n)"><Icon name="edit" /></button>
+                  <button class="bbs-item-act bbs-item-del" type="button" title="Xóa" @click="askRemove(n)"><Icon name="trash" /></button>
                 </span>
               </div>
               <dl v-if="n.outfit || n.condition || n.follow || n.location" class="bbs-npc-fields">
-                <div v-if="n.outfit" class="bbs-npc-field f-outfit"><dt>着装</dt><dd>{{ n.outfit }}</dd></div>
-                <div v-if="n.condition" class="bbs-npc-field f-cond"><dt>状态</dt><dd>{{ n.condition }}</dd></div>
+                <div v-if="n.outfit" class="bbs-npc-field f-outfit"><dt>Trang phục</dt><dd>{{ n.outfit }}</dd></div>
+                <div v-if="n.condition" class="bbs-npc-field f-cond"><dt>Trạng thái</dt><dd>{{ n.condition }}</dd></div>
                 <div v-if="n.follow || n.location" class="bbs-npc-field f-loc">
-                  <dt>所在</dt><dd>{{ n.follow ? '随主角同行' : n.location }}</dd>
+                  <dt>Nơi ở</dt><dd>{{ n.follow ? 'Đồng hành cùng nhân vật chính' : n.location }}</dd>
                 </div>
               </dl>
-              <p v-else class="bbs-npc-mainhint">尚无状态记录 —— 编辑可补充当前着装 / 状态 / 所在。</p>
+              <p v-else class="bbs-npc-mainhint">Chưa có ghi chép trạng thái —— Chỉnh sửa để bổ sung trang phục / trạng thái / nơi ở hiện tại.</p>
             </div>
           </article>
         </div>
@@ -205,21 +205,21 @@ function confirmRemove() {
       <!-- 在场:随行 / 所在当前场景。全量信息发给 AI,这里也全量展示 -->
       <div v-if="present.length" class="bbs-npc-group">
         <div class="bbs-npc-grouphead">
-          <span class="bbs-npc-grouptag is-present">在场</span>
-          <span class="bbs-npc-grouphint">完整信息随剧情发送</span>
+          <span class="bbs-npc-grouptag is-present">Có mặt</span>
+          <span class="bbs-npc-grouphint">Gửi thông tin đầy đủ theo cốt truyện</span>
         </div>
         <div class="bbs-npc-list">
           <article v-for="n in present" :key="n.id" class="bbs-npc is-present" :class="{ 'is-follow': n.follow }">
             <div class="bbs-npc-body">
               <div class="bbs-npc-head">
                 <span class="bbs-npc-name">{{ n.name }}</span>
-                <span v-if="n.follow" class="bbs-npc-flag is-follow"><Icon name="pin" />随行</span>
+                <span v-if="n.follow" class="bbs-npc-flag is-follow"><Icon name="pin" />Đồng hành</span>
                 <span v-else-if="n.location" class="bbs-npc-flag"><Icon name="scenes" />{{ n.location }}</span>
                 <span class="bbs-npc-acts">
                   <button
                     class="bbs-item-act bbs-npc-star"
                     type="button"
-                    title="标记为主要角色(始终全量发送、追踪状态)"
+                    title="Đánh dấu nhân vật chính (luôn gửi toàn bộ, theo dõi trạng thái)"
                     @click="toggleImportant(n)"
                   >
                     <Icon name="star" />
@@ -228,21 +228,21 @@ function confirmRemove() {
                     class="bbs-item-act bbs-npc-pin"
                     :class="{ active: n.follow }"
                     type="button"
-                    :title="n.follow ? '随行中 · 点击取消(留在当前地点)' : '标记为随行同伴'"
+                    :title="n.follow ? 'Đang đồng hành · Nhấn hủy (ở lại địa điểm hiện tại)' : 'Đánh dấu đồng hành'"
                     @click="toggleFollow(n)"
                   >
                     <Icon name="pin" />
                   </button>
-                  <button class="bbs-item-act" type="button" title="编辑" @click="openEdit(n)"><Icon name="edit" /></button>
-                  <button class="bbs-item-act bbs-item-del" type="button" title="删除" @click="askRemove(n)"><Icon name="trash" /></button>
+                  <button class="bbs-item-act" type="button" title="Chỉnh sửa" @click="openEdit(n)"><Icon name="edit" /></button>
+                  <button class="bbs-item-act bbs-item-del" type="button" title="Xóa" @click="askRemove(n)"><Icon name="trash" /></button>
                 </span>
               </div>
               <dl v-if="n.title || n.personality || n.desc || n.outfit || n.condition" class="bbs-npc-fields">
-                <div v-if="n.title" class="bbs-npc-field f-title"><dt>身份</dt><dd>{{ n.title }}</dd></div>
-                <div v-if="n.outfit" class="bbs-npc-field f-outfit"><dt>着装</dt><dd>{{ n.outfit }}</dd></div>
-                <div v-if="n.condition" class="bbs-npc-field f-cond"><dt>状态</dt><dd>{{ n.condition }}</dd></div>
-                <div v-if="n.personality" class="bbs-npc-field f-trait"><dt>性格</dt><dd>{{ n.personality }}</dd></div>
-                <div v-if="n.desc" class="bbs-npc-field f-desc"><dt>外貌</dt><dd>{{ n.desc }}</dd></div>
+                <div v-if="n.title" class="bbs-npc-field f-title"><dt>Thân phận</dt><dd>{{ n.title }}</dd></div>
+                <div v-if="n.outfit" class="bbs-npc-field f-outfit"><dt>Trang phục</dt><dd>{{ n.outfit }}</dd></div>
+                <div v-if="n.condition" class="bbs-npc-field f-cond"><dt>Trạng thái</dt><dd>{{ n.condition }}</dd></div>
+                <div v-if="n.personality" class="bbs-npc-field f-trait"><dt>Tính cách</dt><dd>{{ n.personality }}</dd></div>
+                <div v-if="n.desc" class="bbs-npc-field f-desc"><dt>Ngoại hình</dt><dd>{{ n.desc }}</dd></div>
               </dl>
             </div>
           </article>
@@ -252,8 +252,8 @@ function confirmRemove() {
       <!-- 同区域:在附近但未必照面。发名+身份+性格给 AI,这里也只展示这三样 -->
       <div v-if="nearby.length" class="bbs-npc-group">
         <div class="bbs-npc-grouphead">
-          <span class="bbs-npc-grouptag is-nearby">同区域</span>
-          <span class="bbs-npc-grouphint">在附近,发送名字、身份与性格</span>
+          <span class="bbs-npc-grouptag is-nearby">Cùng khu vực</span>
+          <span class="bbs-npc-grouphint">Ở gần đây, gửi tên, thân phận và tính cách</span>
         </div>
         <div class="bbs-npc-list">
           <article v-for="n in nearby" :key="n.id" class="bbs-npc is-nearby">
@@ -265,7 +265,7 @@ function confirmRemove() {
                   <button
                     class="bbs-item-act bbs-npc-star"
                     type="button"
-                    title="标记为主要角色(始终全量发送、追踪状态)"
+                    title="Đánh dấu nhân vật chính (luôn gửi toàn bộ, theo dõi trạng thái)"
                     @click="toggleImportant(n)"
                   >
                     <Icon name="star" />
@@ -273,29 +273,29 @@ function confirmRemove() {
                   <button
                     class="bbs-item-act bbs-npc-pin"
                     type="button"
-                    title="标记为随行同伴(将随主角在场)"
+                    title="Đánh dấu bạn đồng hành (sẽ đi cùng nhân vật chính)"
                     @click="toggleFollow(n)"
                   >
                     <Icon name="pin" />
                   </button>
-                  <button class="bbs-item-act" type="button" title="编辑" @click="openEdit(n)"><Icon name="edit" /></button>
-                  <button class="bbs-item-act bbs-item-del" type="button" title="删除" @click="askRemove(n)"><Icon name="trash" /></button>
+                  <button class="bbs-item-act" type="button" title="Chỉnh sửa" @click="openEdit(n)"><Icon name="edit" /></button>
+                  <button class="bbs-item-act bbs-item-del" type="button" title="Xóa" @click="askRemove(n)"><Icon name="trash" /></button>
                 </span>
               </div>
               <dl v-if="n.title || n.personality" class="bbs-npc-fields">
-                <div v-if="n.title" class="bbs-npc-field f-title"><dt>身份</dt><dd>{{ n.title }}</dd></div>
-                <div v-if="n.personality" class="bbs-npc-field f-trait"><dt>性格</dt><dd>{{ n.personality }}</dd></div>
+                <div v-if="n.title" class="bbs-npc-field f-title"><dt>Thân phận</dt><dd>{{ n.title }}</dd></div>
+                <div v-if="n.personality" class="bbs-npc-field f-trait"><dt>Tính cách</dt><dd>{{ n.personality }}</dd></div>
               </dl>
             </div>
           </article>
         </div>
       </div>
 
-      <!-- 不在场:只发名+身份给 AI,这里也压暗、收起细节 -->
+      <!-- Không có mặt:只发名+身份给 AI,这里也压暗、收起细节 -->
       <div v-if="absent.length" class="bbs-npc-group">
         <div class="bbs-npc-grouphead">
-          <span class="bbs-npc-grouptag">不在场</span>
-          <span class="bbs-npc-grouphint">仅发送名字与身份,省 token</span>
+          <span class="bbs-npc-grouptag">Không có mặt</span>
+          <span class="bbs-npc-grouphint">Chỉ gửi tên và thân phận, tiết kiệm token</span>
         </div>
         <div class="bbs-npc-list">
           <article v-for="n in absent" :key="n.id" class="bbs-npc is-absent">
@@ -303,12 +303,12 @@ function confirmRemove() {
               <div class="bbs-npc-head">
                 <span class="bbs-npc-name">{{ n.name }}</span>
                 <span v-if="n.location" class="bbs-npc-flag"><Icon name="scenes" />{{ n.location }}</span>
-                <span v-else class="bbs-npc-flag is-nowhere">所在不明</span>
+                <span v-else class="bbs-npc-flag is-nowhere">Không rõ vị trí</span>
                 <span class="bbs-npc-acts">
                   <button
                     class="bbs-item-act bbs-npc-star"
                     type="button"
-                    title="标记为主要角色(始终全量发送、追踪状态)"
+                    title="Đánh dấu nhân vật chính (luôn gửi toàn bộ, theo dõi trạng thái)"
                     @click="toggleImportant(n)"
                   >
                     <Icon name="star" />
@@ -316,17 +316,17 @@ function confirmRemove() {
                   <button
                     class="bbs-item-act bbs-npc-pin"
                     type="button"
-                    title="标记为随行同伴(将随主角在场)"
+                    title="Đánh dấu bạn đồng hành (sẽ đi cùng nhân vật chính)"
                     @click="toggleFollow(n)"
                   >
                     <Icon name="pin" />
                   </button>
-                  <button class="bbs-item-act" type="button" title="编辑" @click="openEdit(n)"><Icon name="edit" /></button>
-                  <button class="bbs-item-act bbs-item-del" type="button" title="删除" @click="askRemove(n)"><Icon name="trash" /></button>
+                  <button class="bbs-item-act" type="button" title="Chỉnh sửa" @click="openEdit(n)"><Icon name="edit" /></button>
+                  <button class="bbs-item-act bbs-item-del" type="button" title="Xóa" @click="askRemove(n)"><Icon name="trash" /></button>
                 </span>
               </div>
               <dl v-if="n.title" class="bbs-npc-fields">
-                <div class="bbs-npc-field f-title"><dt>身份</dt><dd>{{ n.title }}</dd></div>
+                <div class="bbs-npc-field f-title"><dt>Thân phận</dt><dd>{{ n.title }}</dd></div>
               </dl>
             </div>
           </article>
@@ -336,120 +336,120 @@ function confirmRemove() {
 
     <div v-else class="bbs-empty">
       <span class="bbs-empty-icon"><Icon name="npcs" /></span>
-      <p>还没有登场的角色。摘要时会记下与主角有交集的人物,也可点右上角「+」手动添加。</p>
+      <p>Chưa có nhân vật nào xuất hiện. Khi tóm tắt sẽ ghi lại các nhân vật có tương tác với nhân vật chính, cũng có thể nhấn 「+」 góc trên bên phải để thêm thủ công.</p>
     </div>
 
-    <!-- 添加弹窗:position:fixed 内联(不用 Teleport,见 base.css 说明) -->
+    <!-- Thêm弹窗:position:fixed 内联(不用 Teleport,见 base.css 说明) -->
     <ModalMask :open="composerOpen" @close="closeComposer">
-      <div class="bbs-modal" role="dialog" aria-modal="true" aria-label="添加角色">
+      <div class="bbs-modal" role="dialog" aria-modal="true" aria-label="Thêm nhân vật">
         <header class="bbs-modal-head">
-          <span class="bbs-modal-title">添加角色</span>
-          <button class="bbs-item-act" type="button" title="关闭" @click="closeComposer"><Icon name="close" /></button>
+          <span class="bbs-modal-title">Thêm nhân vật</span>
+          <button class="bbs-item-act" type="button" title="Đóng" @click="closeComposer"><Icon name="close" /></button>
         </header>
         <label class="bbs-modal-field">
-          <span class="bbs-modal-label">名字</span>
-          <input ref="nameInput" v-model="draft.name" class="bbs-input" type="text" placeholder="角色名" @keydown.enter="addNpc" />
+          <span class="bbs-modal-label">Tên</span>
+          <input ref="nameInput" v-model="draft.name" class="bbs-input" type="text" placeholder="Tên nhân vật" @keydown.enter="addNpc" />
         </label>
         <label class="bbs-modal-field">
-          <span class="bbs-modal-label">身份(职业 / 与主角的关系)</span>
-          <textarea v-model="draft.title" v-autosize class="bbs-input bbs-modal-textarea bbs-modal-autogrow" rows="1" placeholder="如:归雁客栈掌柜、青梅竹马"></textarea>
+          <span class="bbs-modal-label">Thân phận (nghề nghiệp / quan hệ với nhân vật chính)</span>
+          <textarea v-model="draft.title" v-autosize class="bbs-input bbs-modal-textarea bbs-modal-autogrow" rows="1" placeholder="Ví dụ: Chưởng quỳ Quán trọ Quy Nhạn, Thanh mai trúc mã"></textarea>
         </label>
         <label class="bbs-modal-field">
-          <span class="bbs-modal-label">性格</span>
-          <textarea v-model="draft.personality" v-autosize class="bbs-input bbs-modal-textarea bbs-modal-autogrow" rows="1" placeholder="如:沉默寡言、护短"></textarea>
+          <span class="bbs-modal-label">Tính cách</span>
+          <textarea v-model="draft.personality" v-autosize class="bbs-input bbs-modal-textarea bbs-modal-autogrow" rows="1" placeholder="Ví dụ: Ít nói, Bảo vệ người mình"></textarea>
         </label>
         <label class="bbs-modal-field">
-          <span class="bbs-modal-label">外貌描述(固定特征:发色 / 身材 / 疤痕,勿写穿着)</span>
-          <textarea v-model="draft.desc" class="bbs-input bbs-modal-textarea" rows="2" placeholder="可选"></textarea>
+          <span class="bbs-modal-label">Mô tả ngoại hình (đặc điểm cố định: màu tóc / vóc dáng / sẹo, không ghi trang phục)</span>
+          <textarea v-model="draft.desc" class="bbs-input bbs-modal-textarea" rows="2" placeholder="Tùy chọn"></textarea>
         </label>
         <label class="bbs-modal-field">
-          <span class="bbs-modal-label">当前着装(会随剧情变化)</span>
-          <textarea v-model="draft.outfit" v-autosize class="bbs-input bbs-modal-textarea bbs-modal-autogrow" rows="1" placeholder="如:红斗篷、佩长剑"></textarea>
+          <span class="bbs-modal-label">Trang phục hiện tại (thay đổi theo cốt truyện)</span>
+          <textarea v-model="draft.outfit" v-autosize class="bbs-input bbs-modal-textarea bbs-modal-autogrow" rows="1" placeholder="Ví dụ: Áo choàng đỏ, Đeo trường kiếm"></textarea>
         </label>
         <label class="bbs-modal-field">
-          <span class="bbs-modal-label">当前状态(受伤 / 疲惫等,无则留空)</span>
-          <textarea v-model="draft.condition" v-autosize class="bbs-input bbs-modal-textarea bbs-modal-autogrow" rows="1" placeholder="可选"></textarea>
+          <span class="bbs-modal-label">Trạng thái hiện tại (Bị thương / Mệt mỏi..., không có thì để trống)</span>
+          <textarea v-model="draft.condition" v-autosize class="bbs-input bbs-modal-textarea bbs-modal-autogrow" rows="1" placeholder="Tùy chọn"></textarea>
         </label>
         <label class="bbs-modal-field bbs-modal-check">
           <input v-model="draft.important" type="checkbox" class="bbs-checkbox" />
-          <span class="bbs-modal-label">主要角色(核心主演,始终全量发送、重点追踪状态)</span>
+          <span class="bbs-modal-label">Nhân vật chính (diễn viên cốt lõi, luôn gửi toàn bộ, tập trung theo dõi trạng thái)</span>
         </label>
         <label class="bbs-modal-field bbs-modal-check">
           <input v-model="draft.follow" type="checkbox" class="bbs-checkbox" />
-          <span class="bbs-modal-label">随行同伴(跟随主角移动,永远在场)</span>
+          <span class="bbs-modal-label">Bạn đồng hành (đi theo nhân vật chính, luôn có mặt)</span>
         </label>
         <label v-if="!draft.follow" class="bbs-modal-field">
-          <span class="bbs-modal-label">所在地点</span>
-          <textarea v-model="draft.location" v-autosize class="bbs-input bbs-modal-textarea bbs-modal-autogrow" rows="1" placeholder="如:归雁客栈、王宫"></textarea>
+          <span class="bbs-modal-label">Nơi ở hiện tại</span>
+          <textarea v-model="draft.location" v-autosize class="bbs-input bbs-modal-textarea bbs-modal-autogrow" rows="1" placeholder="Ví dụ: Quán trọ Quy Nhạn, Hoàng cung"></textarea>
         </label>
         <footer class="bbs-modal-foot">
-          <button class="bbs-btn" type="button" @click="closeComposer">取消</button>
-          <button class="bbs-btn bbs-btn-primary" type="button" :disabled="!draft.name.trim()" @click="addNpc">添加</button>
+          <button class="bbs-btn" type="button" @click="closeComposer">Hủy</button>
+          <button class="bbs-btn bbs-btn-primary" type="button" :disabled="!draft.name.trim()" @click="addNpc">Thêm</button>
         </footer>
       </div>
     </ModalMask>
 
-    <!-- 编辑弹窗 -->
+    <!-- Chỉnh sửa弹窗 -->
     <ModalMask :open="!!editing" @close="cancelEdit">
-      <div v-if="editing" class="bbs-modal" role="dialog" aria-modal="true" aria-label="编辑角色">
+      <div v-if="editing" class="bbs-modal" role="dialog" aria-modal="true" aria-label="Chỉnh sửa nhân vật">
         <header class="bbs-modal-head">
-          <span class="bbs-modal-title">编辑角色</span>
-          <button class="bbs-item-act" type="button" title="关闭" @click="cancelEdit"><Icon name="close" /></button>
+          <span class="bbs-modal-title">Chỉnh sửa nhân vật</span>
+          <button class="bbs-item-act" type="button" title="Đóng" @click="cancelEdit"><Icon name="close" /></button>
         </header>
         <label class="bbs-modal-field">
-          <span class="bbs-modal-label">名字</span>
-          <input v-model="editing.name" class="bbs-input" type="text" placeholder="角色名" />
+          <span class="bbs-modal-label">Tên</span>
+          <input v-model="editing.name" class="bbs-input" type="text" placeholder="Tên nhân vật" />
         </label>
         <label class="bbs-modal-field">
-          <span class="bbs-modal-label">身份(职业 / 与主角的关系)</span>
-          <textarea v-model="editing.title" v-autosize class="bbs-input bbs-modal-textarea bbs-modal-autogrow" rows="1" placeholder="如:归雁客栈掌柜、青梅竹马"></textarea>
+          <span class="bbs-modal-label">Thân phận (nghề nghiệp / quan hệ với nhân vật chính)</span>
+          <textarea v-model="editing.title" v-autosize class="bbs-input bbs-modal-textarea bbs-modal-autogrow" rows="1" placeholder="Ví dụ: Chưởng quỳ Quán trọ Quy Nhạn, Thanh mai trúc mã"></textarea>
         </label>
         <label class="bbs-modal-field">
-          <span class="bbs-modal-label">性格</span>
-          <textarea v-model="editing.personality" v-autosize class="bbs-input bbs-modal-textarea bbs-modal-autogrow" rows="1" placeholder="如:沉默寡言、护短"></textarea>
+          <span class="bbs-modal-label">Tính cách</span>
+          <textarea v-model="editing.personality" v-autosize class="bbs-input bbs-modal-textarea bbs-modal-autogrow" rows="1" placeholder="Ví dụ: Ít nói, Bảo vệ người mình"></textarea>
         </label>
         <label class="bbs-modal-field">
-          <span class="bbs-modal-label">外貌描述(固定特征:发色 / 身材 / 疤痕,勿写穿着)</span>
-          <textarea v-model="editing.desc" class="bbs-input bbs-modal-textarea" rows="2" placeholder="可选"></textarea>
+          <span class="bbs-modal-label">Mô tả ngoại hình (đặc điểm cố định: màu tóc / vóc dáng / sẹo, không ghi trang phục)</span>
+          <textarea v-model="editing.desc" class="bbs-input bbs-modal-textarea" rows="2" placeholder="Tùy chọn"></textarea>
         </label>
         <label class="bbs-modal-field">
-          <span class="bbs-modal-label">当前着装(会随剧情变化)</span>
-          <textarea v-model="editing.outfit" v-autosize class="bbs-input bbs-modal-textarea bbs-modal-autogrow" rows="1" placeholder="如:红斗篷、佩长剑"></textarea>
+          <span class="bbs-modal-label">Trang phục hiện tại (thay đổi theo cốt truyện)</span>
+          <textarea v-model="editing.outfit" v-autosize class="bbs-input bbs-modal-textarea bbs-modal-autogrow" rows="1" placeholder="Ví dụ: Áo choàng đỏ, Đeo trường kiếm"></textarea>
         </label>
         <label class="bbs-modal-field">
-          <span class="bbs-modal-label">当前状态(受伤 / 疲惫等,无则留空)</span>
-          <textarea v-model="editing.condition" v-autosize class="bbs-input bbs-modal-textarea bbs-modal-autogrow" rows="1" placeholder="可选"></textarea>
+          <span class="bbs-modal-label">Trạng thái hiện tại (Bị thương / Mệt mỏi..., không có thì để trống)</span>
+          <textarea v-model="editing.condition" v-autosize class="bbs-input bbs-modal-textarea bbs-modal-autogrow" rows="1" placeholder="Tùy chọn"></textarea>
         </label>
         <label class="bbs-modal-field bbs-modal-check">
           <input v-model="editing.important" type="checkbox" class="bbs-checkbox" />
-          <span class="bbs-modal-label">主要角色(核心主演,始终全量发送、重点追踪状态)</span>
+          <span class="bbs-modal-label">Nhân vật chính (diễn viên cốt lõi, luôn gửi toàn bộ, tập trung theo dõi trạng thái)</span>
         </label>
         <label class="bbs-modal-field bbs-modal-check">
           <input v-model="editing.follow" type="checkbox" class="bbs-checkbox" />
-          <span class="bbs-modal-label">随行同伴(跟随主角移动,永远在场)</span>
+          <span class="bbs-modal-label">Bạn đồng hành (đi theo nhân vật chính, luôn có mặt)</span>
         </label>
         <label v-if="!editing.follow" class="bbs-modal-field">
-          <span class="bbs-modal-label">所在地点</span>
-          <textarea v-model="editing.location" v-autosize class="bbs-input bbs-modal-textarea bbs-modal-autogrow" rows="1" placeholder="如:归雁客栈、王宫"></textarea>
+          <span class="bbs-modal-label">Nơi ở hiện tại</span>
+          <textarea v-model="editing.location" v-autosize class="bbs-input bbs-modal-textarea bbs-modal-autogrow" rows="1" placeholder="Ví dụ: Quán trọ Quy Nhạn, Hoàng cung"></textarea>
         </label>
         <footer class="bbs-modal-foot">
-          <button class="bbs-btn" type="button" @click="cancelEdit">取消</button>
-          <button class="bbs-btn bbs-btn-primary" type="button" :disabled="!editing.name.trim()" @click="saveEdit">保存</button>
+          <button class="bbs-btn" type="button" @click="cancelEdit">Hủy</button>
+          <button class="bbs-btn bbs-btn-primary" type="button" :disabled="!editing.name.trim()" @click="saveEdit">Lưu</button>
         </footer>
       </div>
     </ModalMask>
 
     <ConfirmDialog
       :open="!!removing"
-      title="删除角色"
+      title="Xóa nhân vật"
       tone="danger"
-      confirm-text="删除"
+      confirm-text="Xóa"
       confirm-icon="trash"
       @update:open="v => { if (!v) removing = null; }"
       @confirm="confirmRemove"
       @cancel="removing = null"
     >
-      删除「{{ removing?.name }}」。此操作写入最新摘要,删除楼层可回退。
+      Xóa "{{ removing?.name }}". Thao tác này ghi vào tóm tắt mới nhất, xóa tầng có thể hoàn tác.
     </ConfirmDialog>
   </section>
 </template>
@@ -472,7 +472,7 @@ function confirmRemove() {
   gap: 8px;
 }
 
-/* 分组头:在场/不在场是这页的信息骨架(= AI 实际收到的分档),用细标签 + 一句说明点明取舍 */
+/* 分组头:在场/Không có mặt是这页的信息骨架(= AI 实际收到的分档),用细标签 + 一句说明点明取舍 */
 .bbs-npc-grouphead {
   display: flex;
   align-items: baseline;
@@ -491,13 +491,13 @@ function confirmRemove() {
   background: var(--bbs-accent);
   color: var(--bbs-accent-ink);
 }
-/* 同区域:描边空心 pill —— 介于「在场(实心强调)」与「不在场(实心灰底)」之间 */
+/* 同区域:描边空心 pill —— 介于「在场(实心强调)」与「Không có mặt(实心灰底)」之间 */
 .bbs-npc-grouptag.is-nearby {
   background: transparent;
   border: 1px solid var(--bbs-line-strong);
   padding: 1px 8px; /* 补偿 1px 边框,保持与实心标签等高 */
 }
-/* 主要角色分组标签:同强调底色 + 星标,与置顶组的「核心」地位呼应 */
+/* 主要Nhân vật分组标签:同强调底色 + 星标,与置顶组的「核心」地位呼应 */
 .bbs-npc-grouptag.is-main {
   display: inline-flex;
   align-items: center;
@@ -516,7 +516,7 @@ function confirmRemove() {
   gap: 8px;
 }
 
-/* —— 角色卡:与物品/场景同款的安静卡片。在场/随行只用「左侧一道色条」表态,
+/* —— Nhân vật卡:与物品/场景同款的安静卡片。在场/随行只用「左侧一道色条」表态,
       不再用大圆球——保持列表整体的克制,把强调留给那道竖条。 —— */
 .bbs-npc {
   position: relative;
@@ -538,7 +538,7 @@ function confirmRemove() {
   background: var(--bbs-accent);
   opacity: 0.5;
 }
-/* 同区域:左色条更细更淡 —— 在「在场(3px@0.5)」与「不在场(无条)」之间的一档 */
+/* 同区域:左色条更细更淡 —— 在「在场(3px@0.5)」与「Không có mặt(Không có条)」之间的一档 */
 .bbs-npc.is-nearby::before {
   content: '';
   position: absolute;
@@ -554,7 +554,7 @@ function confirmRemove() {
   width: 3px;
   opacity: 1;
 }
-/* 主要角色:整条左色条加粗实色,卡片更醒目,呼应「核心主演」地位 */
+/* 主要Nhân vật:整条左色条加粗实色,卡片更醒目,呼应「核心主演」地位 */
 .bbs-npc.is-main::before {
   width: 4px;
   opacity: 1;
@@ -562,7 +562,7 @@ function confirmRemove() {
 .bbs-npc.is-main {
   border-color: var(--bbs-line-strong);
 }
-/* 不在场:整行压暗 + 虚线框,与「只发名+身份」的弱化呼应 */
+/* Không có mặt:整行压暗 + 虚线框,与「只发名+身份」的弱化呼应 */
 .bbs-npc.is-absent {
   background: transparent;
   border-style: dashed;
@@ -578,7 +578,7 @@ function confirmRemove() {
   flex-direction: column;
   gap: 4px;
 }
-/* 头行:名字 + 一枚状态标(随行/所在地)+ 操作区。名字占自然宽,状态标吃剩余宽并截断,
+/* 头行:Tên + 一枚状态标(随行/所在地)+ 操作区。Tên占自然宽,状态标吃剩余宽并截断,
    操作区固定不被挤。身份不在这行——长身份单独成段,不再挤乱头行。 */
 .bbs-npc-head {
   display: flex;
@@ -619,8 +619,8 @@ function confirmRemove() {
   opacity: 0.7;
 }
 
-/* —— 字段表:身份/性格/外貌统一成「彩色类别标签 + 内容」的对齐行。
-      标签同宽左对齐成一条竖列,用语义色区分类别,内容统一字号——治「三行同灰、层次乱」。 —— */
+/* —— 字段表:身份/性格/外貌统一成「彩色类别标签 + Nội dung」的对齐行。
+      标签同宽左对齐成一条竖列,用语义色区分类别,Nội dung统一字号——治「三行同灰、层次乱」。 —— */
 .bbs-npc-fields {
   margin: 2px 0 0;
   display: flex;
@@ -642,7 +642,7 @@ function confirmRemove() {
   font-weight: 600;
   line-height: 1.5;
   letter-spacing: 0.04em;
-  /* 默认中性,具体类别在下方各自染色 */
+  /* Mặc định中性,具体类别在下方各自染色 */
   background: var(--bbs-surface-2);
   color: var(--bbs-ink-muted);
 }
@@ -655,7 +655,7 @@ function confirmRemove() {
   color: var(--bbs-ink-soft);
   word-break: break-word;
 }
-/* 身份:强调金标签——这是最关键的一类身份信息 */
+/* 身份:强调金标签——这是最关Khóa的一类身份信息 */
 .bbs-npc-field.f-title dt {
   background: var(--bbs-accent-soft);
   color: var(--bbs-accent);
@@ -663,7 +663,7 @@ function confirmRemove() {
 .bbs-npc-field.f-title dd {
   color: var(--bbs-ink);
 }
-/* 着装:暖色标签——即时层核心,与「会变的当前状态」呼应,内容也加重 */
+/* Trang phục:暖色标签——即时层核心,与「会变的当前状态」呼应,Nội dung也加重 */
 .bbs-npc-field.f-outfit dt {
   background: var(--bbs-warning-soft);
   color: var(--bbs-warning);
@@ -676,14 +676,14 @@ function confirmRemove() {
   background: var(--bbs-danger-soft);
   color: var(--bbs-danger);
 }
-/* 性格:中性偏暖(沿用默认中性,与档案层弱化一致) */
+/* Tính cách:中性偏暖(沿用Mặc định中性,与档案层弱化一致) */
 .bbs-npc-field.f-trait dt {
   background: var(--bbs-surface-2);
   color: var(--bbs-ink-muted);
 }
-/* 外貌 / 所在:中性标签(沿用默认),作次要细节 */
+/* 外貌 / 所在:中性标签(沿用Mặc định),作次要细节 */
 
-/* 主要角色无状态时的占位提示:引导补录当前状态,避免空卡 */
+/* 主要Nhân vậtKhông có状态时的占位提示:引导补录当前状态,避免空卡 */
 .bbs-npc-mainhint {
   margin: 4px 0 0;
   font-size: 12px;
@@ -691,7 +691,7 @@ function confirmRemove() {
   color: var(--bbs-ink-muted);
 }
 
-/* PC(支持 hover)上操作按钮默认隐藏,悬停整卡才浮现;触屏常驻(与物品页一致) */
+/* PC(支持 hover)上操作按钮Mặc định隐藏,悬停整卡才浮现;触屏常驻(与物品页一致) */
 @media (hover: hover) {
   .bbs-npc-acts {
     opacity: 0;
@@ -732,7 +732,7 @@ function confirmRemove() {
   color: var(--bbs-accent);
   background: var(--bbs-accent-soft);
 }
-/* 主要角色星标:激活态点亮(实心感由强调色填充表达) */
+/* 主要Nhân vật星标:激活态点亮(实心感由强调色填充表达) */
 .bbs-npc-star.active {
   color: var(--bbs-accent);
 }
@@ -740,7 +740,7 @@ function confirmRemove() {
   color: var(--bbs-accent);
   background: var(--bbs-accent-soft);
 }
-/* 主要角色卡的操作区常驻(置顶组无需 hover 才显,星标本身就是状态指示) */
+/* 主要Nhân vật卡的操作区常驻(置顶组Không có需 hover 才显,星标本身就是状态指示) */
 .bbs-npc.is-main .bbs-npc-acts {
   opacity: 1;
 }
@@ -750,7 +750,7 @@ function confirmRemove() {
   min-height: 60px;
   font-family: inherit;
 }
-/* 自适应高度:默认贴合一行,内容多才长高(v-autosize 量 scrollHeight 写回);
+/* 自适应高度:Mặc định贴合一行,Nội dung多才长高(v-autosize 量 scrollHeight 写回);
    min-height 归零、resize 交给指令,封顶后滚动。 */
 .bbs-modal-autogrow {
   resize: none;

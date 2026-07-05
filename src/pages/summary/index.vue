@@ -41,11 +41,11 @@ onUnmounted(() => offChatChanged?.());
 // 触屏判定:用于跳过弹窗自动聚焦(移动端自动聚焦会弹出输入法挡住界面)。
 const isTouch = typeof window !== 'undefined' && window.matchMedia?.('(hover: none)').matches;
 
-/* ============ 悬念簿(顶部)============ */
+/* ============ Huyền niệm簿(顶部)============ */
 const newKind = ref<'plan' | 'suspense'>('plan');
 const newContent = ref('');
-const newTargetTime = ref(''); // 手动添加计划时的可选目标时间(故事内时间)
-// 手动添加是低频操作:用弹窗承载,平时只露一个小「+」按钮,不占版面。
+const newTargetTime = ref(''); // 手动ThêmKế hoạch时的Tùy chọn目标Thời gian(故事内Thời gian)
+// 手动Thêm是低频操作:用弹窗承载,平时只露一个小「+」按钮,不占版面。
 const composerOpen = ref(false);
 const contentInput = ref<HTMLTextAreaElement | null>(null);
 function openComposer() {
@@ -60,12 +60,12 @@ function openComposer() {
 function closeComposer() {
   composerOpen.value = false;
 }
-// 计划/悬念只展示「进行中」。点删除即移除——不再有「了结/已了结」概念。
+// Kế hoạch/Huyền niệm只展示「进行中」。点Xóa即Xóa bỏ——不再Có「了结/已了结」概念。
 const openPlans = computed(() => memory.plans.filter(p => p.status === 'open'));
 const hasLeaf = computed(() => derivedMeta.hasLeaf);
 
-/* —— 悬念簿折叠 ——
- * 计划/悬念攒多了,整段很长,要滚很久才到下方的摘要。标题行兼作折叠开关。
+/* —— Huyền niệm簿折叠 ——
+ * Kế hoạch/Huyền niệm攒多了,整段很长,要滚很久才到下方的摘要。标题行兼作折叠开关。
  * 折叠态是本机视图偏好(同 activePage 那类临时导航态),走 localStorage、不进 apiSettings——
  * 跨设备同步它没意义,且不该污染真·设置。 */
 const SUSPENSE_COLLAPSE_KEY = 'bbs.ui.suspenseCollapsed.v1';
@@ -85,12 +85,12 @@ function toggleSuspense() {
     /* localStorage 不可用时仅本次会话生效 */
   }
 }
-// 没有计划/悬念就无可折叠:不显示箭头,也强制展开(避免删空后卡在收拢的空态)
+// 没CóKế hoạch/Huyền niệm就Không có可折叠:不显示箭头,也强制展开(避免删空后卡在收拢的空态)
 const suspenseFoldable = computed(() => openPlans.value.length > 0);
 const suspenseShown = computed(() => !suspenseCollapsed.value || !suspenseFoldable.value);
 
-// 叶子 id → 创建楼层。计划 id 形如 `plan:${叶子id}#${序号}`,由此反查创建该计划/悬念
-// 时所在楼层(与摘要列表的 #楼层 同源)。手动添加的计划挂在最新叶子上,显示其楼层。
+// 叶子 id → 创建楼层。Kế hoạch id 形如 `plan:${叶子id}#${序号}`,由此反查创建该Kế hoạch/Huyền niệm
+// 时所在楼层(与摘要列表的 #楼层 同源)。手动Thêm的Kế hoạch挂在最新叶子上,显示其楼层。
 const leafFloor = computed(() => {
   const m = new Map<string, number>();
   for (const l of derivedMeta.leaves) m.set(l.id, l.msgIndex);
@@ -104,7 +104,7 @@ function planFloor(planId: string): number | undefined {
 function addPlan() {
   const content = newContent.value.trim();
   if (!content) return;
-  // 创建时间用当前已知故事时间(没有就留空);目标时间仅计划可填,用户填了才带上
+  // 创建Thời gian用当前已知故事Thời gian(没Có就留空);目标Thời gian仅Kế hoạch可填,用户填了才带上
   const createdTime = memory.state.time?.trim() || undefined;
   const targetTime = newKind.value === 'plan' ? newTargetTime.value.trim() || undefined : undefined;
   if (!appendOpToLatestLeaf({ plans: { add: [{ kind: newKind.value, content, createdTime, targetTime }] } })) return;
@@ -116,7 +116,7 @@ function removePlan(id: string) {
   appendOpToLatestLeaf({ plans: { remove: [id] } });
 }
 
-/* —— 编辑计划/悬念(弹窗)—— */
+/* —— Chỉnh sửaKế hoạch/Huyền niệm(弹窗)—— */
 const editingPlan = ref<{ id: string; kind: 'plan' | 'suspense'; content: string; createdTime: string; targetTime: string } | null>(null);
 function openPlanEdit(p: { id: string; kind: 'plan' | 'suspense'; content: string; createdTime?: string; targetTime?: string }) {
   editingPlan.value = {
@@ -136,7 +136,7 @@ function savePlanEdit() {
   editPlan(e.id, {
     content: e.content,
     createdTime: e.createdTime,
-    // 目标时间仅计划有意义;悬念保持空
+    // 目标Thời gian仅Kế hoạchCó意义;Huyền niệm保持空
     targetTime: e.kind === 'plan' ? e.targetTime : '',
   });
   refreshInjection();
@@ -144,7 +144,7 @@ function savePlanEdit() {
 }
 
 /* ============ 未摘要楼层 ============
- * derivedMeta.pendingFloors = AI 楼且无有效叶子,由旧到新;此处倒序展示(新楼在前)。 */
+ * derivedMeta.pendingFloors = AI 楼且Không cóCó效叶子,由旧到新;此处倒序展示(新楼在前)。 */
 const pendingFloors = computed(() => [...derivedMeta.pendingFloors].sort((a, b) => b - a));
 const summarizingFloor = ref<number | null>(null);
 async function summarizeOne(floor: number) {
@@ -157,11 +157,11 @@ async function summarizeOne(floor: number) {
   }
 }
 
-/* ============ 批量补摘 ============
- * 把所有未摘楼层按内容量分块、逐块串行补摘:省 token(固定上下文按块分摊)+ 减请求数。
- * 先弹确认(显示待摘楼数),执行中显示进度 + 可取消(块边界生效)。
+/* ============ Bổ sung tóm tắt hàng loạt ============
+ * 把所Có未摘楼层按Nội dung量分块、逐块串行补摘:省 token(固定上下文按块分摊)+ 减请求数。
+ * 先弹确认(显示待摘楼数),执行中显示进度 + 可Hủy bỏ(块边界生效)。
  * 运行状态读 engine 的 batchState 单例(非组件本地 ref):关掉柏宝书窗口再重开,
- * 进度条与取消按钮能恢复——因为任务在 engine 里继续跑,关窗不取消。 */
+ * 进度条与Hủy bỏ按钮能恢复——因为任务在 engine 里继续跑,关窗不Hủy bỏ。 */
 const batchConfirmOpen = ref(false);
 
 function openBatchConfirm() {
@@ -179,14 +179,14 @@ function runBatchBackfill() {
 }
 
 /* ============ 立即总结 ============
- * 手动触发一次「检测是否达阈值 → 达到就总结(可连锁多层)」。结果用一句临时提示反馈。 */
+ * 手动触发一次「检测是否达阈Giá trị → 达到就总结(可连锁多层)」。结果用一句临时提示反馈。 */
 const resummaryRunning = ref(false);
 const resummaryHint = ref('');
 let resummaryHintTimer: ReturnType<typeof setTimeout> | null = null;
 
-// 总结节奏:实际约每「保留最近 AI 消息数 + 每次总结 AI 消息数」楼总结一次——
+// 总结节奏:实际约每「Số tin nhắn AI gần đây giữ lại + Số tin nhắn AI mỗi lần tổng kết」楼总结一次——
 // 最近 keepRecent 条发全文不摘,更早的摘成叶子,叶子攒够 leafBatchThreshold 条压一次总结。
-// 阈值关闭(<2)时不显示节奏句。
+// 阈Giá trịĐóng(<2)时不显示节奏句。
 const resummaryEvery = computed(() => (Math.max(0, apiSettings.keepRecent) + apiSettings.leafBatchThreshold) * 2);
 const showCadence = computed(() => apiSettings.leafBatchThreshold >= 2);
 
@@ -196,15 +196,15 @@ async function doResummarize() {
   resummaryHint.value = '';
   try {
     const made = await resummarizeNow();
-    // 有报错优先显示错误(如未指派总结渠道);否则按生成条数给反馈
+    // Có报错优先显示错误(如未指派总结Kênh);否则按生成条数给反馈
     if (engineState.lastError) {
       resummaryHint.value = '';
     } else if (made > 0) {
-      resummaryHint.value = `已生成 ${made} 条总结`;
+      resummaryHint.value = `Đã tạo ${made} tổng kết`;
     } else {
-      // 未达阈值:补一句动态节奏,告诉用户大概每多少楼总结一次
-      const cadence = showCadence.value ? `,约每 ${resummaryEvery.value} 楼总结一次` : '';
-      resummaryHint.value = `当前没有达到总结阈值的摘要${cadence}`;
+      // 未达阈Giá trị:补一句动态节奏,告诉用户大概每多少楼总结一次
+      const cadence = showCadence.value ? `, khoảng ${resummaryEvery.value} tầng tổng kết 1 lần` : '';
+      resummaryHint.value = `Hiện chưa đạt ngưỡng tổng kết tóm tắt${cadence}`;
     }
   } finally {
     resummaryRunning.value = false;
@@ -216,14 +216,14 @@ async function doResummarize() {
 /* ============ 摘要列表(下方)============ */
 /**
  * 平铺展示行:搜索(全森林命中平铺)与选择(根 + 复选框)两视图用。
- * 默认视图(根 + 逐层展开)改由递归组件 SummaryNode 直接渲染,不经此结构。
+ * Mặc định视图(根 + 逐层展开)改由递归组件 SummaryNode 直接渲染,不经此结构。
  */
 interface DisplayRow extends SummaryRow {
-  isChild: boolean; // 搜索命中的深层(已压缩)节点:只读,不给编辑/删除键
+  isChild: boolean; // 搜索命中的深层(已压缩)节点:只读,不给Chỉnh sửa/XóaKhóa
 }
 
 /**
- * 完整森林视图(byId):所有**有效**叶子(stale=false)+ 全部压缩节点。
+ * 完整森林视图(byId):所Có**Có效**叶子(stale=false)+ 全部压缩节点。
  * ⚠️ 必须走 derivedMeta 而非直接扫 chat:chat 非 reactive,UI 要变更须经 derivedMeta。
  * 展开(取 comp 的 childIds)与搜索(遍历全部节点,含已压缩的深层)都从这里取。
  */
@@ -247,7 +247,7 @@ const byId = computed<Map<string, ViewNode>>(() => {
   return m;
 });
 
-/** 递归解析某节点覆盖的叶子楼层集合(comp 取全部后代有效叶子;失效 child 取不到则跳过)。 */
+/** 递归解析某节点覆盖的叶子楼层集合(comp 取全部后代Có效叶子;失效 child 取不到则跳过)。 */
 function nodeFloors(n: ViewNode, map: Map<string, ViewNode>): [number, number] {
   const acc: number[] = [];
   const seen = new Set<string>();
@@ -283,7 +283,7 @@ function toRow(n: ViewNode, map: Map<string, ViewNode>): SummaryRow {
   };
 }
 
-/** 根节点(倒序:楼层越靠后越在上面),供默认视图与选择视图。 */
+/** 根节点(倒序:楼层越靠后越在上面),供Mặc định视图与选择视图。 */
 const rootNodes = computed<ViewNode[]>(() => {
   const map = byId.value;
   const referenced = new Set<string>();
@@ -297,7 +297,7 @@ const rootNodes = computed<ViewNode[]>(() => {
 /* ---- 视图态:展开 / 搜索 / 选择(三者互斥,均为临时 UI 态,不持久化) ---- */
 const expanded = ref<Set<string>>(new Set()); // 已展开的 comp id
 const searchQuery = ref('');
-// 搜索框默认收起,点工具行放大镜才展开——平时不占版面。收起即清空搜索词。
+// 搜索框Mặc định收起,点工具行放大镜才展开——平时不占版面。收起即清空搜索词。
 const searchOpen = ref(false);
 const searchInput = ref<HTMLInputElement | null>(null);
 const selectMode = ref(false);
@@ -307,7 +307,7 @@ const searching = computed(() => searchQuery.value.trim().length > 0);
 
 function openSearch() {
   searchOpen.value = true;
-  // 非触屏自动聚焦;触屏不聚焦避免立刻弹输入法(与添加计划弹窗同款取舍)
+  // 非触屏自动聚焦;触屏不聚焦避免立刻弹输入法(与ThêmKế hoạch弹窗同款取舍)
   if (!isTouch) void nextTick(() => searchInput.value?.focus());
 }
 function closeSearch() {
@@ -346,14 +346,14 @@ function buildSearchRows(): DisplayRow[] {
       if (t && t.toLowerCase().includes(qLower)) hit = true;
     }
     if (!hit) continue;
-    // 命中的根行可编辑/删除;已被压缩的深层节点只读(展开语义一致,避免误删祖先链)
+    // 命中的根行可Chỉnh sửa/Xóa;已被压缩的深层节点只读(展开语义一致,避免误删祖先链)
     const isRoot = rootIdSet.has(n.id);
     rows.push({ ...base, isChild: !isRoot });
   }
   return rows.sort((a, b) => b.floorHi - a.floorHi);
 }
 
-/** 平铺视图行:搜索命中平铺 / 选择态的根;默认视图不走这里(由 SummaryNode 递归渲染)。 */
+/** 平铺视图行:搜索命中平铺 / 选择态的根;Mặc định视图不走这里(由 SummaryNode 递归渲染)。 */
 const visibleRows = computed<DisplayRow[]>(() => {
   if (searching.value) return buildSearchRows();
   const map = byId.value;
@@ -379,11 +379,11 @@ function highlightParts(text: string): Array<{ t: string; hit: boolean }> {
   return parts.length ? parts : [{ t: text, hit: false }];
 }
 
-/* ---- 选择模式:进出、勾选、连续性约束、合并 ---- */
+/* ---- 选择模式:进出、勾选、连续性约束、Gộp ---- */
 function enterSelectMode() {
   selectMode.value = true;
   selectedIds.value = new Set();
-  expanded.value = new Set(); // 折叠所有展开,只操作根
+  expanded.value = new Set(); // 折叠所Có展开,只操作根
 }
 function exitSelectMode() {
   selectMode.value = false;
@@ -403,7 +403,7 @@ const selectedRootIndexes = computed<number[]>(() => {
   roots.forEach((n, i) => { if (selectedIds.value.has(n.id)) idxs.push(i); });
   return idxs;
 });
-/** 是否可合并:选中 ≥2 且在根序列里连续(无跳选) */
+/** 是否可Gộp:选中 ≥2 且在根序列里连续(Không có跳选) */
 const canMerge = computed(() => {
   const idxs = selectedRootIndexes.value;
   if (idxs.length < 2) return false;
@@ -449,7 +449,7 @@ async function runMerge() {
       exitSelectMode();
     } else if (res.error) {
       // 失败时保留选择。早退分支(未生效/正忙/不连续等)不走引擎的 try/catch,
-      // 不会写 engineState.lastError,故这里主动弹 toast,避免「无事发生、无报错」。
+      // 不会写 engineState.lastError,故这里主动弹 toast,避免「Không có事发生、Không có报错」。
       toast(res.error, 'warning');
     }
   } finally {
@@ -457,28 +457,28 @@ async function runMerge() {
   }
 }
 
-/** 行的展示时间:新数据用 timeStart/timeEnd 合成并压缩;旧数据回退到已固化的 timeLabel(也压缩一次) */
+/** 行的展示Thời gian:新数据用 timeStart/timeEnd 合成并压缩;旧数据回退到已固化的 timeLabel(也压缩一次) */
 function rowTime(r: SummaryRow): string {
   if (r.timeStart || r.timeEnd) return formatRange(r.timeStart, r.timeEnd);
   return r.timeLabel ? compactTimeLabel(r.timeLabel) : '';
 }
-/** 行的相对时间前缀(如「昨天·周三」):仅叶子(单楼摘要)显示;总结跨多楼、相对时间无意义,返回空串 */
+/** 行的相对Thời gian前缀(如「昨天·周三」):仅叶子(单楼摘要)显示;总结跨多楼、相对Thời gianKhông có意义,返回空串 */
 function rowRelative(r: SummaryRow): string {
   if (r.kind !== 'leaf') return '';
   const event = r.timeEnd || r.timeStart || (r.timeLabel ? splitTimeLabel(r.timeLabel).end : '') || '';
-  // 周几并入相对前缀(标准公历带年份才有);与注入端口径一致
+  // 周几并入相对前缀(标准公历带年份才Có);与注入端口径一致
   return [relativeTimeLabel(event, derivedMeta.latestStoryTime), weekdayLabel(event)].filter(Boolean).join('·');
 }
 
-// 当前时间:优先读正文标签实时算出的「故事内最新时间」(不受最新楼是否已摘影响);
-// 取不到再回退派生的 state.time(老数据/无标签场景)。修掉「最新楼未摘时显示旧时间」的问题。
+// 当前Thời gian:优先读正文标签实时算出的「故事内最新Thời gian」(不受最新楼是否已摘影响);
+// 取不到再回退派生的 state.time(老数据/Không có标签场景)。修掉「最新楼未摘时显示旧Thời gian」的问题。
 const currentTime = computed(() => derivedMeta.latestStoryTime || memory.state.time);
-/** 当前时间的周几(仅标准公历带年份才有);展示用 */
+/** 当前Thời gian的周几(仅标准公历带年份才Có);展示用 */
 const currentWeekday = computed(() => weekdayLabel(currentTime.value));
 
 function levelLabel(level: number): string {
-  if (level === 0) return '摘要';
-  return `总结L${level}`;
+  if (level === 0) return 'Tóm tắt';
+  return `Tổng kết L${level}`;
 }
 /** 楼层范围标签:单楼 #5,跨楼 #0 - #10 */
 function floorLabel(r: SummaryRow): string {
@@ -488,17 +488,17 @@ function floorLabel(r: SummaryRow): string {
 
 function onDelete(r: SummaryRow) {
   if (r.kind === 'leaf') {
-    if (!confirm('删除这条摘要?它带来的物品、计划、时间地点变化会按剩余摘要重新计算(可能回退);包含它的总结也会一并删除。原文楼层仍保持隐藏。')) return;
+    if (!confirm('Xóa tóm tắt này? Các thay đổi vật phẩm, kế hoạch, thời gian/địa điểm sẽ được tính lại theo các tóm tắt còn lại (có thể hoàn tác); tổng kết chứa nó cũng sẽ bị xóa. Tầng gốc vẫn giữ ẩn.')) return;
     if (typeof r.msgIndex === 'number') deleteLeafAt(r.msgIndex);
   } else {
-    if (!confirm('删除这条总结?被它收纳的下层摘要会重新展开,物品/计划等不受影响。')) return;
+    if (!confirm('Xóa tổng kết này? Các tóm tắt tầng dưới được nó thu thập sẽ mở rộng lại, vật phẩm/kế hoạch không bị ảnh hưởng.')) return;
     deleteSummary(r.id);
   }
   refreshInjection();
 }
 
-/* ============ 编辑弹窗 ============
- * 叶子:可改「故事内时间」+ 正文;总结:只压文本,故只改正文。 */
+/* ============ Chỉnh sửa弹窗 ============
+ * 叶子:可改「故事内Thời gian」+ 正文;总结:只压文本,故只改正文。 */
 type Editing =
   | { kind: 'leaf'; msgIndex: number; text: string; timeStart: string; timeEnd: string }
   | { kind: 'comp'; compId: string; level: number; text: string };
@@ -506,7 +506,7 @@ const editing = ref<Editing | null>(null);
 
 function openEdit(r: SummaryRow) {
   if (r.kind === 'leaf' && typeof r.msgIndex === 'number') {
-    // 旧数据无 timeStart/timeEnd 时,从已固化的 timeLabel 拆出起止填入
+    // 旧数据Không có timeStart/timeEnd 时,从已固化的 timeLabel 拆出起止填入
     const fb = !r.timeStart && !r.timeEnd ? splitTimeLabel(r.timeLabel) : {};
     editing.value = {
       kind: 'leaf',
@@ -541,7 +541,7 @@ provide(SUMMARY_CTX, {
 
 <template>
   <section class="bbs-page">
-    <!-- ===== 悬念簿 ===== -->
+    <!-- ===== Huyền niệm簿 ===== -->
     <!-- 标题行兼作折叠开关:点标题/箭头收展;右侧「+」独立,stop 冒泡避免误触折叠 -->
     <div class="bbs-section-head">
       <button
@@ -550,46 +550,46 @@ provide(SUMMARY_CTX, {
         :class="{ 'is-static': !suspenseFoldable }"
         :disabled="!suspenseFoldable"
         :aria-expanded="suspenseShown"
-        :title="suspenseFoldable ? (suspenseShown ? '收起悬念簿' : '展开悬念簿') : ''"
+        :title="suspenseFoldable ? (suspenseShown ? 'Thu gọn sổ huyền niệm' : 'Mở rộng sổ huyền niệm') : ''"
         @click="toggleSuspense"
       >
         <Icon v-if="suspenseFoldable" name="chevron" class="bbs-fold-caret" :class="{ 'is-collapsed': !suspenseShown }" />
-        <h2 class="bbs-title bbs-title-sub">悬念簿</h2>
-        <span v-if="suspenseFoldable" class="bbs-fold-count">计 {{ openPlans.length }} 条</span>
+        <h2 class="bbs-title bbs-title-sub">Sổ huyền niệm</h2>
+        <span v-if="suspenseFoldable" class="bbs-fold-count">Tổng {{ openPlans.length }} mục</span>
       </button>
       <button
         class="bbs-add-mini"
         type="button"
         :disabled="!hasLeaf"
-        :title="hasLeaf ? '手动添加计划 / 悬念' : '需先有摘要才能手动添加'"
+        :title="hasLeaf ? 'Thêm kế hoạch / huyền niệm thủ công' : 'Cần có tóm tắt trước để thêm thủ công'"
         @click="openComposer"
       >
         <Icon name="plus" />
       </button>
     </div>
 
-    <!-- grid 1fr↔0fr 收展:高度自适应、无需写死 max-height;reduced-motion 下瞬切(见样式) -->
+    <!-- grid 1fr↔0fr 收展:高度自适应、Không có需写死 max-height;reduced-motion 下瞬切(见样式) -->
     <div class="bbs-fold-wrap" :class="{ 'is-collapsed': !suspenseShown }">
       <div class="bbs-fold-inner">
         <div v-if="openPlans.length" class="bbs-plan-group">
           <div v-for="p in openPlans" :key="p.id" class="bbs-plan">
             <div class="bbs-plan-head">
-              <span class="bbs-plan-kind" :class="p.kind">{{ p.kind === 'suspense' ? '悬念' : '计划' }}</span>
+              <span class="bbs-plan-kind" :class="p.kind">{{ p.kind === 'suspense' ? 'Huyền niệm' : 'Kế hoạch' }}</span>
               <span v-if="planFloor(p.id) !== undefined" class="bbs-plan-floor">#{{ planFloor(p.id) }}</span>
               <span class="bbs-plan-acts">
-                <button class="bbs-plan-act" type="button" title="编辑" @click="openPlanEdit(p)"><Icon name="edit" /></button>
-                <button class="bbs-plan-act bbs-plan-del" type="button" title="删除" @click="removePlan(p.id)"><Icon name="close" /></button>
+                <button class="bbs-plan-act" type="button" title="Chỉnh sửa" @click="openPlanEdit(p)"><Icon name="edit" /></button>
+                <button class="bbs-plan-act bbs-plan-del" type="button" title="Xóa" @click="removePlan(p.id)"><Icon name="close" /></button>
               </span>
             </div>
             <p class="bbs-plan-content">{{ p.content }}</p>
-            <!-- 故事内时间:立于(创建时间)/ 目标(目标时间),任一存在才显示 -->
+            <!-- 故事内Thời gian:立于(创建Thời gian)/ 目标(目标Thời gian),任一存在才显示 -->
             <div v-if="p.createdTime || p.targetTime" class="bbs-plan-times">
-              <span v-if="p.createdTime" class="bbs-plan-time">立于 {{ p.createdTime }}</span>
-              <span v-if="p.targetTime" class="bbs-plan-time bbs-plan-time-target">目标 {{ p.targetTime }}</span>
+              <span v-if="p.createdTime" class="bbs-plan-time">Tạo lúc {{ p.createdTime }}</span>
+              <span v-if="p.targetTime" class="bbs-plan-time bbs-plan-time-target">Mục tiêu {{ p.targetTime }}</span>
             </div>
           </div>
         </div>
-        <p v-else class="bbs-plan-empty">还没有计划或悬念。摘要时会自动捕捉,也可手动添加。</p>
+        <p v-else class="bbs-plan-empty">Chưa có kế hoạch hay huyền niệm nào. Sẽ tự động bắt lấy khi tóm tắt, cũng có thể thêm thủ công.</p>
       </div>
     </div>
 
@@ -600,7 +600,7 @@ provide(SUMMARY_CTX, {
 
     <!-- ===== 摘要 ===== -->
     <div class="bbs-section-head">
-      <h2 class="bbs-title bbs-title-sub">摘要</h2>
+      <h2 class="bbs-title bbs-title-sub">Tóm tắt</h2>
       <div class="bbs-summary-tools">
         <!-- 搜索:点放大镜展开搜索框(平时收起不占版面);已展开则收起并清空 -->
         <button
@@ -609,43 +609,43 @@ provide(SUMMARY_CTX, {
           type="button"
           :class="{ 'is-on': searchOpen }"
           :disabled="!rootNodes.length"
-          :title="searchOpen ? '收起搜索' : '搜索摘要'"
+          :title="searchOpen ? 'Thu gọn tìm kiếm' : 'Tìm kiếm tóm tắt'"
           @click="toggleSearch"
         >
           <Icon name="search" />
         </button>
-        <!-- 选择模式:进/出。选择态下换成「完成」,并隐藏立即总结(避免与合并撞车) -->
+        <!-- 选择模式:进/出。选择态下换成「Hoàn tất」,并隐藏立即总结(避免与Gộp撞车) -->
         <!-- 窄屏收成纯图标(隐藏 .bbs-btn-label),与左侧放大镜同权重,不喧宾夺主 -->
         <button
           v-if="!selectMode"
           class="bbs-btn bbs-btn-sm"
           type="button"
           :disabled="!rootNodes.length || searching"
-          title="勾选连续的多条摘要,手动合并成一条总结"
+          title="Chọn nhiều tóm tắt liên tiếp, gộp thủ công thành một tổng kết"
           @click="enterSelectMode"
         >
-          <Icon name="checklist" /><span class="bbs-btn-label">多选</span>
+          <Icon name="checklist" /><span class="bbs-btn-label">Chọn nhiều</span>
         </button>
         <button
           v-else
           class="bbs-btn bbs-btn-sm"
           type="button"
-          title="退出多选"
+          title="Thoát chọn nhiều"
           @click="exitSelectMode"
         >
-          <Icon name="close" /><span class="bbs-btn-label">完成</span>
+          <Icon name="close" /><span class="bbs-btn-label">Hoàn tất</span>
         </button>
         <button
           v-if="!selectMode"
           class="bbs-btn bbs-btn-sm bbs-resummary-btn"
           type="button"
           :disabled="resummaryRunning || engineState.running"
-          title="检测摘要是否达到总结阈值,达到则立即总结一次"
+          title="Kiểm tra tóm tắt đạt ngưỡng chưa, nếu đạt sẽ tiến hành tổng kết ngay"
           @click="doResummarize"
         >
           <span v-if="resummaryRunning" class="bbs-pending-spin"></span>
           <Icon v-else name="bolt" />
-          <span class="bbs-btn-label">立即总结</span>
+          <span class="bbs-btn-label">Tổng kết ngay</span>
         </button>
       </div>
     </div>
@@ -659,36 +659,36 @@ provide(SUMMARY_CTX, {
         v-model="searchQuery"
         class="bbs-input bbs-search-input"
         type="text"
-        placeholder="搜索摘要正文 / 时间,或输入 #楼层号"
+        placeholder="Tìm nội dung tóm tắt / thời gian, hoặc nhập #số_tầng"
         @keydown.esc="closeSearch"
       />
-      <button class="bbs-search-clear" type="button" :title="searching ? '清空' : '收起搜索'" @click="searching ? (searchQuery = '') : closeSearch()">
+      <button class="bbs-search-clear" type="button" :title="searching ? 'Xóa trống' : 'Thu gọn tìm kiếm'" @click="searching ? (searchQuery = '') : closeSearch()">
         <Icon name="close" />
       </button>
     </div>
 
-    <!-- 未摘要楼层:只列楼层号,点一下单独补摘那一楼;楼层多时可「批量补摘」 -->
+    <!-- 未摘要楼层:只列楼层号,点一下单独补摘那一楼;楼层多时可「Bổ sung tóm tắt hàng loạt」 -->
     <div v-if="pendingFloors.length" class="bbs-pending">
       <div class="bbs-pending-head">
         <span class="bbs-pending-label" :data-count="pendingFloors.length">
-          <Icon name="summary" />未摘要楼层
+          <Icon name="summary" />Tầng chưa tóm tắt
         </span>
-        <!-- 批量补摘:把全部未摘楼层分块串行补完(省 token、减请求);批量进行中显示进度+取消 -->
+        <!-- Bổ sung tóm tắt hàng loạt:把全部未摘楼层分块串行补完(省 token、减请求);批量进行中显示进度+Hủy bỏ -->
         <button
           v-if="!batchState.running"
           class="bbs-btn bbs-btn-sm bbs-batch-btn"
           type="button"
           :disabled="engineState.running || summarizingFloor !== null"
-          title="把全部未摘楼层分批一次性补完(比逐楼省 token、更快)"
+          title="Bổ sung toàn bộ tầng chưa tóm tắt theo từng lô một lần (tiết kiệm token và nhanh hơn làm từng tầng)"
           @click="openBatchConfirm"
         >
-          <Icon name="plans" />批量补摘
+          <Icon name="plans" />Bổ sung tóm tắt hàng loạt
         </button>
         <span v-else class="bbs-batch-progress">
           <span class="bbs-pending-spin"></span>
-          补摘中 {{ batchState.done }}/{{ batchState.total }}
+          Đang tóm tắt bù {{ batchState.done }}/{{ batchState.total }}
           <button class="bbs-batch-cancel" type="button" :disabled="batchState.cancelRequested" @click="cancelBatchBackfill">
-            {{ batchState.cancelRequested ? '停止中…' : '取消' }}
+            {{ batchState.cancelRequested ? 'Đang dừng...' : 'Hủy bỏ' }}
           </button>
         </span>
       </div>
@@ -699,7 +699,7 @@ provide(SUMMARY_CTX, {
           class="bbs-pending-chip"
           type="button"
           :disabled="engineState.running || summarizingFloor !== null || batchState.running"
-          :title="`对楼层 #${f} 生成摘要`"
+          :title="`Tạo tóm tắt cho tầng #${f}`"
           @click="summarizeOne(f)"
         >
           <span v-if="summarizingFloor === f" class="bbs-pending-spin"></span>
@@ -708,37 +708,37 @@ provide(SUMMARY_CTX, {
       </div>
     </div>
 
-    <!-- 批量补摘确认弹窗 -->
+    <!-- Bổ sung tóm tắt hàng loạt确认弹窗 -->
     <ConfirmDialog
       v-model:open="batchConfirmOpen"
-      title="批量补摘"
-      confirmText="开始"
+      title="Bổ sung tóm tắt hàng loạt"
+      confirmText="Bắt đầu"
       @confirm="runBatchBackfill"
     >
-      共 {{ pendingFloors.length }} 个未摘楼层,将按内容量分批、逐批串行补摘(比逐楼省 token、更快)。
-      过程中可随时取消(会在当前这批完成后停下)。继续?
+      Tổng cộng {{ pendingFloors.length }} tầng chưa tóm tắt, sẽ chia lô theo lượng nội dung để tóm tắt bù tuần tự (tiết kiệm token và nhanh hơn tóm tắt từng tầng).
+      Có thể hủy bỏ bất cứ lúc nào trong quá trình (sẽ dừng lại sau khi hoàn tất lô hiện tại). Tiếp tục?
     </ConfirmDialog>
 
     <!-- 当前状态 -->
     <div v-if="currentTime || memory.state.location" class="bbs-state">
       <div v-if="currentTime" class="bbs-state-item">
-        <span class="bbs-state-key">时间</span>
+        <span class="bbs-state-key">Thời gian</span>
         <span class="bbs-state-val">{{ currentTime }}<template v-if="currentWeekday"> ({{ currentWeekday }})</template></span>
       </div>
       <div v-if="memory.state.location" class="bbs-state-item">
-        <span class="bbs-state-key">地点</span>
+        <span class="bbs-state-key">Địa điểm</span>
         <span class="bbs-state-val">{{ memory.state.location }}</span>
       </div>
     </div>
 
     <p v-if="engineState.lastError" class="bbs-error">{{ engineState.lastError }}</p>
 
-    <!-- 默认视图:根倒序,逐层展开由 SummaryNode 递归承载(grid 高度过渡,不脱流、无闪烁) -->
+    <!-- Mặc định视图:根倒序,逐层展开由 SummaryNode 递归承载(grid 高度过渡,不脱流、Không có闪烁) -->
     <div v-if="!searching && !selectMode && rootNodes.length" class="bbs-summary-list">
       <SummaryNode v-for="n in rootNodes" :key="`${n.kind}:${n.id}`" :node="n" :depth="0" />
     </div>
 
-    <!-- 搜索 / 选择视图:平铺列表(无逐层展开)。搜索命中含已压缩的深层节点 -->
+    <!-- 搜索 / 选择视图:平铺列表(Không có逐层展开)。搜索命中含已压缩的深层节点 -->
     <div
       v-else-if="visibleRows.length"
       class="bbs-summary-list"
@@ -761,26 +761,26 @@ provide(SUMMARY_CTX, {
         </label>
         <div class="bbs-summary-main">
           <header class="bbs-summary-meta">
-            <!-- 总结:层级标签 + 范围药丸 + 相对时间(留题首行)+ 绝对时间(窄屏换行) -->
+            <!-- 总结:层级标签 + 范围药丸 + 相对Thời gian(留题首行)+ 绝对Thời gian(窄屏换行) -->
             <template v-if="r.kind === 'comp'">
               <span class="bbs-summary-badge">{{ levelLabel(r.level) }}</span>
               <span class="bbs-summary-loc">{{ floorLabel(r) }}</span>
               <span v-if="rowRelative(r)" class="bbs-summary-rel">({{ rowRelative(r) }})</span>
               <span v-if="rowTime(r)" class="bbs-summary-time">{{ rowTime(r) }}</span>
             </template>
-            <!-- 摘要:相对时间 + 楼层号都做成等高小标签(盒子居中,免去 CJK 基线下沉),绝对时间作题首文本(窄屏换行) -->
+            <!-- 摘要:相对Thời gian + 楼层号都做成等高小标签(盒子居中,免去 CJK 基线下沉),绝对Thời gian作题首文本(窄屏换行) -->
             <template v-else>
               <span v-if="rowRelative(r)" class="bbs-summary-rel">{{ rowRelative(r) }}</span>
               <span class="bbs-summary-loc">{{ floorLabel(r) }}</span>
               <span v-if="rowTime(r)" class="bbs-summary-dateline">{{ rowTime(r) }}</span>
             </template>
-            <span v-if="r.stale" class="bbs-summary-stale">待更新</span>
-            <!-- 操作键:搜索命中的根行(已压缩深层节点只读,不误删祖先链;选择模式无操作) -->
+            <span v-if="r.stale" class="bbs-summary-stale">Chờ cập nhật</span>
+            <!-- 操作Khóa:搜索命中的根行(已压缩深层节点只读,不误删祖先链;选择模式Không có操作) -->
             <span v-if="!selectMode && !r.isChild" class="bbs-summary-acts">
               <button
                 class="bbs-summary-act"
                 type="button"
-                :title="r.kind === 'comp' ? '编辑总结' : '编辑摘要'"
+                :title="r.kind === 'comp' ? 'Chỉnh sửa tổng kết' : 'Chỉnh sửa tóm tắt'"
                 @click="openEdit(r)"
               >
                 <Icon name="edit" />
@@ -788,7 +788,7 @@ provide(SUMMARY_CTX, {
               <button
                 class="bbs-summary-act bbs-summary-del"
                 type="button"
-                :title="r.kind === 'comp' ? '删除总结(下层会展开)' : '删除摘要'"
+                :title="r.kind === 'comp' ? 'Xóa tổng kết (tầng dưới mở rộng)' : 'Xóa tóm tắt'"
                 @click="onDelete(r)"
               >
                 <Icon name="trash" />
@@ -804,29 +804,29 @@ provide(SUMMARY_CTX, {
         </div>
       </article>
     </div>
-    <!-- 搜索无结果:与「还没有摘要」区分 -->
+    <!-- 搜索Không có结果:与「还没Có摘要」区分 -->
     <div v-else-if="searching" class="bbs-empty">
       <span class="bbs-empty-icon"><Icon name="search" /></span>
-      <p>没有匹配「{{ searchQuery.trim() }}」的摘要。换个关键词,或输入 #楼层号试试。</p>
+      <p>Không có tóm tắt nào khớp với 「{{ searchQuery.trim() }}」. Hãy thử từ khóa khác hoặc nhập #số_tầng.</p>
     </div>
     <div v-else class="bbs-empty">
       <span class="bbs-empty-icon"><Icon name="summary" /></span>
-      <p>还没有摘要。对话累积到设定楼层后会自动生成,也可在「未摘要楼层」里点楼层号单独补摘。</p>
+      <p>Chưa có tóm tắt. Sẽ tự động tạo khi hội thoại đạt số tầng thiết lập, cũng có thể nhấn vào số tầng trong 'Tầng chưa tóm tắt' để bổ sung.</p>
     </div>
 
-    <!-- 选择模式底部操作条:显示已选统计 + 合并/取消。sticky 在页面底部 -->
+    <!-- 选择模式底部操作条:显示已选统计 + Gộp/Hủy bỏ。sticky 在页面底部 -->
     <div v-if="selectMode" class="bbs-select-bar">
       <span class="bbs-select-info">
         <template v-if="selectionSummary.count">
-          已选 {{ selectionSummary.count }} 条
+          Đã chọn {{ selectionSummary.count }} mục
           <template v-if="selectionSummary.floorLo >= 0">
-            · 覆盖 {{ selectionSummary.floorLo === selectionSummary.floorHi ? `#${selectionSummary.floorLo}` : `#${selectionSummary.floorLo} - #${selectionSummary.floorHi}` }}
+            · Bao phủ {{ selectionSummary.floorLo === selectionSummary.floorHi ? `#${selectionSummary.floorLo}` : `#${selectionSummary.floorLo} - #${selectionSummary.floorHi}` }}
           </template>
-          · 生成 {{ levelLabel(selectionSummary.level) }}
+          · Tạo {{ levelLabel(selectionSummary.level) }}
         </template>
-        <template v-else>勾选连续的多条摘要合并</template>
+        <template v-else>Chọn nhiều tóm tắt liên tiếp để gộp</template>
       </span>
-      <span v-if="selectionSummary.count >= 2 && !canMerge" class="bbs-select-warn">需选连续的摘要</span>
+      <span v-if="selectionSummary.count >= 2 && !canMerge" class="bbs-select-warn">Cần chọn tóm tắt liên tiếp</span>
       <button
         class="bbs-btn bbs-btn-sm bbs-btn-primary"
         type="button"
@@ -835,116 +835,116 @@ provide(SUMMARY_CTX, {
       >
         <span v-if="merging" class="bbs-pending-spin"></span>
         <Icon v-else name="plans" />
-        合并总结
+        Gộp tổng kết
       </button>
     </div>
 
-    <!-- 合并确认弹窗 -->
+    <!-- Gộp确认弹窗 -->
     <ConfirmDialog
       v-model:open="mergeConfirmOpen"
-      title="合并总结"
-      confirmText="合并"
+      title="Gộp tổng kết"
+      confirmText="Gộp"
       @confirm="runMerge"
     >
-      将把选中的 {{ selectionSummary.count }} 条摘要合并成一条 {{ levelLabel(selectionSummary.level) }}(无视自动总结阈值)。
-      原摘要会被收纳进新总结、从列表收起(数据不删,可删掉新总结还原)。继续?
+      Sẽ gộp {{ selectionSummary.count }} mục tóm tắt đã chọn thành một {{ levelLabel(selectionSummary.level) }} (bỏ qua ngưỡng tổng kết tự động).
+      Tóm tắt gốc sẽ được thu nạp vào tổng kết mới và ẩn khỏi danh sách (dữ liệu không mất, có thể xóa tổng kết mới để khôi phục). Tiếp tục?
     </ConfirmDialog>
 
-    <!-- ===== 添加计划 / 悬念弹窗 ===== -->
+    <!-- ===== ThêmKế hoạch / Huyền niệm弹窗 ===== -->
     <ModalMask :open="composerOpen" @close="closeComposer">
-      <div class="bbs-modal" role="dialog" aria-modal="true" aria-label="添加计划或悬念">
+      <div class="bbs-modal" role="dialog" aria-modal="true" aria-label="Thêm kế hoạch hoặc huyền niệm">
         <header class="bbs-modal-head">
-          <span class="bbs-modal-title">添加计划 / 悬念</span>
-          <button class="bbs-summary-act" type="button" title="关闭" @click="closeComposer"><Icon name="close" /></button>
+          <span class="bbs-modal-title">Thêm kế hoạch / huyền niệm</span>
+          <button class="bbs-summary-act" type="button" title="Đóng" @click="closeComposer"><Icon name="close" /></button>
         </header>
         <div class="bbs-modal-field">
-          <span class="bbs-modal-label">类型</span>
+          <span class="bbs-modal-label">Loại</span>
           <div class="bbs-kind-toggle">
-            <button type="button" class="bbs-kind" :class="{ 'is-on': newKind === 'plan' }" @click="newKind = 'plan'">计划</button>
-            <button type="button" class="bbs-kind" :class="{ 'is-on': newKind === 'suspense' }" @click="newKind = 'suspense'">悬念</button>
+            <button type="button" class="bbs-kind" :class="{ 'is-on': newKind === 'plan' }" @click="newKind = 'plan'">Kế hoạch</button>
+            <button type="button" class="bbs-kind" :class="{ 'is-on': newKind === 'suspense' }" @click="newKind = 'suspense'">Huyền niệm</button>
           </div>
         </div>
         <label class="bbs-modal-field">
-          <span class="bbs-modal-label">内容</span>
+          <span class="bbs-modal-label">Nội dung</span>
           <textarea
             ref="contentInput"
             v-model="newContent"
             class="bbs-input bbs-modal-textarea"
             rows="3"
-            placeholder="描述这条计划或悬念…"
+            placeholder="Mô tả kế hoạch hoặc huyền niệm này..."
             @keydown.enter.exact.prevent="addPlan"
           ></textarea>
         </label>
-        <!-- 目标时间仅「计划」可填,可选;悬念一般无目标时间故不显示 -->
+        <!-- 目标Thời gian仅「Kế hoạch」可填,Tùy chọn;Huyền niệm一般Không có目标Thời gian故不显示 -->
         <label v-if="newKind === 'plan'" class="bbs-modal-field">
-          <span class="bbs-modal-label">目标时间(可选)</span>
+          <span class="bbs-modal-label">Thời gian mục tiêu (tùy chọn)</span>
           <input
             v-model="newTargetTime"
             class="bbs-input"
             type="text"
-            placeholder="如 放学后 / 1988/10/1;模糊或留空都可"
+            placeholder="Ví dụ: Sau giờ học / 1988/10/1; mơ hồ hoặc để trống đều được"
           />
         </label>
         <footer class="bbs-modal-foot">
-          <button class="bbs-btn" type="button" @click="closeComposer">取消</button>
-          <button class="bbs-btn bbs-btn-primary" type="button" :disabled="!newContent.trim()" @click="addPlan">添加</button>
+          <button class="bbs-btn" type="button" @click="closeComposer">Hủy</button>
+          <button class="bbs-btn bbs-btn-primary" type="button" :disabled="!newContent.trim()" @click="addPlan">Thêm</button>
         </footer>
       </div>
     </ModalMask>
 
-    <!-- ===== 编辑计划 / 悬念弹窗 ===== -->
+    <!-- ===== Chỉnh sửaKế hoạch / Huyền niệm弹窗 ===== -->
     <ModalMask :open="!!editingPlan" @close="cancelPlanEdit">
-      <div v-if="editingPlan" class="bbs-modal" role="dialog" aria-modal="true" aria-label="编辑计划或悬念">
+      <div v-if="editingPlan" class="bbs-modal" role="dialog" aria-modal="true" aria-label="Chỉnh sửa kế hoạch hoặc huyền niệm">
         <header class="bbs-modal-head">
-          <span class="bbs-modal-title">编辑{{ editingPlan.kind === 'suspense' ? '悬念' : '计划' }}</span>
-          <button class="bbs-summary-act" type="button" title="关闭" @click="cancelPlanEdit"><Icon name="close" /></button>
+          <span class="bbs-modal-title">Chỉnh sửa{{ editingPlan.kind === 'suspense' ? 'Huyền niệm' : 'Kế hoạch' }}</span>
+          <button class="bbs-summary-act" type="button" title="Đóng" @click="cancelPlanEdit"><Icon name="close" /></button>
         </header>
         <label class="bbs-modal-field">
-          <span class="bbs-modal-label">内容</span>
+          <span class="bbs-modal-label">Nội dung</span>
           <textarea v-model="editingPlan.content" class="bbs-input bbs-modal-textarea" rows="3"></textarea>
         </label>
         <label class="bbs-modal-field">
-          <span class="bbs-modal-label">创建时间(可选)</span>
-          <input v-model="editingPlan.createdTime" class="bbs-input" type="text" placeholder="故事内时间,如 1988/9/29" />
+          <span class="bbs-modal-label">Thời gian tạo (Tùy chọn)</span>
+          <input v-model="editingPlan.createdTime" class="bbs-input" type="text" placeholder="Thời gian trong truyện, ví dụ 1988/9/29" />
         </label>
         <label v-if="editingPlan.kind === 'plan'" class="bbs-modal-field">
-          <span class="bbs-modal-label">目标时间(可选)</span>
-          <input v-model="editingPlan.targetTime" class="bbs-input" type="text" placeholder="如 放学后 / 1988/10/1;模糊或留空都可" />
+          <span class="bbs-modal-label">Thời gian mục tiêu (tùy chọn)</span>
+          <input v-model="editingPlan.targetTime" class="bbs-input" type="text" placeholder="Ví dụ: Sau giờ học / 1988/10/1; mơ hồ hoặc để trống đều được" />
         </label>
         <footer class="bbs-modal-foot">
-          <button class="bbs-btn" type="button" @click="cancelPlanEdit">取消</button>
-          <button class="bbs-btn bbs-btn-primary" type="button" :disabled="!editingPlan.content.trim()" @click="savePlanEdit">保存</button>
+          <button class="bbs-btn" type="button" @click="cancelPlanEdit">Hủy</button>
+          <button class="bbs-btn bbs-btn-primary" type="button" :disabled="!editingPlan.content.trim()" @click="savePlanEdit">Lưu</button>
         </footer>
       </div>
     </ModalMask>
 
-    <!-- ===== 编辑弹窗 ===== -->
+    <!-- ===== Chỉnh sửa弹窗 ===== -->
     <ModalMask :open="!!editing" @close="cancelEdit">
-      <div v-if="editing" class="bbs-modal" role="dialog" aria-modal="true" :aria-label="editing.kind === 'comp' ? '编辑总结' : '编辑摘要'">
+      <div v-if="editing" class="bbs-modal" role="dialog" aria-modal="true" :aria-label="editing.kind === 'comp' ? 'Chỉnh sửa tổng kết' : 'Chỉnh sửa tóm tắt'">
         <header class="bbs-modal-head">
           <span class="bbs-modal-title">
-            {{ editing.kind === 'comp' ? `编辑${levelLabel(editing.level)}` : `编辑摘要 · 楼层 #${editing.msgIndex}` }}
+            {{ editing.kind === 'comp' ? `Chỉnh sửa${levelLabel(editing.level)}` : `Chỉnh sửa tóm tắt · Tầng #${editing.msgIndex}` }}
           </span>
-          <button class="bbs-summary-act" type="button" title="关闭" @click="cancelEdit"><Icon name="close" /></button>
+          <button class="bbs-summary-act" type="button" title="Đóng" @click="cancelEdit"><Icon name="close" /></button>
         </header>
-        <!-- 时间仅叶子可编辑(起止两端);总结只压文本,无时间字段 -->
+        <!-- Thời gian仅叶子可Chỉnh sửa(起止两端);总结只压文本,Không cóThời gian字段 -->
         <div v-if="editing.kind === 'leaf'" class="bbs-modal-field bbs-time-pair">
           <label class="bbs-time-col">
-            <span class="bbs-modal-label">起始时间</span>
-            <input v-model="editing.timeStart" class="bbs-input" type="text" placeholder="如 1988/9/29 21:00" />
+            <span class="bbs-modal-label">Thời gian bắt đầu</span>
+            <input v-model="editing.timeStart" class="bbs-input" type="text" placeholder="Ví dụ 1988/9/29 21:00" />
           </label>
           <label class="bbs-time-col">
-            <span class="bbs-modal-label">结束时间</span>
-            <input v-model="editing.timeEnd" class="bbs-input" type="text" placeholder="如 1988/9/29 21:30" />
+            <span class="bbs-modal-label">Thời gian kết thúc</span>
+            <input v-model="editing.timeEnd" class="bbs-input" type="text" placeholder="Ví dụ: 1988/9/29 21:30" />
           </label>
         </div>
         <label class="bbs-modal-field">
-          <span class="bbs-modal-label">{{ editing.kind === 'comp' ? '总结正文' : '摘要正文' }}</span>
+          <span class="bbs-modal-label">{{ editing.kind === 'comp' ? 'Nội dung tổng kết' : 'Nội dung tóm tắt' }}</span>
           <textarea v-model="editing.text" class="bbs-input bbs-modal-textarea" rows="8"></textarea>
         </label>
         <footer class="bbs-modal-foot">
-          <button class="bbs-btn" type="button" @click="cancelEdit">取消</button>
-          <button class="bbs-btn bbs-btn-primary" type="button" @click="saveEdit">保存</button>
+          <button class="bbs-btn" type="button" @click="cancelEdit">Hủy</button>
+          <button class="bbs-btn bbs-btn-primary" type="button" @click="saveEdit">Lưu</button>
         </footer>
       </div>
     </ModalMask>
@@ -957,7 +957,7 @@ provide(SUMMARY_CTX, {
   display: flex;
   flex-direction: column;
 }
-/* 起止时间:两个输入框并排,各占一半 */
+/* 起止Thời gian:两个输入框并排,各占一半 */
 .bbs-time-pair {
   display: flex;
   gap: 10px;
@@ -971,8 +971,8 @@ provide(SUMMARY_CTX, {
 }
 /* .bbs-section-head / .bbs-add-mini 已提升为 base.css 全局原子(摘要、场景共用) */
 
-/* —— 悬念簿折叠开关 ——
- * 标题行整体可点:左箭头 + 标题 + 金色计数标。无框透明,贴着 section-head 的左缘,
+/* —— Huyền niệm簿折叠开关 ——
+ * 标题行整体可点:左箭头 + 标题 + 金色计数标。Không có框透明,贴着 section-head 的左缘,
  * 不喧宾夺主——折叠是辅助操作,标题仍是主体。 */
 .bbs-fold-head {
   flex: 1 1 auto;
@@ -987,7 +987,7 @@ provide(SUMMARY_CTX, {
   text-align: left;
   cursor: pointer;
 }
-/* 无可折叠(零条目)时退化为普通标题:不是按钮观感、光标默认 */
+/* Không có可折叠(零条目)时退化为普通标题:不是按钮观感、光标Mặc định */
 .bbs-fold-head.is-static {
   cursor: default;
 }
@@ -1005,7 +1005,7 @@ provide(SUMMARY_CTX, {
 .bbs-fold-head:focus-visible .bbs-fold-caret {
   color: var(--bbs-accent);
 }
-/* 计数标:金底描边小药丸,呼应账册「结尾计数」,始终显示;收拢时尤其有用——点明藏了多少条。
+/* 计数标:金底描边小药丸,呼应账册「结尾计数」,始终显示;收拢时尤其Có用——点明藏了多少条。
    margin-top:2px —— 标题是 CJK 大字,基线偏低,小药丸按行盒居中会偏上,下压 2px 才视觉对齐。 */
 .bbs-fold-count {
   flex: 0 0 auto;
@@ -1020,7 +1020,7 @@ provide(SUMMARY_CTX, {
   font-variant-numeric: tabular-nums;
 }
 
-/* —— 可收展容器:grid 1fr↔0fr,高度随内容自适应,无需写死 max-height —— */
+/* —— 可收展容器:grid 1fr↔0fr,高度随Nội dung自适应,Không có需写死 max-height —— */
 .bbs-fold-wrap {
   display: grid;
   grid-template-rows: 1fr;
@@ -1029,7 +1029,7 @@ provide(SUMMARY_CTX, {
 .bbs-fold-wrap.is-collapsed {
   grid-template-rows: 0fr;
 }
-/* min-height:0 + overflow:hidden 才能让 0fr 真正压到零高(否则子项最小内容高顶开) */
+/* min-height:0 + overflow:hidden 才能让 0fr 真正压到零高(否则子项最小Nội dung高顶开) */
 .bbs-fold-inner {
   min-height: 0;
   overflow: hidden;
@@ -1062,7 +1062,7 @@ provide(SUMMARY_CTX, {
   gap: 10px;
   margin-top: 14px;
 }
-/* 卡片竖排:标签行在上(类型药丸 + 右侧小删除键),内容占满整宽在下 */
+/* 卡片竖排:标签行在上(Loại药丸 + 右侧小XóaKhóa),Nội dung占满整宽在下 */
 .bbs-plan {
   display: flex;
   flex-direction: column;
@@ -1072,13 +1072,13 @@ provide(SUMMARY_CTX, {
   border-radius: var(--bbs-radius);
   background: var(--bbs-surface);
 }
-/* 标签行:类型药丸靠左,删除键推到最右 */
+/* 标签行:Loại药丸靠左,XóaKhóa推到最右 */
 .bbs-plan-head {
   display: flex;
   align-items: center;
   gap: 8px;
 }
-/* 类型标签:小药丸,用颜色区分计划/悬念 */
+/* Loại标签:小药丸,用颜色区分Kế hoạch/Huyền niệm */
 .bbs-plan-kind {
   flex: 0 0 auto;
   font-size: 11px;
@@ -1095,7 +1095,7 @@ provide(SUMMARY_CTX, {
   color: var(--bbs-warning);
   background: var(--bbs-warning-soft);
 }
-/* 楼层号:创建该计划/悬念时所在楼层,描边定位标签;与摘要列表 #楼层 同款观感 */
+/* 楼层号:创建该Kế hoạch/Huyền niệm时所在楼层,描边定位标签;与摘要列表 #楼层 同款观感 */
 .bbs-plan-floor {
   flex: 0 0 auto;
   font-size: 11px;
@@ -1107,7 +1107,7 @@ provide(SUMMARY_CTX, {
   padding: 1px 7px;
   font-variant-numeric: tabular-nums;
 }
-/* 动作组(编辑/删除)推到最右;平时低调,桌面 hover/聚焦该卡才浮现 */
+/* 动作组(Chỉnh sửa/Xóa)推到最右;平时低调,桌面 hover/聚焦该卡才浮现 */
 .bbs-plan-acts {
   margin-left: auto;
   flex: 0 0 auto;
@@ -1120,7 +1120,7 @@ provide(SUMMARY_CTX, {
 .bbs-plan:focus-within .bbs-plan-acts {
   opacity: 1;
 }
-/* 单个动作键:小而 muted */
+/* 单个动作Khóa:小而 muted */
 .bbs-plan-act {
   flex: 0 0 auto;
   display: inline-flex;
@@ -1145,7 +1145,7 @@ provide(SUMMARY_CTX, {
   color: var(--bbs-danger);
   background: var(--bbs-danger-soft);
 }
-/* 内容:独占整宽,自然换行 */
+/* Nội dung:独占整宽,自然换行 */
 .bbs-plan-content {
   margin: 0;
   font-size: 14px;
@@ -1153,7 +1153,7 @@ provide(SUMMARY_CTX, {
   color: var(--bbs-ink);
   word-break: break-word;
 }
-/* 计划时间:立于/目标 两枚小标签,描边低调,目标用强调色区分 */
+/* Kế hoạchThời gian:立于/目标 两枚小标签,描边低调,目标用强调色区分 */
 .bbs-plan-times {
   display: flex;
   flex-wrap: wrap;
@@ -1238,7 +1238,7 @@ provide(SUMMARY_CTX, {
   border-radius: var(--bbs-radius);
   background: var(--bbs-accent-soft);
 }
-/* 标题行:标签靠左,批量补摘按钮/进度推到右侧 */
+/* 标题行:标签靠左,Bổ sung tóm tắt hàng loạt按钮/进度推到右侧 */
 .bbs-pending-head {
   display: flex;
   align-items: center;
@@ -1252,7 +1252,7 @@ provide(SUMMARY_CTX, {
   font-weight: 600;
   color: var(--bbs-accent);
 }
-/* 批量补摘按钮:推到标题行最右,小一号带图标 */
+/* Bổ sung tóm tắt hàng loạt按钮:推到标题行最右,小一号带图标 */
 .bbs-batch-btn {
   margin-left: auto;
   flex: 0 0 auto;
@@ -1262,7 +1262,7 @@ provide(SUMMARY_CTX, {
   padding: 5px 11px;
   font-size: 12px;
 }
-/* 批量进行中的进度块:旋转环 + 进度文字 + 取消键 */
+/* 批量进行中的进度块:旋转环 + 进度文字 + Hủy bỏKhóa */
 .bbs-batch-progress {
   margin-left: auto;
   flex: 0 0 auto;
@@ -1297,7 +1297,7 @@ provide(SUMMARY_CTX, {
   opacity: 0.55;
   cursor: default;
 }
-/* 标签后跟一枚计数小点,强化「有 N 楼待办」 */
+/* 标签后跟一枚计数小点,强化「Có N 楼待办」 */
 .bbs-pending-label::after {
   content: attr(data-count);
   display: inline-flex;
@@ -1357,7 +1357,7 @@ provide(SUMMARY_CTX, {
   }
 }
 
-/* —— 分章分隔:计划/悬念 与 摘要 两区之间的明确界线 —— */
+/* —— 分章分隔:Kế hoạch/Huyền niệm 与 摘要 两区之间的明确界线 —— */
 /* 两侧细线在中间断开,嵌一枚金色小菱形——古籍分章的鱼尾标记,呼应纸墨主题 */
 .bbs-divider {
   display: flex;
@@ -1395,13 +1395,13 @@ provide(SUMMARY_CTX, {
   padding: 6px 11px;
   font-size: 12px;
 }
-/* 搜索切换键激活态:点亮强调色,呼应「正在搜索」 */
+/* 搜索切换Khóa激活态:点亮强调色,呼应「正在搜索」 */
 .bbs-summary-tools .bbs-add-mini.is-on {
   color: var(--bbs-accent);
   background: var(--bbs-accent-soft);
 }
 
-/* —— 搜索框:放大镜内嵌左侧,清空键在右;整行圆角与输入一致 —— */
+/* —— 搜索框:放大镜内嵌左侧,清空Khóa在右;整行圆角与输入一致 —— */
 .bbs-search {
   position: relative;
   display: flex;
@@ -1416,7 +1416,7 @@ provide(SUMMARY_CTX, {
   font-size: 15px;
 }
 .bbs-search-input {
-  /* 左留放大镜位、右留清空键位 */
+  /* 左留放大镜位、右留清空Khóa位 */
   padding-left: 34px;
   padding-right: 34px;
 }
@@ -1532,7 +1532,7 @@ provide(SUMMARY_CTX, {
   flex: 1;
 }
 
-/* —— 编辑弹窗:外壳样式已提到 base.css 通用,这里只补本页专用的 textarea —— */
+/* —— Chỉnh sửa弹窗:外壳样式已提到 base.css 通用,这里只补本页专用的 textarea —— */
 .bbs-modal-textarea {
   resize: vertical;
   min-height: 120px;
@@ -1540,7 +1540,7 @@ provide(SUMMARY_CTX, {
   font-family: var(--bbs-font-sans);
 }
 
-/* ============ 触屏:悬念簿动作键常显但低调(摘要卡片动作键在 base.css 处理) ============ */
+/* ============ 触屏:Huyền niệm簿动作Khóa常显但低调(摘要卡片动作Khóa在 base.css 处理) ============ */
 @media (hover: none) {
   .bbs-plan-acts {
     opacity: 1;
@@ -1553,7 +1553,7 @@ provide(SUMMARY_CTX, {
   }
 }
 
-/* ============ 减弱动效:悬念簿箭头与收展瞬切(摘要展开动效在 SummaryNode/base.css) ============ */
+/* ============ 减弱动效:Huyền niệm簿箭头与收展瞬切(摘要展开动效在 SummaryNode/base.css) ============ */
 @media (prefers-reduced-motion: reduce) {
   .bbs-fold-caret,
   .bbs-fold-wrap {
@@ -1561,9 +1561,9 @@ provide(SUMMARY_CTX, {
   }
 }
 
-/* ============ 窄屏:类型切换撑满、状态条整齐 ============ */
+/* ============ 窄屏:Loại切换撑满、状态条整齐 ============ */
 @media (max-width: 640px) {
-  /* 添加弹窗里的类型切换:计划 | 悬念 各占一半,撑满整行 */
+  /* Thêm弹窗里的Loại切换:Kế hoạch | Huyền niệm 各占一半,撑满整行 */
   .bbs-kind-toggle {
     width: 100%;
   }
@@ -1571,14 +1571,14 @@ provide(SUMMARY_CTX, {
     flex: 1;
   }
 
-  /* 时间/地点:窄屏整齐堆叠成两行,长地点不再把行挤乱 */
+  /* Thời gian/Địa điểm:窄屏整齐堆叠成两行,长Địa điểm不再把行挤乱 */
   .bbs-state {
     flex-direction: column;
     gap: 8px;
   }
 
-  /* 摘要题首窄屏排布:绝对时间(纯文本)较长,会把相对时间+楼层标签挤满首行、把操作键顶到第二行。
-     用 order 把绝对时间排到末尾并 flex-basis:100% 独占一行,首行只留「相对时间标签 + 楼层标签 + 操作键」。 */
+  /* 摘要题首窄屏排布:绝对Thời gian(纯文本)较长,会把相对Thời gian+楼层标签挤满首行、把操作Khóa顶到第二行。
+     用 order 把绝对Thời gian排到末尾并 flex-basis:100% 独占一行,首行只留「相对Thời gian标签 + 楼层标签 + 操作Khóa」。 */
   .bbs-summary-dateline,
   .bbs-summary-time {
     order: 99;
@@ -1590,7 +1590,7 @@ provide(SUMMARY_CTX, {
   .bbs-summary-tools .bbs-btn-label {
     display: none;
   }
-  /* 三键统一 32×32 方形图标:放大镜(.bbs-add-mini)与两个 .bbs-btn-sm 对齐,消除大小不一 */
+  /* 三Khóa统一 32×32 方形图标:放大镜(.bbs-add-mini)与两个 .bbs-btn-sm 对齐,消除大小不一 */
   .bbs-summary-tools .bbs-add-mini,
   .bbs-summary-tools .bbs-btn-sm {
     width: 32px;
@@ -1607,7 +1607,7 @@ provide(SUMMARY_CTX, {
     color: var(--bbs-accent);
     background: var(--bbs-accent-soft);
   }
-  /* 立即总结进行中的旋转环仍需占位居中(此时无文字) */
+  /* 立即总结进行中的旋转环仍需占位居中(此时Không có文字) */
   .bbs-summary-tools .bbs-resummary-btn {
     gap: 0;
   }

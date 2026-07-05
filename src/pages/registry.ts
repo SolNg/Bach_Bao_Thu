@@ -15,18 +15,18 @@ export interface PageDef {
 }
 
 /**
- * 分页注册表 —— 新增一页:建一个 pages/<id>/index.vue,再往这里加一行,
- * 并在 Icon.vue 的 PATHS 里加一条同 id 的图标。顺序即导航顺序,设置放最末。
+ * 分页注册表 —— Thêm mới一页:建一个 pages/<id>/index.vue,再往这里加一行,
+ * 并在 Icon.vue 的 PATHS 里加一mục同 id 的图标。顺序即导航顺序,Cài đặt放最末。
  *
- * 计划/悬念已并入摘要页(上方),不再单独成页。
+ * 计划/Huyền niệm已并入Tóm tắt页(上方),不再单独成页。
  */
 export const PAGES: PageDef[] = [
-  { id: 'summary', label: '摘要', component: Summary },
-  { id: 'items', label: '物品', component: Items },
-  { id: 'scenes', label: '场景', component: Scenes },
-  { id: 'npcs', label: '角色', component: Npcs },
-  { id: 'vars', label: '变量', component: Vars },
-  { id: 'settings', label: '设置', component: Settings },
+  { id: 'summary', label: 'Tóm tắt', component: Summary },
+  { id: 'items', label: 'Vật phẩm', component: Items },
+  { id: 'scenes', label: 'Bối cảnh', component: Scenes },
+  { id: 'npcs', label: 'Nhân vật', component: Npcs },
+  { id: 'vars', label: 'Biến số', component: Vars },
+  { id: 'settings', label: 'Cài đặt', component: Settings },
 ];
 
 export function getPage(id: string): PageDef {

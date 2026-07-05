@@ -24,7 +24,7 @@ const RETRY_BACKOFF_MS = 800;
  * 每次尝试都套一个 AbortController + 定时器,超时即中断;失败按类型决定是否重试:
  *  - 内部超时 / 网络异常 / 服务端 5xx / 限流 429 → 重试(还有次数时);
  *  - 4xx(鉴权/格式错等)→ 直接返回 resp,由调用方走既有 !resp.ok 抛错分支(重试无意义);
- *  - 外部 signal(用户取消生成)触发的中断 → 立即抛出,绝不重试(重试是浪费额度与时间)。
+ *  - 外部 signal(用户Hủy bỏ生成)触发的中断 → 立即抛出,绝不重试(重试是浪费额度与时间)。
  * 返回 Response(可能 4xx,交调用方处理);重试耗尽仍失败则抛最后一次错误。
  */
 export async function fetchWithTimeoutRetry(
@@ -37,8 +37,8 @@ export async function fetchWithTimeoutRetry(
   let lastErr: unknown;
 
   for (let attempt = 0; attempt < maxAttempts; attempt++) {
-    // 外部已取消:不再尝试,直接抛(用户主动取消生成)
-    if (externalSignal?.aborted) throw new EmbedError(`${label}已取消`);
+    // 外部已Hủy bỏ:不再尝试,直接抛(用户主动Hủy bỏ生成)
+    if (externalSignal?.aborted) throw new EmbedError(`${label} đã hủy bỏ`);
 
     const ctrl = new AbortController();
     let timedOut = false;
@@ -46,7 +46,7 @@ export async function fetchWithTimeoutRetry(
       timedOut = true;
       ctrl.abort();
     }, Math.max(1000, timeoutSec * 1000));
-    // 外部取消转发到内部 controller(fetch 只认一个 signal)
+    // 外部Hủy bỏ转发到内部 controller(fetch 只认一个 signal)
     const onExternalAbort = () => ctrl.abort();
     externalSignal?.addEventListener('abort', onExternalAbort);
 
@@ -59,11 +59,11 @@ export async function fetchWithTimeoutRetry(
         return resp;
       }
     } catch (e) {
-      // 外部取消触发的 abort:立即抛,不重试
-      if (externalSignal?.aborted && !timedOut) throw new EmbedError(`${label}已取消`);
+      // 外部Hủy bỏ触发的 abort:立即抛,不重试
+      if (externalSignal?.aborted && !timedOut) throw new EmbedError(`${label} đã hủy bỏ`);
       lastErr = timedOut
-        ? new EmbedError(`${label}超时(>${timeoutSec}s)`)
-        : new EmbedError(`${label}网络异常:${e instanceof Error ? e.message : String(e)}`);
+        ? new EmbedError(`${label} hết thời gian (>${timeoutSec}s)`)
+        : new EmbedError(`${label} lỗi mạng: ${e instanceof Error ? e.message : String(e)}`);
     } finally {
       clearTimeout(timer);
       externalSignal?.removeEventListener('abort', onExternalAbort);
@@ -74,7 +74,7 @@ export async function fetchWithTimeoutRetry(
       await new Promise(r => setTimeout(r, RETRY_BACKOFF_MS));
     }
   }
-  throw lastErr instanceof Error ? lastErr : new EmbedError(`${label}请求失败`);
+  throw lastErr instanceof Error ? lastErr : new EmbedError(`${label} yêu cầu thất bại`);
 }
 
 /* ============ float32 ↔ base64 ============ */
@@ -136,7 +136,7 @@ function buildEmbeddingRequest(ep: VectorEndpoint, model: string, texts: string[
       headers: { 'Content-Type': 'application/json', Authorization: `Bearer ${key}` },
       body: JSON.stringify({ model, input: texts }),
       parse: (json) => {
-        if (!json?.data || !Array.isArray(json.data)) throw new EmbedError('embedding 返回缺少 data 数组');
+        if (!json?.data || !Array.isArray(json.data)) throw new EmbedError('embedding trả về thiếu mảng data');
         return json.data.slice().sort((a: any, b: any) => a.index - b.index).map((d: any) => d.embedding);
       },
     };
@@ -154,7 +154,7 @@ function buildEmbeddingRequest(ep: VectorEndpoint, model: string, texts: string[
     headers,
     body: JSON.stringify({ requests: texts.map((text) => ({ model: modelName, content: { parts: [{ text }] } })) }),
     parse: (json) => {
-      if (!json?.embeddings || !Array.isArray(json.embeddings)) throw new EmbedError('Gemini embedding 返回缺少 embeddings 数组');
+      if (!json?.embeddings || !Array.isArray(json.embeddings)) throw new EmbedError('Gemini embedding trả về thiếu mảng embeddings');
       return json.embeddings.map((e: any) => e.values);
     },
   };
@@ -162,7 +162,7 @@ function buildEmbeddingRequest(ep: VectorEndpoint, model: string, texts: string[
 
 /* ============ 对外:embed / rerank ============ */
 
-/** 单次 embedding 请求最多塞几条文本(多数上游 batch 上限 ≤64,取保守值分批)。 */
+/** 单次 embedding 请求最多塞几mục文本(多数上游 batch 上限 ≤64,取保守值分批)。 */
 const EMBED_BATCH = 64;
 
 /** 发一批(≤EMBED_BATCH)文本的 embedding 请求,返回向量数组(顺序对应)。 */
@@ -180,20 +180,20 @@ async function embedBatch(ep: VectorEndpoint, model: string, texts: string[], si
   const json = await resp.json();
   const vectors = req.parse(json);
   if (!Array.isArray(vectors) || vectors.some((v) => !Array.isArray(v))) {
-    throw new EmbedError('embedding 返回的向量数据无效');
+    throw new EmbedError('Dữ liệu vectơ từ embedding trả về không hợp lệ');
   }
   return vectors.map((v) => Float32Array.from(v));
 }
 
 /**
  * 向量化一批文本,返回 Float32Array[](顺序与输入对应)。渠道未配齐则抛错。
- * 超过 EMBED_BATCH 条自动切片分批串行请求(上游单次 batch 有上限,补建几百条时必走多批)。
+ * 超过 EMBED_BATCH mục自动切片分批串行请求(上游单次 batch 有上限,补建几百mục时必走多批)。
  */
 export async function embedTexts(texts: string[], signal?: AbortSignal): Promise<Float32Array[]> {
   if (!texts.length) return [];
   const ep = resolveVectorModel('embedding');
-  if (!ep.url) throw new EmbedError('向量记忆:Embedding 地址未配置');
-  if (!ep.model) throw new EmbedError('向量记忆:Embedding 模型未配置');
+  if (!ep.url) throw new EmbedError('Ký ức vectơ: Chưa cấu hình địa chỉ Embedding');
+  if (!ep.model) throw new EmbedError('Ký ức vectơ: Chưa cấu hình mô hình Embedding');
 
   if (texts.length <= EMBED_BATCH) return embedBatch(ep, ep.model, texts, signal);
 
@@ -205,10 +205,10 @@ export async function embedTexts(texts: string[], signal?: AbortSignal): Promise
   return out;
 }
 
-/** 向量化单条文本 → base64,索引/检索时用。 */
+/** 向量化单mục文本 → base64,索引/检索时用。 */
 export async function embedToBase64(text: string, signal?: AbortSignal): Promise<string> {
   const [v] = await embedTexts([text], signal);
-  if (!v) throw new EmbedError('embedding 返回为空');
+  if (!v) throw new EmbedError('embedding trả về trống');
   return encodeFloat32Base64(v);
 }
 
@@ -223,7 +223,7 @@ export interface RerankResult {
 const RERANK_CONTEXT_LIMIT = 32768;
 const RERANK_SAFE_RATIO = 0.68; // 仅用预算的 68%,给 prompt 模板/响应留余量
 const RERANK_STATIC_RESERVE = 1800; // 固定保留(模型框架开销)
-const RERANK_PER_DOC_OVERHEAD = 24; // 每条文档的分隔/包裹开销
+const RERANK_PER_DOC_OVERHEAD = 24; // 每mục文档的分隔/包裹开销
 
 /** 粗估文本 token:CJK ≈1.35、其它 ≈0.45,再加安全系数(对齐 Horae,宁可高估)。 */
 function estimateRerankTokens(text: string): number {
@@ -259,11 +259,11 @@ function truncateByTokens(text: string, tokenLimit: number): string {
 const RERANK_BATCH_CONCURRENCY = 4;
 
 interface RerankBatch {
-  indices: number[]; // 该批每条文档的全局下标
+  indices: number[]; // 该批每mục文档的全局下标
   documents: string[];
 }
 
-/** 按 token 预算把文档切成多批,超长单条先截断。 */
+/** 按 token 预算把文档切成多批,超长单mục先截断。 */
 function buildRerankBatches(query: string, documents: string[]): RerankBatch[] {
   const queryTokens = estimateRerankTokens(query);
   const docBudget = Math.max(1024, Math.floor(RERANK_CONTEXT_LIMIT * RERANK_SAFE_RATIO) - RERANK_STATIC_RESERVE - queryTokens);
@@ -313,14 +313,14 @@ async function rerankBatch(
   }
   const json = await resp.json();
   const results = json?.results ?? json?.data;
-  if (!Array.isArray(results)) throw new EmbedError('rerank 返回缺少 results 数组');
+  if (!Array.isArray(results)) throw new EmbedError('rerank trả về thiếu mảng results');
   return results.map((r: any) => ({ index: r.index, score: r.relevance_score ?? r.score ?? 0 }));
 }
 
 /**
  * 重排:把候选文档(全文精排时即楼层原文)按与 query 的相关度打分。
  * 返回按 score 降序的 {index, score}(index = 输入 documents 的全局下标)。
- * 文档总量超 rerank 上下文预算时自动按 token 分批、超长单条截断,各批结果按全局下标合并。
+ * 文档总量超 rerank 上下文预算时自动按 token 分批、超长单mục截断,各批结果按全局下标合并。
  * rerank 渠道未配齐时抛错(由调用方决定降级:跳过 rerank、直接用 embedding 序)。
  */
 export async function rerankDocuments(
@@ -331,8 +331,8 @@ export async function rerankDocuments(
 ): Promise<RerankResult[]> {
   if (!documents.length) return [];
   const ep = resolveVectorModel('rerank');
-  if (!ep.url) throw new EmbedError('向量记忆:Rerank 地址未配置');
-  if (!ep.model) throw new EmbedError('向量记忆:Rerank 模型未配置');
+  if (!ep.url) throw new EmbedError('Ký ức vectơ: Chưa cấu hình địa chỉ Rerank');
+  if (!ep.model) throw new EmbedError('Ký ức vectơ: Chưa cấu hình mô hình Rerank');
 
   const endpoint = `${embeddingBase(ep.url)}/rerank`;
   const batches = buildRerankBatches(query, documents);

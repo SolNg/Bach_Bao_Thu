@@ -22,20 +22,20 @@ export const ITEMS_TAG = 'bbs_items';
 export const VARS_TAG = 'bbs_vars';
 
 /** 注入主对话的固定提示词默认值(可在设置里覆盖)。 */
-export const TIME_TAG_PROMPT = `【时间锚点要求(系统强制)】
-在你每次输出正文的最前面和最后面,各放一个时间标签,标明这段剧情的开始时刻与结束时刻:
+export const TIME_TAG_PROMPT = `【Yêu cầu mốc thời gian (Hệ thống bắt buộc)】
+Ở phần đầu tiên và cuối cùng trong mỗi lần xuất văn bản cốt truyện, hãy đặt một nhãn thời gian, chỉ rõ thời điểm bắt đầu và kết thúc của đoạn cốt truyện này:
 
-<${START_TAG}>本段开始时的故事内时间</${START_TAG}>
-（正文……）
-<${END_TAG}>本段结束时的故事内时间</${END_TAG}>
+<${START_TAG}>Thời gian trong truyện lúc bắt đầu đoạn này</${START_TAG}>
+(Nội dung câu chuyện...)
+<${END_TAG}>Thời gian trong truyện lúc kết thúc đoạn này</${END_TAG}>
 
-规则:
-- 时间要具体、可明确定位,风格与正文世界观一致:现代题材用数字日期时间(如 1988/9/29 21:30);古风/奇幻题材用相应的纪年与时辰(如 庆历四年暮春·辰时三刻)。重点是「能定位到某一刻」,不强求阿拉伯数字。
-- 禁止"稍后""不久""某天""同一天"等无法定位到具体时刻的模糊说法。
-- 以上一段的结束时间为基准,结合本段剧情合理推进(对话约几分钟、用餐约一小时、过夜跨到次日等)。
-- 若这是故事开篇、此前没有任何已知时间,请你自行设定一个符合本世界观的具体起始时刻,之后以此为基准推进——这是为记忆系统建立时间锚点所必需的合理设定,不算编造;但绝不能用"某天"这类无法定位的占位词敷衍。
-- 标签只各出现一次,分别紧贴正文最前与最后;标签内只有时间,不要写别的。
-- 这两个标签是给记忆系统读取的锚点,请务必每次都输出。`;
+Quy tắc:
+- Thời gian phải cụ thể, định vị rõ ràng, phong cách nhất quán với thế giới quan cốt truyện: hiện đại dùng ngày giờ số (ví dụ 1988/9/29 21:30); cổ trang/kỳ ảo dùng niên hiệu và giờ thần tương ứng (ví dụ Khánh Lịch năm thứ tư·tiết mộ xuân·giờ Thìn ba khắc). Trọng tâm là 'định vị được một thời điểm cụ thể', không bắt buộc số Ả Rập.
+- Nghiêm cấm cách nói mơ hồ không định vị được thời điểm cụ thể như "một lúc sau", "không lâu", "một ngày nọ", "cùng ngày"...
+- Lấy thời gian kết thúc của đoạn trước làm mốc chuẩn, kết hợp diễn biến cốt truyện hợp lý để thúc đẩy thời gian (trò chuyện khoảng vài phút, ăn uống khoảng một giờ, qua đêm sang ngày hôm sau...).
+- Nếu đây là mở đầu câu chuyện, trước đó chưa có thời gian đã biết nào, hãy tự thiết lập một thời điểm bắt đầu cụ thể phù hợp với thế giới quan này, sau đó lấy đó làm chuẩn để thúc đẩy —— đây là thiết lập hợp lý cần thiết để hệ thống ký ức tạo mốc thời gian, không coi là bịa đặt; tuyệt đối không dùng các từ tạm như "một ngày nọ" để làm cho có.
+- Mỗi nhãn chỉ xuất hiện đúng một lần, nằm ngay sát đầu và cuối văn bản cốt truyện; bên trong nhãn chỉ ghi thời gian, đừng viết bất cứ gì khác.
+- Hai nhãn này là mốc định vị để hệ thống ký ức đọc, vui lòng bắt buộc phải xuất ra mỗi lần.`;
 
 /** 当前生效的固定提示词(用户自定义优先,空则用内置默认)。 */
 export function timeTagPrompt(): string {
@@ -192,7 +192,7 @@ function isManagedCloseLine(line: string, tag: string): boolean {
 function managedBlockLooksOwned(tag: string, inner: string): boolean {
   const lines = inner.split(/\r?\n/).map(x => x.trim()).filter(Boolean);
   if (!lines.length) return false;
-  const re = tag === ITEMS_TAG ? /^(获得|消耗|失去)\s+/ : /^(设定|变更|新增|删除)\s+/;
+  const re = tag === ITEMS_TAG ? /^(Nhận được|消耗|Tiêu hao|失去|Mất|获得)\s+/i : /^(Thiết lập|设定|Thay đổi|变更|Thêm mới|新增|Xóa|删除)\s+/i;
   return lines.every(line => re.test(line));
 }
 
@@ -325,8 +325,8 @@ export function cleanBody(mes: string): string {
  */
 export function inlineTimeTags(mes: string): string {
   return String(mes ?? '')
-    .replace(RE_START, (_, t) => `(起始时间:${String(t).trim()})`)
-    .replace(RE_END, (_, t) => `(结束时间:${String(t).trim()})`);
+    .replace(RE_START, (_, t) => `(Thời gian bắt đầu: ${String(t).trim()})`)
+    .replace(RE_END, (_, t) => `(Thời gian kết thúc: ${String(t).trim()})`);
 }
 
 // 时间段压缩用的「分隔边界」:回退公共前缀到这些字符之后,避免切到 token 中间。
@@ -450,7 +450,7 @@ export function readVarsTagText(mes: string): string | null {
 // id 保持历史值 'bbs-time-tag-hide' 不变(改 id 会导致老用户旧正则残留 + 新建一条重复);
 // 显示名已更新——这条正则如今同时隐藏时间标签与物品变动标签。
 const HIDE_SCRIPT_ID = 'bbs-time-tag-hide';
-const HIDE_SCRIPT_NAME = '柏宝书 · 隐藏记忆标签';
+const HIDE_SCRIPT_NAME = 'Bách Bảo Khố · Ẩn nhãn ký ức';
 // regex_placement(见 ST regex/engine.js):0=MD_DISPLAY 1=USER_INPUT 2=AI_OUTPUT
 const PLACEMENT_MD_DISPLAY = 0;
 const PLACEMENT_USER_INPUT = 1;
@@ -459,8 +459,8 @@ const PLACEMENT_AI_OUTPUT = 2;
 /** 一条同时吃掉 start/end/items/vars 标签(含其内部内容)的正则字符串(ST 用 /pattern/flags 形式) */
 function hideFindRegex(): string {
   const timeTags = `${START_TAG}|${END_TAG}`;
-  const items = `(^|\\r?\\n)[ \\t]*<${ITEMS_TAG}\\b[^>]*>[ \\t]*\\r?\\n(?:[ \\t]*(?:获得|消耗|失去)\\s+[^\\r\\n]*(?:\\r?\\n))+[ \\t]*<\\/${ITEMS_TAG}>[ \\t]*(?=\\r?\\n|$)`;
-  const vars = `(^|\\r?\\n)[ \\t]*<${VARS_TAG}\\b[^>]*>[ \\t]*\\r?\\n(?:[ \\t]*(?:设定|变更|新增|删除)\\s+[^\\r\\n]*(?:\\r?\\n))+[ \\t]*<\\/${VARS_TAG}>[ \\t]*(?=\\r?\\n|$)`;
+  const items = `(^|\\r?\\n)[ \\t]*<${ITEMS_TAG}\\b[^>]*>[ \\t]*\\r?\\n(?:[ \\t]*(?:Nhận được|消耗|Tiêu hao|失去|Mất|获得)\\s+[^\\r\\n]*(?:\\r?\\n))+[ \\t]*<\\/${ITEMS_TAG}>[ \\t]*(?=\\r?\\n|$)`;
+  const vars = `(^|\\r?\\n)[ \\t]*<${VARS_TAG}\\b[^>]*>[ \\t]*\\r?\\n(?:[ \\t]*(?:Thiết lập|设定|Thay đổi|变更|Thêm mới|新增|Xóa|删除)\\s+[^\\r\\n]*(?:\\r?\\n))+[ \\t]*<\\/${VARS_TAG}>[ \\t]*(?=\\r?\\n|$)`;
   // 旁注块只隐藏「独占行 + 插件动词格式」;时间标签则隐藏成对标签里的时间文本。
   return `/${items}|${vars}|<(${timeTags})\\b[^>]*>[\\s\\S]*?<\\/\\3>/gi`;
 }

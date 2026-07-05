@@ -10,14 +10,14 @@ function ensureStyle(): void {
 }
 
 /**
- * 往 ST 顶栏(#top-settings-holder)注入一个快速打开柏宝书的 drawer 按钮,
- * 位置在「用户设定管理」(#persona-management-button)左边。
+ * 往 ST 顶栏(#top-settings-holder)注入一个快速Mở Bách Bảo Thư的 drawer 按钮,
+ * 位置在「用户Thiết lập管理」(#persona-management-button)左边。
  *
  * 注入的按钮**不进 shadow DOM**——直接用 ST 的 .drawer / .drawer-icon 类名,
- * 跟随酒馆主题美化。点击只负责打开柏宝书窗口,不展开任何抽屉(故无 .drawer-toggle,
+ * 跟随酒馆主题美化。点击只负责Mở Bách Bảo Thư窗口,不展开任何抽屉(故无 .drawer-toggle,
  * 避免 ST 的 doNavbarIconClick 把它当抽屉来开合)。
  *
- * 受设置开关控制:开 → 确保已注入;关 → 移除。轮询等顶栏出现(顶栏懒加载)。
+ * 受Cài đặt开关控制:开 → 确保已注入;关 → 移除。轮询等顶栏出现(顶栏懒加载)。
  */
 let pollTimer: ReturnType<typeof setInterval> | null = null;
 
@@ -27,7 +27,7 @@ function buildButton(): HTMLElement {
   btn.className = 'drawer';
   btn.innerHTML = `
     <div class="drawer-toggle">
-      <div class="drawer-icon fa-solid fa-book-bookmark fa-fw closedIcon" title="柏宝书"></div>
+      <div class="drawer-icon fa-solid fa-book-bookmark fa-fw closedIcon" title="Bách Bảo Thư"></div>
     </div>
   `;
   // 仅打开窗口,不走 ST 的抽屉开合逻辑(故未挂 .drawer-toggle 的 doNavbarIconClick)
@@ -47,7 +47,7 @@ function tryInject(): boolean {
 
   ensureStyle();
   const btn = buildButton();
-  // 插到「用户设定管理」左边;它若还没渲染则退而挂到顶栏末尾。
+  // 插到「用户Thiết lập管理」左边;它若还没渲染则退而挂到顶栏末尾。
   const persona = document.getElementById('persona-management-button');
   if (persona) persona.before(btn);
   else holder.appendChild(btn);

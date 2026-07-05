@@ -4,19 +4,19 @@ import { openBook, ui } from '@/state/ui';
 import { computed, onMounted, onUnmounted, reactive, ref } from 'vue';
 
 /**
- * 悬浮球 —— 柏宝书伸进宿主页面的「书签坠」。
+ * 悬浮球 —— Bách Bảo Thư伸进宿主页面的「Thẻ sách坠」。
  *
  * 形态:竖向缎带 + 底部燕尾缺口(clip-path),呼应品牌的 bookmark 图标;自定义图片也被
- * 切成同一书签轮廓,任意图都收进统一形状(这是与「又一个圆 fab」拉开差距的签名手法)。
+ * 切成同一Thẻ sách轮廓,任意图都收进统一形状(这是与「又一个圆 fab」拉开差距的签名手法)。
  *
  * 行为(按用户要求):自由拖动 —— 拖到屏幕中间就停在中间;拖到接近左/右边缘才吸附贴边。
- * 贴边时半隐于边缘(只露一窄条),hover/聚焦/触摸才整条滑出;停在中间则常显。
+ * 贴边时半隐于边缘(只露一窄mục),hover/聚焦/触摸才整mục滑出;停在中间则常显。
  *
  * 位置存本机 localStorage(纯视觉态、各设备屏幕尺寸不同,同步反而会跑到屏幕外)。
- * 开关与自定义图标(ui.orbImage,服务器路径)跨设备同步,由设置承载。
+ * 开关与自定义图标(ui.orbImage,服务器路径)跨设备同步,由Cài đặt承载。
  */
 
-// 尺寸随形状 + 用户基准尺寸(ui.orbSize):书签按 0.78 宽高比(竖长方),圆/方等边正方。
+// 尺寸随形状 + 用户基准尺寸(ui.orbSize):Thẻ sách按 0.78 宽高比(竖长方),圆/方等边正方。
 // 拖动/吸附计算与内联尺寸都读它。
 const orbW = computed(() => (ui.orbShape === 'bookmark' ? Math.round(ui.orbSize * 0.78) : ui.orbSize));
 const orbH = computed(() => ui.orbSize);
@@ -51,7 +51,7 @@ function loadPos(): OrbPos {
 
 const pos = reactive<OrbPos>(loadPos());
 const dragging = ref(false);
-const awake = ref(false); // hover/聚焦/拖动 → 贴边态整条滑出
+const awake = ref(false); // hover/聚焦/拖动 → 贴边态整mục滑出
 let activePointer: number | null = null;
 let startX = 0;
 let startY = 0;
@@ -81,14 +81,14 @@ const orbStyle = computed(() => {
     top: `${pos.y}px`,
     width: `${orbW.value}px`,
     height: `${orbH.value}px`,
-    // 静止不透明度走 CSS 变量,唤起/拖动态由类覆盖回全显
+    // 静止不透明度走 CSS Biến số,唤起/拖动态由类覆盖回全显
     '--orb-rest-opacity': String(Math.min(100, Math.max(20, ui.orbOpacity)) / 100),
     // 图标字号随基准尺寸缩放(原 48 球 ≈ 22px),保持图标与球体比例协调
     '--orb-icon-size': `${Math.round(ui.orbSize * 0.46)}px`,
   };
   if (pos.dock === 'left') {
     base.left = '0px';
-    // 静止半隐(露 ~40%);拖动/唤起时整条滑出
+    // 静止半隐(露 ~40%);拖动/唤起时整mục滑出
     base.transform = dragging.value || awake.value ? 'translateX(0)' : 'translateX(-58%)';
   } else if (pos.dock === 'right') {
     base.right = '0px';
@@ -128,7 +128,7 @@ function currentLeft(): number {
 function onMove(e: PointerEvent) {
   if (!dragging.value || e.pointerId !== activePointer) return;
   moved = Math.max(moved, Math.abs(e.clientX - startX) + Math.abs(e.clientY - startY));
-  // 拖动中一律切 free 跟手(整条可见)
+  // 拖动中一律切 free 跟手(整mục可见)
   pos.dock = 'none';
   pos.x = e.clientX - grabDX;
   pos.y = e.clientY - grabDY;
@@ -141,7 +141,7 @@ function onUp(e: PointerEvent) {
   activePointer = null;
 
   if (moved < CLICK_SLOP) {
-    // 视为点击 → 打开柏宝书(贴边态保持)
+    // 视为点击 → Mở Bách Bảo Thư(贴边态保持)
     openBook();
     return;
   }
@@ -182,7 +182,7 @@ onUnmounted(() => window.removeEventListener('resize', onResize));
     :style="orbStyle"
     role="button"
     tabindex="0"
-    aria-label="打开柏宝书"
+    aria-label="Mở Bách Bảo Thư"
     @pointerdown="onDown"
     @pointermove="onMove"
     @pointerup="onUp"
@@ -210,7 +210,7 @@ onUnmounted(() => window.removeEventListener('resize', onResize));
   cursor: grab;
   touch-action: none;
   user-select: none;
-  /* drop-shadow 对 clip-path(书签)与 border-radius(圆/方)都跟随轮廓,统一用它 */
+  /* drop-shadow 对 clip-path(Thẻ sách)与 border-radius(圆/方)都跟随轮廓,统一用它 */
   filter: drop-shadow(0 6px 14px oklch(0 0 0 / 0.28));
   opacity: var(--orb-rest-opacity, 0.62);
   transition:
@@ -219,7 +219,7 @@ onUnmounted(() => window.removeEventListener('resize', onResize));
 }
 
 /* —— 形状 —— */
-/* 书签:缎带轮廓 + 底部燕尾缺口。clip-path 天然裁切自定义图。 */
+/* Thẻ sách:缎带轮廓 + 底部燕尾缺口。clip-path 天然裁切自定义图。 */
 .bbs-orb.shape-bookmark {
   clip-path: polygon(0 0, 100% 0, 100% 100%, 50% 78%, 0 100%);
 }
@@ -251,7 +251,7 @@ onUnmounted(() => window.removeEventListener('resize', onResize));
   font-size: var(--orb-icon-size, 22px);
   pointer-events: none;
 }
-/* 书签:图标上移,避开底部燕尾缺口(圆/方无缺口,居中即可) */
+/* Thẻ sách:图标上移,避开底部燕尾缺口(圆/方无缺口,居中即可) */
 .bbs-orb.shape-bookmark .bbs-orb-icon {
   margin-bottom: 6px;
 }

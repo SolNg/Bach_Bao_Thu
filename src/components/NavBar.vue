@@ -6,13 +6,13 @@ import { updateState } from '@/memory/update';
 
 const props = defineProps<{ placement: 'top' | 'bottom'; narrow?: boolean }>();
 
-// 设置页有可用更新时,在「设置」导航项上亮一个红点角标(提示用户进设置页更新)。
+// Cài đặt页Có bản cập nhật mới时,在「Cài đặt」导航项上亮一个红点角标(提示用户进Cài đặt页更新)。
 function showUpdateDot(id: string): boolean {
   return id === 'settings' && updateState.available;
 }
 
-// 移动端:再点一下当前页的导航按钮即关闭整窗(省得去够右上角的 ×);非当前页正常切页。
-// 受 ui.navTapClose 开关控制(默认开,怕误触的用户可在设置里关)。
+// 移动端:再点一下当前页的导航按钮即Đóng整窗(省得去够右上角的 ×);非当前页正常切页。
+// 受 ui.navTapClose 开关控制(默认开,怕误触的用户可在Cài đặt里关)。
 function onNavClick(id: string) {
   if (props.narrow && ui.navTapClose && ui.activePage === id) {
     closeBook();
@@ -37,8 +37,8 @@ function onNavClick(id: string) {
     >
       <span class="bbs-nav-icon-wrap">
         <Icon :name="p.id" class="bbs-nav-icon" />
-        <!-- 有可用更新:设置项亮红点角标 -->
-        <span v-if="showUpdateDot(p.id)" class="bbs-nav-dot" aria-label="有可用更新"></span>
+        <!-- Có bản cập nhật mới:Cài đặt项亮红点角标 -->
+        <span v-if="showUpdateDot(p.id)" class="bbs-nav-dot" aria-label="Có bản cập nhật mới"></span>
       </span>
       <!-- 顶部带文字;但窄屏(移动端)顶部也只放图标,否则一排带字胶囊横向放不下,会把后面的项挤出屏幕 -->
       <span v-if="placement === 'top' && !narrow" class="bbs-nav-label">{{ p.label }}</span>

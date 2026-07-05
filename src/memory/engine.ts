@@ -55,7 +55,7 @@ function renderMessages(chat: STMessage[], indices: number[], name1: string, nam
       const m = chat[i];
       if (!m) return '';
       // 双标:既标发言方(用户/角色),又带人名 —— 摘要正文用人名,群聊也能区分谁说的
-      const tag = m.is_user ? '用户' : '角色';
+      const tag = m.is_user ? 'user' : 'nhân vật';
       const who = m.is_user ? name1 || 'User' : m.name || name2 || 'Char';
       // cleanBody:裁剪到 <bbs_start>…</bbs_end>(剔除状态栏等正文外格式)+ 整块删噪声标签
       //（思维链/注释/物品旁注/自定义标签)+ 时间标签转可读文本。不再裸删标签。
@@ -169,7 +169,7 @@ async function fetchWorldInfo(chat: STMessage[], targets: number[], name1: strin
       .map(e => (typeof e.content === 'string' ? e.content : ''));
     return joinWorldInfoChunks(chunks);
   } catch (e) {
-    console.log('[柏宝书] 世界书激活失败(降级为不带设定):', e);
+    console.log('[Bách Bảo Thư] Kích hoạt thế giới thư thất bại (lùi về không kèm thiết lập):', e);
     return '';
   }
 }
@@ -191,9 +191,9 @@ function fetchCharCard(): string {
   if (!ch) return '';
   const sub = typeof ctx.substituteParams === 'function' ? ctx.substituteParams : (s: string) => s;
   const fields: Array<[string, string]> = [
-    ['描述', String(ch.description ?? '')],
-    ['性格', String(ch.personality ?? '')],
-    ['情景', String(ch.scenario ?? '')],
+    ['Mô tả', String(ch.description ?? '')],
+    ['Tính cách', String(ch.personality ?? '')],
+    ['Bối cảnh', String(ch.scenario ?? '')],
   ];
   const parts: string[] = [];
   for (const [label, raw] of fields) {
@@ -250,7 +250,7 @@ export function isRealAiReply(m: STMessage | undefined): boolean {
 /**
  * 求「保留窗口」的起点索引:从这条消息起(含)都发全文,之前的可摘要/隐藏。
  * 对齐 Horae 的 _resolveAutoSummaryKeepStart——keepRecent 现在数的是 **AI 消息条数**。
- *   - 无 AI 楼 → 0(不隐藏)
+ *   - 无 AI tầng → 0(不隐藏)
  *   - keep<=0 → chat.length(全部可摘要)
  *   - AI 楼数 <= keep → 0(全保留)
  *   - 否则 → 倒数第 keep 个 AI 楼的索引
@@ -297,7 +297,7 @@ export function holesExceptLast(chat: STMessage[]): number[] {
 }
 
 // 提示楼正文里的固定句,既给用户看,也用作「末楼是否已是本提示楼」的去重哨兵
-const BACKLOG_NOTICE_SENTINEL = '本次生成已拦截';
+const BACKLOG_NOTICE_SENTINEL = 'Đã chặn lượt tạo văn bản này';
 
 /**
  * 「开场白待摘」场景:最新 AI 楼是**全对话第一条 AI 楼(开场白)**、尚未摘要、且正文无时间标签。
@@ -316,7 +316,7 @@ export function openingPendingFloor(chat: STMessage[]): number {
   }
   if (lastAi < 0) return -1;
   for (let i = lastAi - 1; i >= 0; i--) {
-    if (isAiFloor(chat[i])) return -1; // 之前还有别的 AI 楼 → 不是开场白
+    if (isAiFloor(chat[i])) return -1; // 之前还有别的 AI tầng → 不是开场白
   }
   if (leafValid(chat[lastAi])) return -1; // 已摘 → 锚点已在
   const tag = parseTimeRange(clampToTimeTags(chat[lastAi].mes));
@@ -366,10 +366,10 @@ export async function handleGenerationIntercept(
   if (opening >= 0) {
     const inflight = currentSummaryPromise();
     if (inflight) {
-      toast('正在为开场白建立时间锚点,请稍候…', 'info');
+      toast('Đang tạo mốc thời gian cho lời mở đầu, vui lòng đợi...', 'info');
       await inflight; // promise 永不 reject,不会卡死生成
     } else if (!busy) {
-      toast('正在为开场白建立时间锚点,请稍候…', 'info');
+      toast('Đang tạo mốc thời gian cho lời mở đầu, vui lòng đợi...', 'info');
       await runSummary(opening);
     }
     // 摘要落盘后 refreshInjection 已把「当前时间」刷成开场白时间;继续走洞判定(通常放行)。
@@ -382,7 +382,7 @@ export async function handleGenerationIntercept(
   if (holes.length === 1) {
     const inflight = currentSummaryPromise();
     if (inflight) {
-      toast('正在补摘前一楼层,请稍候…', 'info');
+      toast('Đang bổ sung tóm tắt tầng trước, vui lòng đợi...', 'info');
       await inflight;
       holes = holesExceptLast(chat);
       if (holes.length < 1) return false; // 补完,洞没了 → 放行
@@ -401,16 +401,16 @@ export async function handleGenerationIntercept(
   if (typeof exec === 'function') {
     // 多行靠 {{newline}} 宏(sendMessageAs 走 substituteParams 会还原成换行)
     const text = [
-      `【柏宝书】${BACKLOG_NOTICE_SENTINEL}`,
-      `发生了什么: 因为前面有楼层没有摘要，为了保证剧情的连续性，所以你需要先去给它补全摘要才能继续发送消息`,
-      `应该怎么做: 点开左下角魔法棒，打开柏宝书界面，在第一页中，会显示“未摘要楼层”，点一下楼层号，就可以自动补全`,
-      `补全失败: 多半是API问题，多尝试不同的API`,
-      `补全成功: 在补全成功后，只需要把这一层提示楼层删掉，就可以继续正常生成了`
+      `【Bách Bảo Thư】${BACKLOG_NOTICE_SENTINEL}`,
+      `Chuyện gì đã xảy ra: Vì các tầng trước có tầng chưa được tóm tắt, để đảm bảo tính liên tục của cốt truyện, bạn cần bổ sung tóm tắt cho tầng đó trước khi tiếp tục gửi tin nhắn`,
+      `Cần làm gì: Nhấn vào đũa phép ở góc dưới bên trái, mở giao diện Bách Bảo Thư, ở trang đầu tiên sẽ hiển thị 'Tầng chưa tóm tắt', nhấn vào số tầng để tự động bổ sung`,
+      `Bổ sung thất bại: Phần lớn do lỗi API, hãy thử các API khác nhau`,
+      `Bổ sung thành công: Sau khi bổ sung thành công, chỉ cần xóa tầng thông báo này đi là có thể tiếp tục tạo văn bản bình thường`
     ].join('{{newline}}');
     try {
-      await exec(`/sendas name="柏宝书" ${text}`);
+      await exec(`/sendas name="Bách Bảo Thư" ${text}`);
     } catch (e) {
-      engineState.lastError = `积压提示楼插入失败: ${e instanceof Error ? e.message : String(e)}`;
+      engineState.lastError = `Chèn tầng nhắc nhở tồn đọng thất bại: ${e instanceof Error ? e.message : String(e)}`;
     }
   }
   return true;
@@ -441,18 +441,18 @@ export async function syncHiddenNow(): Promise<void> {
  * **仅供摘要页「立即摘要」按钮手动调用**——自动触发改用 maybeSummarizePrevAi(单楼增量)。
  */
 export async function checkAutoSummary(): Promise<void> {
-  console.log('[柏宝书] checkAutoSummary(手动全量) 进入', { enabled: apiSettings.autoSummaryEnabled, busy });
-  if (!engineActiveHere()) { console.log('[柏宝书] 早退:插件总开关关闭或当前角色被排除'); return; }
-  if (!apiSettings.autoSummaryEnabled) { console.log('[柏宝书] 早退:自动摘要未开启'); return; }
-  if (busy) { console.log('[柏宝书] 早退:busy 锁'); return; }
+  console.log('[Bách Bảo Thư] checkAutoSummary (thủ công toàn bộ) tiến vào', { enabled: apiSettings.autoSummaryEnabled, busy });
+  if (!engineActiveHere()) { console.log('[Bách Bảo Thư] Thoát sớm: công tắc chính tiện ích tắt hoặc nhân vật bị loại trừ'); return; }
+  if (!apiSettings.autoSummaryEnabled) { console.log('[Bách Bảo Thư] Thoát sớm: chưa bật tự động tóm tắt'); return; }
+  if (busy) { console.log('[Bách Bảo Thư] Thoát sớm: khóa busy'); return; }
 
   const ctx = getContext();
-  if (!ctx) { console.log('[柏宝书] 早退:无 ctx'); return; }
+  if (!ctx) { console.log('[Bách Bảo Thư] Thoát sớm: không có ctx'); return; }
   const chat = ctx.chat ?? [];
-  if (chat.length === 0) { console.log('[柏宝书] 早退:chat 为空'); return; }
+  if (chat.length === 0) { console.log('[Bách Bảo Thư] Thoát sớm: chat trống'); return; }
 
   const floors = pendingAiFloors(chat);
-  console.log('[柏宝书] 待摘要楼层 =', floors);
+  console.log('[Bách Bảo Thư] Tầng chờ tóm tắt =', floors);
   for (const floor of floors) {
     await runSummary(floor);
   }
@@ -575,7 +575,7 @@ export function coalesceRanges(indices: number[]): Array<[number, number]> {
 }
 
 /**
- * 同步滑动窗口隐藏状态:
+ * 同步滑动窗口隐藏Trạng thái:
  *  - 隐藏「保留窗口之前、已被摘要覆盖、尚未隐藏」的消息。
  *  - 取消隐藏「曾由本插件隐藏、但现在不应隐藏」的消息。
  * 走 ST 原生 /hide(对齐 Horae、自动同步 DOM、走官方入口),
@@ -625,7 +625,7 @@ async function syncWindowHiddenState(chat: STMessage[]): Promise<void> {
             m.extra = extra;
           }
         }
-        engineState.lastError = `/unhide ${arg} 失败: ${e instanceof Error ? e.message : String(e)}`;
+        engineState.lastError = `/unhide ${arg} thất bại: ${e instanceof Error ? e.message : String(e)}`;
       }
     }
 
@@ -638,7 +638,7 @@ async function syncWindowHiddenState(chat: STMessage[]): Promise<void> {
       } catch (e) {
         // /hide 失败则回退到直接写 is_system,保证隐藏一定落地
         for (let i = start; i <= end; i++) if (chat[i]) chat[i].is_system = true;
-        engineState.lastError = `/hide ${arg} 失败: ${e instanceof Error ? e.message : String(e)}`;
+        engineState.lastError = `/hide ${arg} thất bại: ${e instanceof Error ? e.message : String(e)}`;
       }
     }
   } else {
@@ -683,12 +683,12 @@ function resolveSender(
 ): { send: (messages: ChatMsg[]) => Promise<string>; label: string } | { error: string } {
   const channel = getChannelForTask(task);
   if (channel) {
-    return { send: messages => requestCompletion(channel, messages), label: `渠道「${channel.name}」(${channel.model})` };
+    return { send: messages => requestCompletion(channel, messages), label: `Kênh 「${channel.name}」(${channel.model})` };
   }
   if (!mainApiAvailable()) {
-    return { error: '未指派副 API 渠道,且当前主 API 不可用(请填好主 API 后重试,或为本任务单独指派渠道)' };
+    return { error: 'Chưa chỉ định kênh API phụ, và API chính hiện không khả dụng (vui lòng điền API chính rồi thử lại, hoặc chỉ định kênh riêng cho nhiệm vụ này)' };
   }
-  return { send: messages => requestViaMainApi(messages), label: '主 API(主界面当前在用)' };
+  return { send: messages => requestViaMainApi(messages), label: 'API chính (đang dùng trên giao diện chính)' };
 }
 
 /**
@@ -709,7 +709,7 @@ async function sendAndParse<T>(
     } catch (e) {
       lastErr = e;
       if (attempt < maxRetries) {
-        console.log(`[柏宝书] 第 ${attempt + 1} 次尝试失败,重试:`, e instanceof Error ? e.message : String(e));
+        console.log(`[Bách Bảo Thư] Thử lần ${attempt + 1} thất bại, thử lại:`, e instanceof Error ? e.message : String(e));
       }
     }
   }
@@ -806,7 +806,7 @@ async function summarizeFloorWork(
   sender: { send: (messages: ChatMsg[]) => Promise<string>; label: string },
 ): Promise<void> {
   const ctx = getContext();
-  if (!ctx) throw new Error('无 ST 上下文');
+  if (!ctx) throw new Error('Không có ngữ cảnh ST');
 
   const covered = coveredSet(chat);
   const targets = floorTargets(chat, aiFloor, covered);
@@ -859,10 +859,10 @@ async function summarizeFloorWork(
     { role: 'assistant', content: THINKING_PREFILL },
   );
   const delta = await sendAndParse(sender.send, messages, raw => {
-    console.log('[柏宝书] 摘要原始返回(未清洗):\n', raw);
+    console.log('[Bách Bảo Thư] Phản hồi tóm tắt thô (chưa làm sạch):\n', raw);
     const d = extractJsonObject<SummaryDelta>(raw);
     if (!d || !d.summary) {
-      throw new Error(raw.trim() ? '摘要失败:AI道歉或掉格式' : '摘要失败:AI空回');
+      throw new Error(raw.trim() ? 'Tóm tắt thất bại: AI xin lỗi hoặc sai định dạng' : 'Tóm tắt thất bại: AI phản hồi rỗng');
     }
     return d as SummaryDelta & { summary: string };
   });
@@ -878,20 +878,20 @@ async function summarizeFloorWork(
 }
 
 async function runSummaryInner(aiFloor: number): Promise<void> {
-  console.log('[柏宝书] runSummary 楼层', aiFloor, '| busy =', busy);
-  if (!engineActiveHere()) { console.log('[柏宝书] runSummary 早退:插件总开关关闭或当前角色被排除'); return; }
-  if (busy) { console.log('[柏宝书] runSummary 早退:busy'); return; }
+  console.log('[Bách Bảo Thư] runSummary tầng', aiFloor, '| busy =', busy);
+  if (!engineActiveHere()) { console.log('[Bách Bảo Thư] runSummary thoát sớm: công tắc chính tiện ích tắt hoặc nhân vật bị loại trừ'); return; }
+  if (busy) { console.log('[Bách Bảo Thư] runSummary thoát sớm: busy'); return; }
   const sender = resolveSender('summary');
   if ('error' in sender) {
     engineState.lastError = sender.error;
-    console.log('[柏宝书] runSummary 早退:', sender.error);
+    console.log('[Bách Bảo Thư] runSummary thoát sớm:', sender.error);
     return;
   }
   const ctx = getContext();
   if (!ctx) return;
   const chat = ctx.chat ?? [];
-  if (!isAiFloor(chat[aiFloor])) { console.log('[柏宝书] runSummary 早退:非 AI 楼', aiFloor); return; }
-  console.log('[柏宝书] runSummary 即将发请求,', sender.label);
+  if (!isAiFloor(chat[aiFloor])) { console.log('[Bách Bảo Thư] runSummary thoát sớm: không phải tầng AI', aiFloor); return; }
+  console.log('[Bách Bảo Thư] runSummary chuẩn bị gửi yêu cầu,', sender.label);
 
   busy = true;
   engineState.running = true;
@@ -966,7 +966,7 @@ async function summarizeBatchWork(
   sender: { send: (messages: ChatMsg[]) => Promise<string>; label: string },
 ): Promise<void> {
   const ctx = getContext();
-  if (!ctx) throw new Error('无 ST 上下文');
+  if (!ctx) throw new Error('Không có ngữ cảnh ST');
   const covered = coveredSet(chat);
 
   // 块开头之前的状态/历史/世界书(整块统一口径,只取一次)
@@ -980,7 +980,7 @@ async function summarizeBatchWork(
   block.forEach((f, idx) => {
     const targets = floorTargets(chat, f, covered);
     allTargets.push(...targets);
-    segments.push(`━━ 第 ${idx + 1} 楼 ━━\n${renderMessages(chat, targets, ctx.name1, ctx.name2)}`);
+    segments.push(`━━ Tầng ${idx + 1} ━━\n${renderMessages(chat, targets, ctx.name1, ctx.name2)}`);
   });
   const content = segments.join('\n\n');
 
@@ -1014,17 +1014,17 @@ async function summarizeBatchWork(
 
   // 解析 { floors: [...] };校验长度等于块楼数(缺楼/多楼都算失败,触发重试/回退)
   const list = await sendAndParse(sender.send, messages, raw => {
-    console.log('[柏宝书] 批量摘要原始返回(未清洗):\n', raw);
+    console.log('[Bách Bảo Thư] Phản hồi tóm tắt lô thô (chưa làm sạch):\n', raw);
     const d = extractJsonObject<{ floors?: SummaryDelta[] }>(raw);
     const floors = d?.floors;
     if (!Array.isArray(floors) || !floors.length) {
-      throw new Error(raw.trim() ? '批量摘要失败:AI道歉或掉格式' : '批量摘要失败:AI空回');
+      throw new Error(raw.trim() ? 'Tóm tắt lô thất bại: AI xin lỗi hoặc sai định dạng' : 'Tóm tắt lô thất bại: AI phản hồi rỗng');
     }
     if (floors.length !== block.length) {
-      throw new Error(`批量摘要失败:返回 ${floors.length} 楼,期望 ${block.length} 楼`);
+      throw new Error(`Tóm tắt lô thất bại: trả về ${floors.length} tầng, kỳ vọng ${block.length} tầng`);
     }
     if (floors.some(f => !f || !f.summary)) {
-      throw new Error('批量摘要失败:有楼层缺 summary');
+      throw new Error('Tóm tắt lô thất bại: có tầng thiếu summary');
     }
     return floors;
   });
@@ -1082,7 +1082,7 @@ export async function batchBackfill(opts: BatchBackfillOpts = {}): Promise<Batch
   }
 
   const batches = planBatches(chat, floors, apiSettings.batchMaxChars, apiSettings.batchMaxFloors);
-  console.log('[柏宝书] 批量补摘:', total, '楼 →', batches.length, '批,', sender.label);
+  console.log('[Bách Bảo Thư] Bổ sung tóm tắt lô:', total, 'tầng →', batches.length, 'lô,', sender.label);
 
   busy = true;
   engineState.running = true;
@@ -1101,7 +1101,7 @@ export async function batchBackfill(opts: BatchBackfillOpts = {}): Promise<Batch
         await summarizeBatchWork(chat, block, sender);
       } catch (e) {
         // 整块失败(已含重试)→ 回退:逐楼单独摘。单楼也可能失败(写 lastError),失败楼留作待摘,不中断后续。
-        console.log('[柏宝书] 批量块失败,回退逐楼:', e instanceof Error ? e.message : String(e));
+        console.log('[Bách Bảo Thư] Lô thất bại, lùi về từng tầng:', e instanceof Error ? e.message : String(e));
         for (const f of block) {
           if (!isAiFloor(chat[f]) || leafValid(chat[f])) continue; // 已被填或非 AI 楼:跳过
           try {
@@ -1246,12 +1246,12 @@ export async function checkResummary(): Promise<number> {
       messages.push({ role: 'user', content: prompt });
       // 发请求 + 解析,失败按设置重试(请求报错或 JSON 无效/缺 summary 都算失败)
       const delta = await sendAndParse(sender.send, messages, raw => {
-        console.log('[柏宝书] 总结原始返回(未清洗):\n', raw);
+        console.log('[Bách Bảo Thư] Phản hồi tổng kết thô (chưa làm sạch):\n', raw);
         const d = extractJsonObject<{ summary?: string }>(raw);
         if (!d?.summary) {
           // 输出层级 level+1:为 1 是普通总结,≥2 是二次总结;有文本=掉格式,空白=空回
-          const what = level + 1 === 1 ? '总结' : '二次总结';
-          throw new Error(raw.trim() ? `${what}失败:AI道歉或掉格式` : `${what}失败:AI空回`);
+          const what = level + 1 === 1 ? 'Tổng kết' : 'Tổng kết cấp hai';
+          throw new Error(raw.trim() ? `${what} thất bại: AI xin lỗi hoặc sai định dạng` : `${what} thất bại: AI phản hồi rỗng`);
         }
         return d as { summary: string };
       });
@@ -1340,19 +1340,19 @@ function collectSelectableNodes(chat: STMessage[]): Map<string, SelectableNode> 
  * 返回 { made, error }:made=1 成功,0 未生成(error 说明原因)。
  */
 export async function summarizeSelected(nodeIds: string[]): Promise<{ made: number; error?: string }> {
-  if (!engineActiveHere()) return { made: 0, error: '插件未在当前聊天生效' };
-  if (busy) return { made: 0, error: '正忙,请稍后再试' };
-  if (nodeIds.length < 2) return { made: 0, error: '至少选择两条才能合并' };
+  if (!engineActiveHere()) return { made: 0, error: 'Tiện ích chưa kích hoạt trong cuộc trò chuyện hiện tại' };
+  if (busy) return { made: 0, error: 'Đang bận, vui lòng thử lại sau' };
+  if (nodeIds.length < 2) return { made: 0, error: 'Cần chọn ít nhất 2 mục mới có thể gộp' };
 
   const ctx = getContext();
-  if (!ctx) return { made: 0, error: '无 ST 上下文' };
+  if (!ctx) return { made: 0, error: 'Không có ngữ cảnh ST' };
   const chat = ctx.chat ?? [];
 
   const all = collectSelectableNodes(chat);
   const picked: SelectableNode[] = [];
   for (const id of nodeIds) {
     const n = all.get(id);
-    if (!n) return { made: 0, error: '有选中项已失效,请刷新后重试' };
+    if (!n) return { made: 0, error: 'Có mục đã chọn bị vô hiệu, vui lòng làm mới và thử lại' };
     picked.push(n);
   }
   // 按覆盖楼层升序(与摘要森林时序一致);无楼层的排最后
@@ -1371,13 +1371,13 @@ export async function summarizeSelected(nodeIds: string[]): Promise<{ made: numb
   const positions: number[] = [];
   for (const n of picked) {
     const p = posOf.get(n.id);
-    if (p === undefined) return { made: 0, error: '选中项里有已被收纳的摘要,请只选顶层摘要' };
+    if (p === undefined) return { made: 0, error: 'Trong mục chọn có tóm tắt đã được thu thập, vui lòng chỉ chọn tóm tắt tầng trên cùng' };
     positions.push(p);
   }
   positions.sort((a, b) => a - b);
   for (let i = 1; i < positions.length; i++) {
     if (positions[i] !== positions[i - 1] + 1) {
-      return { made: 0, error: '只能合并连续的摘要(中间不能跳过其它摘要)' };
+      return { made: 0, error: 'Chỉ có thể gộp tóm tắt liên tiếp (không được bỏ qua tóm tắt khác ở giữa)' };
     }
   }
 
@@ -1397,11 +1397,11 @@ export async function summarizeSelected(nodeIds: string[]): Promise<{ made: numb
     if (jb) messages.push({ role: 'system', content: jb });
     messages.push({ role: 'user', content: prompt });
     const delta = await sendAndParse(sender.send, messages, raw => {
-      console.log('[柏宝书] 强制总结原始返回(未清洗):\n', raw);
+      console.log('[Bách Bảo Thư] Phản hồi tổng kết bắt buộc thô (chưa làm sạch):\n', raw);
       const d = extractJsonObject<{ summary?: string }>(raw);
       if (!d?.summary) {
-        const what = level === 1 ? '总结' : '二次总结';
-        throw new Error(raw.trim() ? `${what}失败:AI道歉或掉格式` : `${what}失败:AI空回`);
+        const what = level === 1 ? 'Tổng kết' : 'Tổng kết cấp hai';
+        throw new Error(raw.trim() ? `${what} thất bại: AI xin lỗi hoặc sai định dạng` : `${what} thất bại: AI phản hồi rỗng`);
       }
       return d as { summary: string };
     });
@@ -1490,11 +1490,11 @@ export function bindEngine(): void {
   const es = ctx.eventSource;
   const et = ctx.eventTypes;
 
-  console.log('[柏宝书] bindEngine 执行,监听', et.USER_MESSAGE_RENDERED, et.GENERATION_STARTED);
+  console.log('[Bách Bảo Thư] bindEngine thực thi, lắng nghe', et.USER_MESSAGE_RENDERED, et.GENERATION_STARTED);
 
   // 发新消息:此刻末尾 AI 是「上一条已定稿」的回复,摘它。
   es.on(et.USER_MESSAGE_RENDERED, () => {
-    console.log('[柏宝书] USER_MESSAGE_RENDERED → 摘上一条 AI');
+    console.log('[Bách Bảo Thư] USER_MESSAGE_RENDERED → tóm tắt AI tầng trước');
     void maybeSummarizePrevAi(false);
   });
 
@@ -1505,7 +1505,7 @@ export function bindEngine(): void {
     es.on(et.GENERATION_STARTED, (type?: string, _opts?: unknown, dryRun?: boolean) => {
       if (dryRun) return;
       if (type === 'quiet' || type === 'impersonate' || type === 'continue') return; // 非真实新回复
-      console.log('[柏宝书] GENERATION_STARTED → 摘上上条 AI, type =', type);
+      console.log('[Bách Bảo Thư] GENERATION_STARTED → tóm tắt AI tầng kia, type =', type);
       void maybeSummarizePrevAi(true);
     });
   }
@@ -1518,7 +1518,7 @@ export function bindEngine(): void {
     es.on(et.MESSAGE_EDITED, (messageId?: number) => {
       setTimeout(() => {
         if (typeof messageId === 'number') {
-          try { syncItemLogFromMessage(messageId); } catch (e) { console.warn('[柏宝书] 物品旁注反解析失败', e); }
+          try { syncItemLogFromMessage(messageId); } catch (e) { console.warn('[Bách Bảo Thư] Phân tích ngược chú giải vật phẩm thất bại', e); }
         }
         reactToChatMutation();
       }, 0);

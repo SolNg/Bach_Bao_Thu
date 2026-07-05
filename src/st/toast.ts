@@ -16,11 +16,11 @@ export function toast(message: string, type: ToastType = 'info'): void {
   try {
     const t = (window as unknown as { toastr?: Toastr }).toastr;
     if (t && typeof t[type] === 'function') {
-      t[type](message, '柏宝书');
+      t[type](message, 'Bách Bảo Thư');
       return;
     }
   } catch {
     /* toastr 不可用 → 退回日志 */
   }
-  console.log('[柏宝书]', message);
+  console.log('[Bách Bảo Thư]', message);
 }

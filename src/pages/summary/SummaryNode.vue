@@ -1,8 +1,8 @@
 <script setup lang="ts">
 /**
- * 摘要森林的一个节点(递归)。默认视图用:一张卡片 + 底部展开条,
- * 展开时下方 grid(0fr↔1fr)容器平滑撑开,内部递归渲染子节点 + 组尾收起条。
- * 高度过渡与 Collapsible.vue / 悬念簿同款——内容常驻 DOM,不脱流,故无闪烁。
+ * Tóm tắt森林的一个节点(递归)。默认视图用:一张卡片 + 底部展开mục,
+ * 展开时下方 grid(0fr↔1fr)容器平滑撑开,内部递归渲染子节点 + 组尾收起mục。
+ * 高度过渡与 Collapsible.vue / Huyền niệm簿同款——内容常驻 DOM,不脱流,故无闪烁。
  */
 import Icon from '@/components/Icon.vue';
 import { computed, inject } from 'vue';
@@ -47,16 +47,16 @@ const isChild = computed(() => props.depth > 0);
           </template>
           <!-- 操作键:仅根行(展开出的子行只读,避免误删祖先链) -->
           <span v-if="!isChild" class="bbs-summary-acts">
-            <button class="bbs-summary-act" type="button" :title="row.kind === 'comp' ? '编辑总结' : '编辑摘要'" @click="ctx.openEdit(row)">
+            <button class="bbs-summary-act" type="button" :title="row.kind === 'comp' ? 'Chỉnh sửa tổng kết' : 'Chỉnh sửa tóm tắt'" @click="ctx.openEdit(row)">
               <Icon name="edit" />
             </button>
-            <button class="bbs-summary-act bbs-summary-del" type="button" :title="row.kind === 'comp' ? '删除总结(下层会展开)' : '删除摘要'" @click="ctx.onDelete(row)">
+            <button class="bbs-summary-act bbs-summary-del" type="button" :title="row.kind === 'comp' ? 'Xóa tổng kết (tầng dưới sẽ mở rộng)' : 'Xóa tóm tắt'" @click="ctx.onDelete(row)">
               <Icon name="trash" />
             </button>
           </span>
         </header>
         <p class="bbs-summary-text">{{ row.text }}</p>
-        <!-- 展开开关:卡片底部整条,标注「展开/收起下层 N 条」;展开态翻转文案 + 卡片描边点亮 -->
+        <!-- 展开开关:卡片底部整mục,标注「展开/Thu gọn tầng dưới N mục」;展开态翻转文案 + 卡片描边点亮 -->
         <button
           v-if="expandable"
           class="bbs-expand-bar"
@@ -65,7 +65,7 @@ const isChild = computed(() => props.depth > 0);
           @click="ctx.toggleExpand(node.id)"
         >
           <Icon name="chevron" class="bbs-expand-caret" :class="{ 'is-collapsed': !isExpanded }" />
-          {{ isExpanded ? '收起下层' : `展开下层 ${children.length} 条` }}
+          {{ isExpanded ? 'Thu gọn tầng dưới' : `Mở rộng tầng dưới ${children.length} mục` }}
         </button>
       </div>
     </article>
@@ -75,10 +75,10 @@ const isChild = computed(() => props.depth > 0);
       <div class="bbs-node-children-inner">
         <div class="bbs-node-children-body">
           <SummaryNode v-for="c in children" :key="`${c.kind}:${c.id}`" :node="c" :depth="depth + 1" />
-          <!-- 组尾收起条:滚到展开内容末尾也能就地收回,不必翻回顶部 -->
-          <button class="bbs-collapse-footer" type="button" title="收起下层摘要" @click="ctx.toggleExpand(node.id)">
+          <!-- 组尾收起mục:滚到展开内容末尾也能就地收回,不必翻回顶部 -->
+          <button class="bbs-collapse-footer" type="button" title="Thu gọn tóm tắt tầng dưới" @click="ctx.toggleExpand(node.id)">
             <Icon name="chevron" class="bbs-collapse-caret" />
-            收起下层 {{ children.length }} 条
+            Thu gọn tầng dưới {{ children.length }} mục
           </button>
         </div>
       </div>
@@ -89,7 +89,7 @@ const isChild = computed(() => props.depth > 0);
 <style scoped>
 /* 块级(非 flex):grid 子项高度须由 grid-template-rows 决定;若父级是 flex,
    flex 布局会接管子项高度、把 fr 过渡抹成瞬切——这正是「展开无动画」的根因。
-   对照 Collapsible.vue / 悬念簿 .bbs-fold-wrap,其父级都是普通块级。 */
+   对照 Collapsible.vue / Huyền niệm簿 .bbs-fold-wrap,其父级都是普通块级。 */
 .bbs-node {
   display: block;
 }
