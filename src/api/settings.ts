@@ -168,6 +168,8 @@ export interface ApiSettings {
   /** 内置默认mục目名规则是否已「播种」进上面的列表(见 DEFAULT_WI_PATTERNS / hydrateSettings)。
    *  只发放一次:老用户首次载入时补进默认规则并置 true;之后用户删空也不再补回,尊重其选择。 */
   wiPatternsSeeded: boolean;
+  /** Kết xuất mẫu Thế giới thư (mặc định bật): trước khi API phụ lấy bài Thế giới thư, mở rộng macro {{...}} và thực thi EJS (<% %>) của plugin ST-Prompt-Template. */
+  renderWorldInfoTemplates: boolean;
   /** 叶子Tóm tắt积累到 N mục时,压成一mục L1 总结(L0→L1 阈值,0=Đóng) */
   leafBatchThreshold: number;
   /** L1 及以上每积累到 N mục时,压成上一层总结(L≥1→L+1 阈值,0=Đóng) */
@@ -260,6 +262,7 @@ function defaults(): ApiSettings {
     // 这样老用户(已存过空数组)也能补到默认,且用户删空后不会被反复塞回。
     excludedWorldInfoPatterns: [],
     wiPatternsSeeded: false,
+    renderWorldInfoTemplates: true,
     leafBatchThreshold: 12,
     resummaryThreshold: 7,
     recentResolvedPlansCount: 5,
@@ -315,6 +318,9 @@ function normalize(raw: unknown): ApiSettings {
     : [];
   // 播种标记:布尔,缺失(老数据无此键)回退 false,让 hydrateSettings 首次补发默认规则
   merged.wiPatternsSeeded = typeof merged.wiPatternsSeeded === 'boolean' ? merged.wiPatternsSeeded : false;
+  // Kết xuất mẫu Thế giới thư: mặc định bật (true)
+  merged.renderWorldInfoTemplates =
+    typeof merged.renderWorldInfoTemplates === 'boolean' ? merged.renderWorldInfoTemplates : true;
   // vector 同为嵌套对象(且内含子对象),逐层兜底,老数据缺字段时回退默认。
   // 注:旧结构曾有 vector.channels + {channel,model};扁平化后弃用,逐Nhân vật按 url/key/model 兜底,
   // 老数据缺这些字段会回退空串(等于「未配置」,用户重填一次即可)。
@@ -464,6 +470,7 @@ function applyInto(target: ApiSettings, src: ApiSettings): void {
   target.excludedWorldNames = src.excludedWorldNames;
   target.excludedWorldInfoPatterns = src.excludedWorldInfoPatterns;
   target.wiPatternsSeeded = src.wiPatternsSeeded;
+  target.renderWorldInfoTemplates = src.renderWorldInfoTemplates;
   target.leafBatchThreshold = src.leafBatchThreshold;
   target.resummaryThreshold = src.resummaryThreshold;
   target.recentResolvedPlansCount = src.recentResolvedPlansCount;

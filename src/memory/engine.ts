@@ -3,7 +3,7 @@ import { mainApiAvailable, requestCompletion, requestViaMainApi } from '@/api/cl
 import { apiSettings, engineActiveHere, getChannelForTask } from '@/api/settings';
 import type { TaskType } from '@/api/settings';
 import type { STMessage, WorldInfoEntry } from '@/st/context';
-import { getContext, getCheckWorldInfo, setMessageText } from '@/st/context';
+import { getContext, getCheckWorldInfo, getEjsTemplate, setMessageText } from '@/st/context';
 import { toast } from '@/st/toast';
 import { addSummary, deriveMemory, finalizeDelta, fmtVarOpsInline, getLeaf, itemChangesOf, leafValid, makeLeafId, pruneBrokenComps, syncItemLogFromMessage } from './apply';
 import { extractJsonObject } from './json';
@@ -129,7 +129,30 @@ const HUGE_WI_CONTEXT = 1_000_000_000;
  * 仅当 checkWorldInfo 取不到时使用——此时排除设置不生效,但至少摘要照常带世界书,不崩。
  * 蓝灯/相关条目可能落在 before、after、depth(@深度)、作者注 任一位置,全部提取。
  */
-async function fetchWorldInfoViaPrompt(scanText: string[]): Promise<string> {
+
+/**
+ * Kết xuất nội dung bài Thế giới thư, giúp API phụ nhận được thành phẩm sau khi thực thi macro và EJS:
+ *   ① substituteParams mở rộng macro {{...}};
+ *   ② Nếu cài plugin ST-Prompt-Template và nội dung có <% %>, chạy EJS theo tham số tầng lịch sử (floor).
+ */
+async function renderWorldInfoContent(content: string, entry?: WorldInfoEntry, floor?: number): Promise<string> {
+  if (!apiSettings.renderWorldInfoTemplates) return content;
+  const ctx = getContext();
+  let text = typeof ctx?.substituteParams === 'function' ? ctx.substituteParams(content) : content;
+  if (!text.includes('<%')) return text;
+  const ejs = getEjsTemplate();
+  if (!ejs) return text;
+  try {
+    const env = await ejs.prepareContext({ world_info: entry }, floor);
+    const out = await ejs.evalTemplate(text, env);
+    if (typeof out === 'string') text = out;
+  } catch (e) {
+    console.log('[Bách Bảo Khố] Kết xuất EJS Thế giới thư thất bại (khôi phục văn bản chưa thực thi):', e);
+  }
+  return text;
+}
+
+async function fetchWorldInfoViaPrompt(scanText: string[], refFloor?: number): Promise<string> {
   const fn = getContext()?.getWorldInfoPrompt;
   if (typeof fn !== 'function') return '';
   const res = await fn(scanText, HUGE_WI_CONTEXT, true);
@@ -142,7 +165,8 @@ async function fetchWorldInfoViaPrompt(scanText: string[]): Promise<string> {
   }
   for (const e of res.anBefore ?? []) if (typeof e === 'string') chunks.push(e);
   for (const e of res.anAfter ?? []) if (typeof e === 'string') chunks.push(e);
-  return joinWorldInfoChunks(chunks);
+  const rendered = await Promise.all(chunks.map(c => renderWorldInfoContent(c, undefined, refFloor)));
+  return joinWorldInfoChunks(rendered);
 }
 
 /**
@@ -155,18 +179,21 @@ async function fetchWorldInfoViaPrompt(scanText: string[]): Promise<string> {
 async function fetchWorldInfo(chat: STMessage[], targets: number[], name1: string, name2: string): Promise<string> {
   const scanText = buildScanText(chat, targets, name1, name2);
   if (!scanText.length) return '';
+  const refFloor = targets.length ? targets[targets.length - 1] : undefined;
   try {
     const check = await getCheckWorldInfo();
-    if (!check) return await fetchWorldInfoViaPrompt(scanText); // 降级:拿不到条目对象,无从过滤
+    if (!check) return await fetchWorldInfoViaPrompt(scanText, refFloor); // 降级:拿不到条目对象,无从过滤
 
     const res = await check(scanText, HUGE_WI_CONTEXT, true);
     const activated = res?.allActivatedEntries;
     if (!activated) return '';
     // allActivatedEntries 可能是 Set<entry> 或 Map<key,entry>,统一取 values
     const entries = activated instanceof Map ? [...activated.values()] : [...activated];
-    const chunks = entries
-      .filter(e => e && !isWorldInfoEntryExcluded(e))
-      .map(e => (typeof e.content === 'string' ? e.content : ''));
+    const chunks = await Promise.all(
+      entries
+        .filter(e => e && !isWorldInfoEntryExcluded(e))
+        .map(e => renderWorldInfoContent(typeof e.content === 'string' ? e.content : '', e, refFloor)),
+    );
     return joinWorldInfoChunks(chunks);
   } catch (e) {
     console.log('[Bách Bảo Thư] Kích hoạt thế giới thư thất bại (lùi về không kèm thiết lập):', e);

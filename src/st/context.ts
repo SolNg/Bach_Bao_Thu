@@ -239,3 +239,27 @@ export async function getCheckWorldInfo(): Promise<CheckWorldInfoFn | null> {
     return null;
   }
 }
+
+/**
+ * ST-Prompt-Template (plugin mẫu lời nhắc) gắn trên globalThis (xem exports.ts của plugin).
+ * Chúng ta chỉ dùng prepareContext + evalTemplate: prepareContext chuẩn bị môi trường env chứa biến/thế giới thư,
+ * evalTemplate chạy EJS cho văn bản chứa <% %>. Dùng để giúp API phụ đọc được thành phẩm sau thực thi thay vì nguyên văn.
+ * Nếu không cài đặt plugin, globalThis.EjsTemplate là undefined, hệ thống tự động giảm cấp.
+ */
+export interface EjsTemplateApi {
+  prepareContext: (context?: Record<string, unknown>, end?: number) => Promise<Record<string, unknown>>;
+  evalTemplate: (
+    code: string,
+    context?: Record<string, unknown> | null,
+    options?: Record<string, unknown>,
+  ) => Promise<string | null>;
+}
+
+/** Lấy bộ thực thi EJS từ ST-Prompt-Template; nếu chưa cài / giao diện không đầy đủ sẽ trả về null. */
+export function getEjsTemplate(): EjsTemplateApi | null {
+  const api = (globalThis as { EjsTemplate?: Partial<EjsTemplateApi> }).EjsTemplate;
+  if (api && typeof api.prepareContext === 'function' && typeof api.evalTemplate === 'function') {
+    return api as EjsTemplateApi;
+  }
+  return null;
+}

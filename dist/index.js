@@ -10,7 +10,7 @@ function $o(t, n) {
   const e = typeof t.swipe_id == "number" ? t.swipe_id : 0;
   e >= 0 && e < t.swipes.length && (t.swipes[e] = n);
 }
-async function em() {
+async function im() {
   try {
     const e = (await import("/script.js")).doNewChat;
     return typeof e == "function" ? e : null;
@@ -18,13 +18,21 @@ async function em() {
     return null;
   }
 }
-async function im() {
+async function sm() {
   try {
     const e = (await import("/scripts/world-info.js")).checkWorldInfo;
     return typeof e == "function" ? e : null;
   } catch {
     return null;
   }
+}
+function om() {
+  const t = globalThis.EjsTemplate;
+  return t &&
+    typeof t.prepareContext == "function" &&
+    typeof t.evalTemplate == "function"
+    ? t
+    : null;
 }
 const qc = "baibai_book",
   As = 3;
@@ -84,8 +92,8 @@ const Gt = {},
     const e = t.indexOf(n);
     e > -1 && t.splice(e, 1);
   },
-  sm = Object.prototype.hasOwnProperty,
-  Vt = (t, n) => sm.call(t, n),
+  rm = Object.prototype.hasOwnProperty,
+  Vt = (t, n) => rm.call(t, n),
   wt = Array.isArray,
   Ei = (t) => Ms(t) === "[object Map]",
   Fi = (t) => Ms(t) === "[object Set]",
@@ -97,7 +105,7 @@ const Gt = {},
   Dc = (t) => (Dt(t) || It(t)) && It(t.then) && It(t.catch),
   jc = Object.prototype.toString,
   Ms = (t) => jc.call(t),
-  om = (t) => Ms(t).slice(8, -1),
+  am = (t) => Ms(t).slice(8, -1),
   Kc = (t) => Ms(t) === "[object Object]",
   ua = (t) =>
     tn(t) && t !== "NaN" && t[0] !== "-" && "" + parseInt(t, 10) === t,
@@ -108,10 +116,10 @@ const Gt = {},
     const n = Object.create(null);
     return (e) => n[e] || (n[e] = t(e));
   },
-  rm = /-\w/g,
-  Vn = Mo((t) => t.replace(rm, (n) => n.slice(1).toUpperCase())),
-  am = /\B([A-Z])/g,
-  Xe = Mo((t) => t.replace(am, "-$1").toLowerCase()),
+  lm = /-\w/g,
+  Vn = Mo((t) => t.replace(lm, (n) => n.slice(1).toUpperCase())),
+  cm = /\B([A-Z])/g,
+  Xe = Mo((t) => t.replace(cm, "-$1").toLowerCase()),
   No = Mo((t) => t.charAt(0).toUpperCase() + t.slice(1)),
   sr = Mo((t) => (t ? `on${No(t)}` : "")),
   ge = (t, n) => !Object.is(t, n),
@@ -130,7 +138,7 @@ const Gt = {},
     const n = parseFloat(t);
     return isNaN(n) ? t : n;
   },
-  lm = (t) => {
+  um = (t) => {
     const n = tn(t) ? Number(t) : NaN;
     return isNaN(n) ? t : n;
   };
@@ -152,24 +160,24 @@ function Me(t) {
     const n = {};
     for (let e = 0; e < t.length; e++) {
       const i = t[e],
-        s = tn(i) ? dm(i) : Me(i);
+        s = tn(i) ? fm(i) : Me(i);
       if (s) for (const o in s) n[o] = s[o];
     }
     return n;
   } else if (tn(t) || Dt(t)) return t;
 }
-const cm = /;(?![^(]*\))/g,
-  um = /:([^]+)/,
-  hm = /\/\*[^]*?\*\//g;
-function dm(t) {
+const hm = /;(?![^(]*\))/g,
+  dm = /:([^]+)/,
+  mm = /\/\*[^]*?\*\//g;
+function fm(t) {
   const n = {};
   return (
     t
-      .replace(hm, "")
-      .split(cm)
+      .replace(mm, "")
+      .split(hm)
       .forEach((e) => {
         if (e) {
-          const i = e.split(um);
+          const i = e.split(dm);
           i.length > 1 && (n[i[0].trim()] = i[1].trim());
         }
       }),
@@ -187,13 +195,13 @@ function Tt(t) {
   else if (Dt(t)) for (const e in t) t[e] && (n += e + " ");
   return n.trim();
 }
-const mm =
+const gm =
     "itemscope,allowfullscreen,formnovalidate,ismap,nomodule,novalidate,readonly",
-  fm = la(mm);
+  bm = la(gm);
 function Fc(t) {
   return !!t || t === "";
 }
-function gm(t, n) {
+function pm(t, n) {
   if (t.length !== n.length) return !1;
   let e = !0;
   for (let i = 0; e && i < t.length; i++) e = We(t[i], n[i]);
@@ -205,7 +213,7 @@ function We(t, n) {
     i = el(n);
   if (e || i) return e && i ? t.getTime() === n.getTime() : !1;
   if (((e = re(t)), (i = re(n)), e || i)) return t === n;
-  if (((e = wt(t)), (i = wt(n)), e || i)) return e && i ? gm(t, n) : !1;
+  if (((e = wt(t)), (i = wt(n)), e || i)) return e && i ? pm(t, n) : !1;
   if (((e = Dt(t)), (i = Dt(n)), e || i)) {
     if (!e || !i) return !1;
     const s = Object.keys(t).length,
@@ -255,7 +263,7 @@ const Uc = (t) => !!(t && t.__v_isRef === !0),
     return re(t) ? `Symbol(${(e = t.description) != null ? e : n})` : t;
   };
 let vn;
-class bm {
+class vm {
   constructor(n = !1) {
     ((this.detached = n),
       (this._active = !0),
@@ -343,7 +351,7 @@ class bm {
     }
   }
 }
-function pm() {
+function ym() {
   return vn;
 }
 let Yt;
@@ -454,7 +462,7 @@ function zc(t) {
     i = e;
   for (; i;) {
     const s = i.prevDep;
-    (i.version === -1 ? (i === e && (e = s), fa(i), vm(i)) : (n = i),
+    (i.version === -1 ? (i === e && (e = s), fa(i), km(i)) : (n = i),
       (i.dep.activeLink = i.prevActiveLink),
       (i.prevActiveLink = void 0),
       (i = s));
@@ -506,7 +514,7 @@ function fa(t, n = !1) {
   }
   !n && !--e.sc && e.map && e.map.delete(e.key);
 }
-function vm(t) {
+function km(t) {
   const { prevDep: n, nextDep: e } = t;
   (n && ((n.nextDep = e), (t.prevDep = void 0)),
     e && ((e.prevDep = n), (t.nextDep = void 0)));
@@ -533,7 +541,7 @@ function sl(t) {
   }
 }
 let ys = 0;
-class ym {
+class _m {
   constructor(n, e) {
     ((this.sub = n),
       (this.dep = e),
@@ -561,7 +569,7 @@ class ga {
     if (!Yt || !oe || Yt === this.computed) return;
     let e = this.activeLink;
     if (e === void 0 || e.sub !== Yt)
-      ((e = this.activeLink = new ym(Yt, this)),
+      ((e = this.activeLink = new _m(Yt, this)),
         Yt.deps
           ? ((e.prevDep = Yt.depsTail),
             (Yt.depsTail.nextDep = e),
@@ -608,7 +616,7 @@ const Pr = new WeakMap(),
   ui = Symbol(""),
   Rr = Symbol(""),
   ks = Symbol("");
-function Cn(t, n, e) {
+function $n(t, n, e) {
   if (oe && Yt) {
     let i = Pr.get(t);
     i || Pr.set(t, (i = new Map()));
@@ -631,8 +639,8 @@ function $e(t, n, e, i, s, o) {
       h = c && ua(e);
     if (c && e === "length") {
       const u = Number(i);
-      r.forEach((d, p) => {
-        (p === "length" || p === ks || (!re(p) && p >= u)) && l(d);
+      r.forEach((d, v) => {
+        (v === "length" || v === ks || (!re(v) && v >= u)) && l(d);
       });
     } else
       switch (
@@ -653,15 +661,15 @@ function $e(t, n, e, i, s, o) {
 }
 function ki(t) {
   const n = Ot(t);
-  return n === t ? n : (Cn(n, "iterate", ks), ne(t) ? n : n.map(ae));
+  return n === t ? n : ($n(n, "iterate", ks), ne(t) ? n : n.map(ae));
 }
 function Oo(t) {
-  return (Cn((t = Ot(t)), "iterate", ks), t);
+  return ($n((t = Ot(t)), "iterate", ks), t);
 }
 function de(t, n) {
   return Ne(t) ? Li(hi(t) ? ae(n) : n) : ae(n);
 }
-const km = {
+const xm = {
   __proto__: null,
   [Symbol.iterator]() {
     return ar(this, Symbol.iterator, (t) => de(this, t));
@@ -766,24 +774,24 @@ function ar(t, n, e) {
     s
   );
 }
-const _m = Array.prototype;
+const Tm = Array.prototype;
 function we(t, n, e, i, s, o) {
   const r = Oo(t),
     l = r !== t && !ne(t),
     c = r[n];
-  if (c !== _m[n]) {
+  if (c !== Tm[n]) {
     const d = c.apply(t, o);
     return l ? ae(d) : d;
   }
   let h = e;
   r !== t &&
     (l
-      ? (h = function (d, p) {
-          return e.call(this, de(t, d), p, t);
+      ? (h = function (d, v) {
+          return e.call(this, de(t, d), v, t);
         })
       : e.length > 2 &&
-        (h = function (d, p) {
-          return e.call(this, d, p, t);
+        (h = function (d, v) {
+          return e.call(this, d, v, t);
         }));
   const u = c.call(r, h, i);
   return l && s ? s(u) : u;
@@ -811,7 +819,7 @@ function ol(t, n, e, i) {
 }
 function lr(t, n, e) {
   const i = Ot(t);
-  Cn(i, "iterate", ks);
+  $n(i, "iterate", ks);
   const s = i[n](...e);
   return (s === -1 || s === !1) && va(e[0])
     ? ((e[0] = Ot(e[0])), i[n](...e))
@@ -822,17 +830,17 @@ function Yi(t, n, e = []) {
   const i = Ot(t)[n].apply(t, e);
   return (ma(), _e(), i);
 }
-const xm = la("__proto__,__v_isRef,__isVue"),
+const wm = la("__proto__,__v_isRef,__isVue"),
   nu = new Set(
     Object.getOwnPropertyNames(Symbol)
       .filter((t) => t !== "arguments" && t !== "caller")
       .map((t) => Symbol[t])
       .filter(re),
   );
-function Tm(t) {
+function Sm(t) {
   re(t) || (t = String(t));
   const n = Ot(this);
-  return (Cn(n, "has", t), n.hasOwnProperty(t));
+  return ($n(n, "has", t), n.hasOwnProperty(t));
 }
 class eu {
   constructor(n = !1, e = !1) {
@@ -846,19 +854,19 @@ class eu {
     if (e === "__v_isReadonly") return s;
     if (e === "__v_isShallow") return o;
     if (e === "__v_raw")
-      return i === (s ? (o ? Pm : ru) : o ? ou : su).get(n) ||
+      return i === (s ? (o ? Om : ru) : o ? ou : su).get(n) ||
         Object.getPrototypeOf(n) === Object.getPrototypeOf(i)
         ? n
         : void 0;
     const r = wt(n);
     if (!s) {
       let c;
-      if (r && (c = km[e])) return c;
-      if (e === "hasOwnProperty") return Tm;
+      if (r && (c = xm[e])) return c;
+      if (e === "hasOwnProperty") return Sm;
     }
-    const l = Reflect.get(n, e, Mn(n) ? n : i);
-    if ((re(e) ? nu.has(e) : xm(e)) || (s || Cn(n, "get", e), o)) return l;
-    if (Mn(l)) {
+    const l = Reflect.get(n, e, Nn(n) ? n : i);
+    if ((re(e) ? nu.has(e) : wm(e)) || (s || $n(n, "get", e), o)) return l;
+    if (Nn(l)) {
       const c = r && ua(e) ? l : l.value;
       return s && Dt(c) ? Lr(c) : c;
     }
@@ -875,12 +883,12 @@ class iu extends eu {
     if (!this._isShallow) {
       const h = Ne(o);
       if (
-        (!ne(i) && !Ne(i) && ((o = Ot(o)), (i = Ot(i))), !r && Mn(o) && !Mn(i))
+        (!ne(i) && !Ne(i) && ((o = Ot(o)), (i = Ot(i))), !r && Nn(o) && !Nn(i))
       )
         return (h || (o.value = i), !0);
     }
     const l = r ? Number(e) < n.length : Vt(n, e),
-      c = Reflect.set(n, e, i, Mn(n) ? n : s);
+      c = Reflect.set(n, e, i, Nn(n) ? n : s);
     return (
       n === Ot(s) &&
         c &&
@@ -896,13 +904,13 @@ class iu extends eu {
   }
   has(n, e) {
     const i = Reflect.has(n, e);
-    return ((!re(e) || !nu.has(e)) && Cn(n, "has", e), i);
+    return ((!re(e) || !nu.has(e)) && $n(n, "has", e), i);
   }
   ownKeys(n) {
-    return (Cn(n, "iterate", wt(n) ? "length" : ui), Reflect.ownKeys(n));
+    return ($n(n, "iterate", wt(n) ? "length" : ui), Reflect.ownKeys(n));
   }
 }
-class wm extends eu {
+class Cm extends eu {
   constructor(n = !1) {
     super(!0, n);
   }
@@ -913,12 +921,12 @@ class wm extends eu {
     return !0;
   }
 }
-const Sm = new iu(),
-  Cm = new wm(),
-  $m = new iu(!0);
+const $m = new iu(),
+  Em = new Cm(),
+  Im = new iu(!0);
 const Or = (t) => t,
   js = (t) => Reflect.getPrototypeOf(t);
-function Em(t, n, e) {
+function Am(t, n, e) {
   return function (...i) {
     const s = this.__v_raw,
       o = Ot(s),
@@ -928,13 +936,13 @@ function Em(t, n, e) {
       h = s[t](...i),
       u = e ? Or : n ? Li : ae;
     return (
-      !n && Cn(o, "iterate", c ? Rr : ui),
+      !n && $n(o, "iterate", c ? Rr : ui),
       un(Object.create(h), {
         next() {
-          const { value: d, done: p } = h.next();
-          return p
-            ? { value: d, done: p }
-            : { value: l ? [u(d[0]), u(d[1])] : u(d), done: p };
+          const { value: d, done: v } = h.next();
+          return v
+            ? { value: d, done: v }
+            : { value: l ? [u(d[0]), u(d[1])] : u(d), done: v };
         },
       })
     );
@@ -945,13 +953,13 @@ function Ks(t) {
     return t === "delete" ? !1 : t === "clear" ? void 0 : this;
   };
 }
-function Im(t, n) {
+function Mm(t, n) {
   const e = {
     get(s) {
       const o = this.__v_raw,
         r = Ot(o),
         l = Ot(s);
-      t || (ge(s, l) && Cn(r, "get", s), Cn(r, "get", l));
+      t || (ge(s, l) && $n(r, "get", s), $n(r, "get", l));
       const { has: c } = js(r),
         h = n ? Or : t ? Li : ae;
       if (c.call(r, s)) return h(o.get(s));
@@ -960,14 +968,14 @@ function Im(t, n) {
     },
     get size() {
       const s = this.__v_raw;
-      return (!t && Cn(Ot(s), "iterate", ui), s.size);
+      return (!t && $n(Ot(s), "iterate", ui), s.size);
     },
     has(s) {
       const o = this.__v_raw,
         r = Ot(o),
         l = Ot(s);
       return (
-        t || (ge(s, l) && Cn(r, "has", s), Cn(r, "has", l)),
+        t || (ge(s, l) && $n(r, "has", s), $n(r, "has", l)),
         s === l ? o.has(s) : o.has(s) || o.has(l)
       );
     },
@@ -977,7 +985,7 @@ function Im(t, n) {
         c = Ot(l),
         h = n ? Or : t ? Li : ae;
       return (
-        !t && Cn(c, "iterate", ui),
+        !t && $n(c, "iterate", ui),
         l.forEach((u, d) => s.call(o, h(u), h(d), r))
       );
     },
@@ -1036,13 +1044,13 @@ function Im(t, n) {
           },
     ),
     ["keys", "values", "entries", Symbol.iterator].forEach((s) => {
-      e[s] = Em(s, t, n);
+      e[s] = Am(s, t, n);
     }),
     e
   );
 }
 function ba(t, n) {
-  const e = Im(t, n);
+  const e = Mm(t, n);
   return (i, s, o) =>
     s === "__v_isReactive"
       ? !t
@@ -1052,14 +1060,14 @@ function ba(t, n) {
           ? i
           : Reflect.get(Vt(e, s) && s in i ? e : i, s, o);
 }
-const Am = { get: ba(!1, !1) },
-  Mm = { get: ba(!1, !0) },
-  Nm = { get: ba(!0, !1) };
+const Nm = { get: ba(!1, !1) },
+  Pm = { get: ba(!1, !0) },
+  Rm = { get: ba(!0, !1) };
 const su = new WeakMap(),
   ou = new WeakMap(),
   ru = new WeakMap(),
-  Pm = new WeakMap();
-function Rm(t) {
+  Om = new WeakMap();
+function Lm(t) {
   switch (t) {
     case "Object":
     case "Array":
@@ -1074,13 +1082,13 @@ function Rm(t) {
   }
 }
 function Un(t) {
-  return Ne(t) ? t : pa(t, !1, Sm, Am, su);
+  return Ne(t) ? t : pa(t, !1, $m, Nm, su);
 }
-function Om(t) {
-  return pa(t, !1, $m, Mm, ou);
+function Bm(t) {
+  return pa(t, !1, Im, Pm, ou);
 }
 function Lr(t) {
-  return pa(t, !0, Cm, Nm, ru);
+  return pa(t, !0, Em, Rm, ru);
 }
 function pa(t, n, e, i, s) {
   if (
@@ -1092,7 +1100,7 @@ function pa(t, n, e, i, s) {
     return t;
   const o = s.get(t);
   if (o) return o;
-  const r = Rm(om(t));
+  const r = Lm(am(t));
   if (r === 0) return t;
   const l = new Proxy(t, r === 2 ? i : e);
   return (s.set(t, l), l);
@@ -1113,7 +1121,7 @@ function Ot(t) {
   const n = t && t.__v_raw;
   return n ? Ot(n) : t;
 }
-function Lm(t) {
+function qm(t) {
   return (
     !Vt(t, "__v_skip") && Object.isExtensible(t) && Hc(t, "__v_skip", !0),
     t
@@ -1121,16 +1129,16 @@ function Lm(t) {
 }
 const ae = (t) => (Dt(t) ? Un(t) : t),
   Li = (t) => (Dt(t) ? Lr(t) : t);
-function Mn(t) {
+function Nn(t) {
   return t ? t.__v_isRef === !0 : !1;
 }
 function st(t) {
-  return Bm(t, !1);
+  return Vm(t, !1);
 }
-function Bm(t, n) {
-  return Mn(t) ? t : new qm(t, n);
+function Vm(t, n) {
+  return Nn(t) ? t : new Dm(t, n);
 }
-class qm {
+class Dm {
   constructor(n, e) {
     ((this.dep = new ga()),
       (this.__v_isRef = !0),
@@ -1153,19 +1161,19 @@ class qm {
   }
 }
 function E(t) {
-  return Mn(t) ? t.value : t;
+  return Nn(t) ? t.value : t;
 }
-const Vm = {
+const jm = {
   get: (t, n, e) => (n === "__v_raw" ? t : E(Reflect.get(t, n, e))),
   set: (t, n, e, i) => {
     const s = t[n];
-    return Mn(s) && !Mn(e) ? ((s.value = e), !0) : Reflect.set(t, n, e, i);
+    return Nn(s) && !Nn(e) ? ((s.value = e), !0) : Reflect.set(t, n, e, i);
   },
 };
 function au(t) {
-  return hi(t) ? t : new Proxy(t, Vm);
+  return hi(t) ? t : new Proxy(t, jm);
 }
-class Dm {
+class Km {
   constructor(n, e, i) {
     ((this.fn = n),
       (this.setter = e),
@@ -1193,20 +1201,20 @@ class Dm {
     this.setter && this.setter(n);
   }
 }
-function jm(t, n, e = !1) {
+function Hm(t, n, e = !1) {
   let i, s;
-  return (It(t) ? (i = t) : ((i = t.get), (s = t.set)), new Dm(i, s, e));
+  return (It(t) ? (i = t) : ((i = t.get), (s = t.set)), new Km(i, s, e));
 }
 const Hs = {},
   so = new WeakMap();
 let oi;
-function Km(t, n = !1, e = oi) {
+function Fm(t, n = !1, e = oi) {
   if (e) {
     let i = so.get(e);
     (i || so.set(e, (i = [])), i.push(t));
   }
 }
-function Hm(t, n, e = Gt) {
+function Um(t, n, e = Gt) {
   const {
       immediate: i,
       deep: s,
@@ -1218,12 +1226,12 @@ function Hm(t, n, e = Gt) {
     h = (j) => (s ? j : ne(j) || s === !1 || s === 0 ? Ee(j, 1) : Ee(j));
   let u,
     d,
-    p,
+    v,
     S,
     w = !1,
     M = !1;
   if (
-    (Mn(t)
+    (Nn(t)
       ? ((d = () => t.value), (w = ne(t)))
       : hi(t)
         ? ((d = () => h(t)), (w = !0))
@@ -1232,7 +1240,7 @@ function Hm(t, n, e = Gt) {
             (w = t.some((j) => hi(j) || ne(j))),
             (d = () =>
               t.map((j) => {
-                if (Mn(j)) return j.value;
+                if (Nn(j)) return j.value;
                 if (hi(j)) return h(j);
                 if (It(j)) return c ? c(j, 2) : j();
               })))
@@ -1240,10 +1248,10 @@ function Hm(t, n, e = Gt) {
             ? n
               ? (d = c ? () => c(t, 2) : t)
               : (d = () => {
-                  if (p) {
+                  if (v) {
                     ke();
                     try {
-                      p();
+                      v();
                     } finally {
                       _e();
                     }
@@ -1260,17 +1268,17 @@ function Hm(t, n, e = Gt) {
     n && s)
   ) {
     const j = d,
-      pt = s === !0 ? 1 / 0 : s;
-    d = () => Ee(j(), pt);
+      vt = s === !0 ? 1 / 0 : s;
+    d = () => Ee(j(), vt);
   }
-  const nt = pm(),
+  const nt = ym(),
     R = () => {
       (u.stop(), nt && nt.active && ca(nt.effects, u));
     };
   if (o && n) {
     const j = n;
-    n = (...pt) => {
-      const ct = j(...pt);
+    n = (...vt) => {
+      const ct = j(...vt);
       return (R(), ct);
     };
   }
@@ -1278,14 +1286,14 @@ function Hm(t, n, e = Gt) {
   const W = (j) => {
     if (!(!(u.flags & 1) || (!u.dirty && !j)))
       if (n) {
-        const pt = u.run();
-        if (j || s || w || (M ? pt.some((ct, O) => ge(ct, L[O])) : ge(pt, L))) {
-          p && p();
+        const vt = u.run();
+        if (j || s || w || (M ? vt.some((ct, O) => ge(ct, L[O])) : ge(vt, L))) {
+          v && v();
           const ct = oi;
           oi = u;
           try {
-            const O = [pt, L === Hs ? void 0 : M && L[0] === Hs ? [] : L, S];
-            ((L = pt), c ? c(n, 3, O) : n(...O));
+            const O = [vt, L === Hs ? void 0 : M && L[0] === Hs ? [] : L, S];
+            ((L = vt), c ? c(n, 3, O) : n(...O));
           } finally {
             oi = ct;
           }
@@ -1296,13 +1304,13 @@ function Hm(t, n, e = Gt) {
     l && l(W),
     (u = new Gc(d)),
     (u.scheduler = r ? () => r(W, !1) : W),
-    (S = (j) => Km(j, !1, u)),
-    (p = u.onStop =
+    (S = (j) => Fm(j, !1, u)),
+    (v = u.onStop =
       () => {
         const j = so.get(u);
         if (j) {
           if (c) c(j, 4);
-          else for (const pt of j) pt();
+          else for (const vt of j) vt();
           so.delete(u);
         }
       }),
@@ -1321,7 +1329,7 @@ function Ee(t, n = 1 / 0, e) {
     ((e = e || new Map()), (e.get(t) || 0) >= n)
   )
     return t;
-  if ((e.set(t, n), n--, Mn(t))) Ee(t.value, n, e);
+  if ((e.set(t, n), n--, Nn(t))) Ee(t.value, n, e);
   else if (wt(t)) for (let i = 0; i < t.length; i++) Ee(t[i], n, e);
   else if (Fi(t) || Ei(t))
     t.forEach((i) => {
@@ -1379,9 +1387,9 @@ function Lo(t, n, e, i = !0) {
       return;
     }
   }
-  Fm(t, e, s, i, r);
+  Wm(t, e, s, i, r);
 }
-function Fm(t, n, e, i = !0, s = !1) {
+function Wm(t, n, e, i = !0, s = !1) {
   if (s) throw t;
   console.error(t);
 }
@@ -1396,7 +1404,7 @@ function Ge(t) {
   const n = oo || lu;
   return t ? n.then(this ? t.bind(this) : t) : n;
 }
-function Um(t) {
+function Gm(t) {
   let n = he + 1,
     e = Bn.length;
   for (; n < e;) {
@@ -1411,7 +1419,7 @@ function ya(t) {
   if (!(t.flags & 1)) {
     const n = _s(t),
       e = Bn[Bn.length - 1];
-    (!e || (!(t.flags & 2) && n >= _s(e)) ? Bn.push(t) : Bn.splice(Um(n), 0, t),
+    (!e || (!(t.flags & 2) && n >= _s(e)) ? Bn.push(t) : Bn.splice(Gm(n), 0, t),
       (t.flags |= 1),
       cu());
   }
@@ -1419,7 +1427,7 @@ function ya(t) {
 function cu() {
   oo || (oo = lu.then(hu));
 }
-function Wm(t) {
+function Jm(t) {
   (wt(t)
     ? Ii.push(...t)
     : je && t.id === -1
@@ -1529,10 +1537,10 @@ function ti(t, n, e, i) {
   }
 }
 function mu(t, n) {
-  if (In) {
-    let e = In.provides;
-    const i = In.parent && In.parent.provides;
-    (i === e && (e = In.provides = Object.create(i)), (e[t] = n));
+  if (An) {
+    let e = An.provides;
+    const i = An.parent && An.parent.provides;
+    (i === e && (e = An.provides = Object.create(i)), (e[t] = n));
   }
 }
 function cs(t, n, e = !1) {
@@ -1549,8 +1557,8 @@ function cs(t, n, e = !1) {
     if (arguments.length > 1) return e && It(n) ? n.call(i && i.proxy) : n;
   }
 }
-const Gm = Symbol.for("v-scx"),
-  Jm = () => cs(Gm);
+const Qm = Symbol.for("v-scx"),
+  Ym = () => cs(Qm);
 function Dn(t, n, e) {
   return fu(t, n, e);
 }
@@ -1561,19 +1569,19 @@ function fu(t, n, e = Gt) {
   let h;
   if (Ss) {
     if (o === "sync") {
-      const S = Jm();
+      const S = Ym();
       h = S.__watcherHandles || (S.__watcherHandles = []);
     } else if (!c) {
       const S = () => {};
       return ((S.stop = ve), (S.resume = ve), (S.pause = ve), S);
     }
   }
-  const u = In;
+  const u = An;
   l.call = (S, w, M) => ie(S, u, w, M);
   let d = !1;
   (o === "post"
     ? (l.scheduler = (S) => {
-        On(S, u && u.suspense);
+        Ln(S, u && u.suspense);
       })
     : o !== "sync" &&
       ((d = !0),
@@ -1584,10 +1592,10 @@ function fu(t, n, e = Gt) {
       (n && (S.flags |= 4),
         d && ((S.flags |= 2), u && ((S.id = u.uid), (S.i = u))));
     }));
-  const p = Hm(t, n, l);
-  return (Ss && (h ? h.push(p) : c && p()), p);
+  const v = Um(t, n, l);
+  return (Ss && (h ? h.push(v) : c && v()), v);
 }
-function Qm(t, n, e) {
+function zm(t, n, e) {
   const i = this.proxy,
     s = tn(t) ? (t.includes(".") ? gu(i, t) : () => i[t]) : t.bind(i, i);
   let o;
@@ -1608,21 +1616,21 @@ const Ve = new WeakMap(),
   bu = Symbol("_vte"),
   pu = (t) => t.__isTeleport,
   ai = (t) => t && (t.disabled || t.disabled === ""),
-  Ym = (t) => t && (t.defer || t.defer === ""),
+  Xm = (t) => t && (t.defer || t.defer === ""),
   al = (t) => typeof SVGElement < "u" && t instanceof SVGElement,
   ll = (t) => typeof MathMLElement == "function" && t instanceof MathMLElement,
   Br = (t, n) => {
     const e = t && t.to;
     return tn(e) ? (n ? n(e) : null) : e;
   },
-  zm = {
+  Zm = {
     name: "Teleport",
     __isTeleport: !0,
     process(t, n, e, i, s, o, r, l, c, h) {
       const {
           mc: u,
           pc: d,
-          pbc: p,
+          pbc: v,
           o: {
             insert: S,
             querySelector: w,
@@ -1636,7 +1644,7 @@ const Ve = new WeakMap(),
       const j = (O, ot, D) => {
           O.shapeFlag & 16 && u(O.children, ot, D, s, o, r, l, c);
         },
-        pt = (O = n) => {
+        vt = (O = n) => {
           const ot = ai(O.props),
             D = (O.target = Br(O.props, w)),
             x = qr(D, O, M, S);
@@ -1658,19 +1666,19 @@ const Ve = new WeakMap(),
                 const D = R(O.el) || e;
                 (j(O, D, O.anchor), ns(O, !0));
               }
-              pt(O);
+              vt(O);
             }
           };
-          (Ve.set(O, ot), On(ot, o));
+          (Ve.set(O, ot), Ln(ot, o));
         };
       if (t == null) {
         const O = (n.el = M("")),
           ot = (n.anchor = M(""));
-        if ((S(O, e, i), S(ot, e, i), Ym(n.props) || (o && o.pendingBranch))) {
+        if ((S(O, e, i), S(ot, e, i), Xm(n.props) || (o && o.pendingBranch))) {
           ct(n);
           return;
         }
-        (L && (j(n, e, ot), ns(n, !0)), pt());
+        (L && (j(n, e, ot), ns(n, !0)), vt());
       } else {
         n.el = t.el;
         const O = (n.anchor = t.anchor),
@@ -1690,7 +1698,7 @@ const Ve = new WeakMap(),
             ? (r = "svg")
             : (r === "mathml" || ll(D)) && (r = "mathml"),
           W
-            ? (p(t.dynamicChildren, W, b, s, o, r, l), Ca(t, n, !0))
+            ? (v(t.dynamicChildren, W, b, s, o, r, l), Ca(t, n, !0))
             : c || d(t, n, b, _t, s, o, r, l, !1),
           L)
         )
@@ -1715,9 +1723,9 @@ const Ve = new WeakMap(),
           targetStart: h,
           targetAnchor: u,
           target: d,
-          props: p,
+          props: v,
         } = t,
-        S = ai(p),
+        S = ai(v),
         w = o || !S,
         M = Ve.get(t);
       if (
@@ -1732,17 +1740,17 @@ const Ve = new WeakMap(),
         }
     },
     move: Fs,
-    hydrate: Xm,
+    hydrate: tf,
   };
 function Fs(t, n, e, { o: { insert: i }, m: s }, o = 2) {
   o === 0 && i(t.targetAnchor, n, e);
   const { el: r, anchor: l, shapeFlag: c, children: h, props: u } = t,
     d = o === 2;
   if ((d && i(r, n, e), !Ve.has(t) && (!d || ai(u)) && c & 16))
-    for (let p = 0; p < h.length; p++) s(h[p], n, e, 2);
+    for (let v = 0; v < h.length; v++) s(h[v], n, e, 2);
   d && i(l, n, e);
 }
-function Xm(
+function tf(
   t,
   n,
   e,
@@ -1760,7 +1768,7 @@ function Xm(
   },
   d,
 ) {
-  function p(nt, R) {
+  function v(nt, R) {
     let L = R;
     for (; L;) {
       if (L && L.nodeType === 8) {
@@ -1784,10 +1792,10 @@ function Xm(
     (n.shapeFlag & 16 &&
       (M
         ? (S(t, n),
-          p(w, nt),
+          v(w, nt),
           n.targetAnchor || qr(w, n, u, h, l(t) === w ? t : null))
         : ((n.anchor = r(t)),
-          p(w, nt),
+          v(w, nt),
           n.targetAnchor || qr(w, n, u, h),
           d(nt && r(nt), n, w, e, i, s, o))),
       ns(n, M));
@@ -1797,7 +1805,7 @@ function Xm(
       (S(t, n), (n.targetStart = t), (n.targetAnchor = r(t)));
   return n.anchor && r(n.anchor);
 }
-const vu = zm;
+const vu = Zm;
 function ns(t, n) {
   const e = t.ctx;
   if (e && e.ut) {
@@ -1859,7 +1867,7 @@ const Xn = [Function, Array],
     const n = t.subTree;
     return n.component ? _u(n.component) : n;
   },
-  Zm = {
+  nf = {
     name: "BaseTransition",
     props: ku,
     setup(t, { slots: n }) {
@@ -1875,11 +1883,11 @@ const Xn = [Function, Array],
         const c = cl(o);
         if (!c) return cr(o);
         let h = xs(c, r, i, e, (d) => (h = d));
-        c.type !== En && mi(c, h);
+        c.type !== In && mi(c, h);
         let u = e.subTree && cl(e.subTree);
-        if (u && u.type !== En && !li(u, c) && _u(e).type !== En) {
+        if (u && u.type !== In && !li(u, c) && _u(e).type !== In) {
           let d = xs(u, r, i, e);
-          if ((mi(u, d), l === "out-in" && c.type !== En))
+          if ((mi(u, d), l === "out-in" && c.type !== In))
             return (
               (i.isLeaving = !0),
               (d.afterLeave = () => {
@@ -1890,13 +1898,13 @@ const Xn = [Function, Array],
               }),
               cr(o)
             );
-          l === "in-out" && c.type !== En
-            ? (d.delayLeave = (p, S, w) => {
+          l === "in-out" && c.type !== In
+            ? (d.delayLeave = (v, S, w) => {
                 const M = Tu(i, u);
                 ((M[String(u.key)] = u),
-                  (p[te] = () => {
+                  (v[te] = () => {
                     (S(),
-                      (p[te] = void 0),
+                      (v[te] = void 0),
                       delete h.delayedLeave,
                       (u = void 0));
                   }),
@@ -1914,14 +1922,14 @@ function xu(t) {
   let n = t[0];
   if (t.length > 1) {
     for (const e of t)
-      if (e.type !== En) {
+      if (e.type !== In) {
         n = e;
         break;
       }
   }
   return n;
 }
-const tf = Zm;
+const ef = nf;
 function Tu(t, n) {
   const { leavingVNodes: e } = t;
   let i = e.get(n.type);
@@ -1936,7 +1944,7 @@ function xs(t, n, e, i, s) {
       onEnter: h,
       onAfterEnter: u,
       onEnterCancelled: d,
-      onBeforeLeave: p,
+      onBeforeLeave: v,
       onLeave: S,
       onAfterLeave: w,
       onLeaveCancelled: M,
@@ -1946,7 +1954,7 @@ function xs(t, n, e, i, s) {
       onAppearCancelled: W,
     } = n,
     j = String(t.key),
-    pt = Tu(e, t),
+    vt = Tu(e, t),
     ct = (D, x) => {
       D && ie(D, i, 9, x);
     },
@@ -1964,11 +1972,11 @@ function xs(t, n, e, i, s) {
           if (o) x = nt || c;
           else return;
         D[te] && D[te](!0);
-        const z = pt[j];
+        const z = vt[j];
         (z && li(t, z) && z.el[te] && z.el[te](), ct(x, [D]));
       },
       enter(D) {
-        if (pt[j] === t) return;
+        if (vt[j] === t) return;
         let x = h,
           z = u,
           b = d;
@@ -1989,7 +1997,7 @@ function xs(t, n, e, i, s) {
       leave(D, x) {
         const z = String(t.key);
         if ((D[zi] && D[zi](!0), e.isUnmounting)) return x();
-        ct(p, [D]);
+        ct(v, [D]);
         let b = !1;
         D[te] = (At) => {
           b ||
@@ -1997,10 +2005,10 @@ function xs(t, n, e, i, s) {
             x(),
             At ? ct(M, [D]) : ct(w, [D]),
             (D[te] = void 0),
-            pt[z] === t && delete pt[z]);
+            vt[z] === t && delete vt[z]);
         };
         const _t = D[te].bind(null, !1);
-        ((pt[z] = t), S ? O(S, [D, _t]) : _t());
+        ((vt[z] = t), S ? O(S, [D, _t]) : _t());
       },
       clone(D) {
         const x = xs(D, n, e, i, s);
@@ -2037,12 +2045,12 @@ function ka(t, n = !1, e) {
     const l = e == null ? r.key : String(e) + String(r.key != null ? r.key : o);
     r.type === dt
       ? (r.patchFlag & 128 && s++, (i = i.concat(ka(r.children, n, l))))
-      : (n || r.type !== En) && i.push(l != null ? Qe(r, { key: l }) : r);
+      : (n || r.type !== In) && i.push(l != null ? Qe(r, { key: l }) : r);
   }
   if (s > 1) for (let o = 0; o < i.length; o++) i[o].patchFlag = -2;
   return i;
 }
-function Nn(t, n) {
+function Pn(t, n) {
   return It(t) ? un({ name: t.name }, n, { setup: t }) : t;
 }
 function wu(t) {
@@ -2071,12 +2079,12 @@ function us(t, n, e, i, s = !1) {
     h = n && n.r,
     u = l.refs === Gt ? (l.refs = {}) : l.refs,
     d = l.setupState,
-    p = Ot(d),
-    S = d === Gt ? Vc : (M) => (ul(u, M) ? !1 : Vt(p, M)),
+    v = Ot(d),
+    S = d === Gt ? Vc : (M) => (ul(u, M) ? !1 : Vt(v, M)),
     w = (M, nt) => !(nt && ul(u, nt));
   if (h != null && h !== c) {
     if ((hl(n), tn(h))) ((u[h] = null), S(h) && (d[h] = null));
-    else if (Mn(h)) {
+    else if (Nn(h)) {
       const M = n;
       (w(h, M.k) && (h.value = null), M.k && (u[M.k] = null));
     }
@@ -2090,7 +2098,7 @@ function us(t, n, e, i, s = !1) {
     }
   } else {
     const M = tn(c),
-      nt = Mn(c);
+      nt = Nn(c);
     if (M || nt) {
       const R = () => {
         if (t.f) {
@@ -2111,7 +2119,7 @@ function us(t, n, e, i, s = !1) {
         const L = () => {
           (R(), ao.delete(t));
         };
-        ((L.id = -1), ao.set(t, L), On(L, e));
+        ((L.id = -1), ao.set(t, L), Ln(L, e));
       } else (hl(t), R());
     }
   }
@@ -2124,13 +2132,13 @@ Ro().requestIdleCallback;
 Ro().cancelIdleCallback;
 const Ai = (t) => !!t.type.__asyncLoader,
   Bo = (t) => t.type.__isKeepAlive;
-function nf(t, n) {
+function sf(t, n) {
   Su(t, "a", n);
 }
-function ef(t, n) {
+function of(t, n) {
   Su(t, "da", n);
 }
-function Su(t, n, e = In) {
+function Su(t, n, e = An) {
   const i =
     t.__wdc ||
     (t.__wdc = () => {
@@ -2144,16 +2152,16 @@ function Su(t, n, e = In) {
   if ((qo(n, i, e), e)) {
     let s = e.parent;
     for (; s && s.parent;)
-      (Bo(s.parent.vnode) && sf(i, n, e, s), (s = s.parent));
+      (Bo(s.parent.vnode) && rf(i, n, e, s), (s = s.parent));
   }
 }
-function sf(t, n, e, i) {
+function rf(t, n, e, i) {
   const s = qo(n, t, i, !0);
   Ps(() => {
     ca(i[n], s);
   }, e);
 }
-function qo(t, n, e = In, i = !1) {
+function qo(t, n, e = An, i = !1) {
   if (e) {
     const s = e[t] || (e[t] = []),
       o =
@@ -2169,39 +2177,39 @@ function qo(t, n, e = In, i = !1) {
 }
 const Oe =
     (t) =>
-    (n, e = In) => {
+    (n, e = An) => {
       (!Ss || t === "sp") && qo(t, (...i) => n(...i), e);
     },
-  of = Oe("bm"),
+  af = Oe("bm"),
   Je = Oe("m"),
-  rf = Oe("bu"),
+  lf = Oe("bu"),
   Cu = Oe("u"),
   $u = Oe("bum"),
   Ps = Oe("um"),
-  af = Oe("sp"),
-  lf = Oe("rtg"),
-  cf = Oe("rtc");
-function uf(t, n = In) {
+  cf = Oe("sp"),
+  uf = Oe("rtg"),
+  hf = Oe("rtc");
+function df(t, n = An) {
   qo("ec", t, n);
 }
 const _a = "components",
-  hf = "directives";
+  mf = "directives";
 function Eu(t, n) {
   return xa(_a, t, !0, n) || t;
 }
 const Iu = Symbol.for("v-ndc");
-function df(t) {
+function ff(t) {
   return tn(t) ? xa(_a, t, !1) || t : t || Iu;
 }
-function mf(t) {
-  return xa(hf, t);
+function gf(t) {
+  return xa(mf, t);
 }
 function xa(t, n, e = !0, i = !1) {
-  const s = kn || In;
+  const s = kn || An;
   if (s) {
     const o = s.type;
     if (t === _a) {
-      const l = zf(o, !1);
+      const l = Zf(o, !1);
       if (l && (l === n || l === Vn(n) || l === No(Vn(n)))) return o;
     }
     const r = dl(s[t] || o[t], n) || dl(s.appContext[t], n);
@@ -2257,7 +2265,7 @@ function Ta(t, n, e = {}, i, s) {
 }
 function Au(t) {
   return t.some((n) =>
-    ws(n) ? !(n.type === En || (n.type === dt && !Au(n.children))) : !0,
+    ws(n) ? !(n.type === In || (n.type === dt && !Au(n.children))) : !0,
   )
     ? t
     : null;
@@ -2282,10 +2290,10 @@ const Vr = (t) => (t ? (Qu(t) ? jo(t) : Vr(t.parent)) : null),
         ya(t.update);
       }),
     $nextTick: (t) => t.n || (t.n = Ge.bind(t.proxy)),
-    $watch: (t) => Qm.bind(t),
+    $watch: (t) => zm.bind(t),
   }),
   ur = (t, n) => t !== Gt && !t.__isScriptSetup && Vt(t, n),
-  ff = {
+  bf = {
     get({ _: t }, n) {
       if (n === "__v_skip") return !0;
       const {
@@ -2298,9 +2306,9 @@ const Vr = (t) => (t ? (Qu(t) ? jo(t) : Vr(t.parent)) : null),
         appContext: c,
       } = t;
       if (n[0] !== "$") {
-        const p = r[n];
-        if (p !== void 0)
-          switch (p) {
+        const v = r[n];
+        if (v !== void 0)
+          switch (v) {
             case 1:
               return i[n];
             case 2:
@@ -2320,7 +2328,7 @@ const Vr = (t) => (t ? (Qu(t) ? jo(t) : Vr(t.parent)) : null),
       }
       const h = hs[n];
       let u, d;
-      if (h) return (n === "$attrs" && Cn(t.attrs, "get", ""), h(t));
+      if (h) return (n === "$attrs" && $n(t.attrs, "get", ""), h(t));
       if ((u = l.__cssModules) && (u = u[n])) return u;
       if (e !== Gt && Vt(e, n)) return ((r[n] = 4), e[n]);
       if (((d = c.config.globalProperties), Vt(d, n))) return d[n];
@@ -2374,7 +2382,7 @@ function ml(t) {
   return wt(t) ? t.reduce((n, e) => ((n[e] = null), n), {}) : t;
 }
 let Dr = !0;
-function gf(t) {
+function pf(t) {
   const n = Nu(t),
     e = t.proxy,
     i = t.ctx;
@@ -2388,7 +2396,7 @@ function gf(t) {
     inject: h,
     created: u,
     beforeMount: d,
-    mounted: p,
+    mounted: v,
     beforeUpdate: S,
     updated: w,
     activated: M,
@@ -2397,7 +2405,7 @@ function gf(t) {
     beforeUnmount: L,
     destroyed: W,
     unmounted: j,
-    render: pt,
+    render: vt,
     renderTracked: ct,
     renderTriggered: O,
     errorCaptured: ot,
@@ -2408,7 +2416,7 @@ function gf(t) {
     directives: _t,
     filters: At,
   } = n;
-  if ((h && bf(h, i, null), r))
+  if ((h && vf(h, i, null), r))
     for (const F in r) {
       const J = r[F];
       It(J) && (i[F] = J.bind(e));
@@ -2420,14 +2428,14 @@ function gf(t) {
   if (((Dr = !0), o))
     for (const F in o) {
       const J = o[F],
-        bt = It(J) ? J.bind(e, e) : It(J.get) ? J.get.bind(e, e) : ve,
+        pt = It(J) ? J.bind(e, e) : It(J.get) ? J.get.bind(e, e) : ve,
         Ct = !It(J) && It(J.set) ? J.set.bind(e) : ve,
-        Ut = lt({ get: bt, set: Ct });
+        Ut = lt({ get: pt, set: Ct });
       Object.defineProperty(i, F, {
         enumerable: !0,
         configurable: !0,
         get: () => Ut.value,
-        set: (vt) => (Ut.value = vt),
+        set: (yt) => (Ut.value = yt),
       });
     }
   if (l) for (const F in l) Mu(l[F], i, e, F);
@@ -2439,21 +2447,21 @@ function gf(t) {
   }
   u && fl(u, t, "c");
   function at(F, J) {
-    wt(J) ? J.forEach((bt) => F(bt.bind(e))) : J && F(J.bind(e));
+    wt(J) ? J.forEach((pt) => F(pt.bind(e))) : J && F(J.bind(e));
   }
   if (
-    (at(of, d),
-    at(Je, p),
-    at(rf, S),
+    (at(af, d),
+    at(Je, v),
+    at(lf, S),
     at(Cu, w),
-    at(nf, M),
-    at(ef, nt),
-    at(uf, ot),
-    at(cf, ct),
-    at(lf, O),
+    at(sf, M),
+    at(of, nt),
+    at(df, ot),
+    at(hf, ct),
+    at(uf, O),
     at($u, L),
     at(Ps, j),
-    at(af, D),
+    at(cf, D),
     wt(x))
   )
     if (x.length) {
@@ -2461,18 +2469,18 @@ function gf(t) {
       x.forEach((J) => {
         Object.defineProperty(F, J, {
           get: () => e[J],
-          set: (bt) => (e[J] = bt),
+          set: (pt) => (e[J] = pt),
           enumerable: !0,
         });
       });
     } else t.exposed || (t.exposed = {});
-  (pt && t.render === ve && (t.render = pt),
+  (vt && t.render === ve && (t.render = vt),
     z != null && (t.inheritAttrs = z),
     b && (t.components = b),
     _t && (t.directives = _t),
     D && wu(t));
 }
-function bf(t, n, e = ve) {
+function vf(t, n, e = ve) {
   wt(t) && (t = jr(t));
   for (const i in t) {
     const s = t[i];
@@ -2482,7 +2490,7 @@ function bf(t, n, e = ve) {
         ? (o = cs(s.from || i, s.default, !0))
         : (o = cs(s.from || i))
       : (o = cs(s)),
-      Mn(o)
+      Nn(o)
         ? Object.defineProperty(n, i, {
             enumerable: !0,
             configurable: !0,
@@ -2535,36 +2543,36 @@ function lo(t, n, e, i = !1) {
   (o && lo(t, o, e, !0), s && s.forEach((r) => lo(t, r, e, !0)));
   for (const r in n)
     if (!(i && r === "expose")) {
-      const l = pf[r] || (e && e[r]);
+      const l = yf[r] || (e && e[r]);
       t[r] = l ? l(t[r], n[r]) : n[r];
     }
   return t;
 }
-const pf = {
+const yf = {
   data: gl,
   props: bl,
   emits: bl,
   methods: es,
   computed: es,
-  beforeCreate: Rn,
-  created: Rn,
-  beforeMount: Rn,
-  mounted: Rn,
-  beforeUpdate: Rn,
-  updated: Rn,
-  beforeDestroy: Rn,
-  beforeUnmount: Rn,
-  destroyed: Rn,
-  unmounted: Rn,
-  activated: Rn,
-  deactivated: Rn,
-  errorCaptured: Rn,
-  serverPrefetch: Rn,
+  beforeCreate: On,
+  created: On,
+  beforeMount: On,
+  mounted: On,
+  beforeUpdate: On,
+  updated: On,
+  beforeDestroy: On,
+  beforeUnmount: On,
+  destroyed: On,
+  unmounted: On,
+  activated: On,
+  deactivated: On,
+  errorCaptured: On,
+  serverPrefetch: On,
   components: es,
   directives: es,
-  watch: yf,
+  watch: _f,
   provide: gl,
-  inject: vf,
+  inject: kf,
 };
 function gl(t, n) {
   return n
@@ -2578,7 +2586,7 @@ function gl(t, n) {
       : n
     : t;
 }
-function vf(t, n) {
+function kf(t, n) {
   return es(jr(t), jr(n));
 }
 function jr(t) {
@@ -2589,7 +2597,7 @@ function jr(t) {
   }
   return t;
 }
-function Rn(t, n) {
+function On(t, n) {
   return t ? [...new Set([].concat(t, n))] : n;
 }
 function es(t, n) {
@@ -2602,11 +2610,11 @@ function bl(t, n) {
       : un(Object.create(null), ml(t), ml(n ?? {}))
     : n;
 }
-function yf(t, n) {
+function _f(t, n) {
   if (!t) return n;
   if (!n) return t;
   const e = un(Object.create(null), t);
-  for (const i in n) e[i] = Rn(t[i], n[i]);
+  for (const i in n) e[i] = On(t[i], n[i]);
   return e;
 }
 function Pu() {
@@ -2630,8 +2638,8 @@ function Pu() {
     emitsCache: new WeakMap(),
   };
 }
-let kf = 0;
-function _f(t, n) {
+let xf = 0;
+function Tf(t, n) {
   return function (i, s = null) {
     (It(i) || (i = un({}, i)), s != null && !Dt(s) && (s = null));
     const o = Pu(),
@@ -2639,13 +2647,13 @@ function _f(t, n) {
       l = [];
     let c = !1;
     const h = (o.app = {
-      _uid: kf++,
+      _uid: xf++,
       _component: i,
       _props: s,
       _container: null,
       _context: o,
       _instance: null,
-      version: tg,
+      version: eg,
       get config() {
         return o.config;
       },
@@ -2668,13 +2676,13 @@ function _f(t, n) {
       directive(u, d) {
         return d ? ((o.directives[u] = d), h) : o.directives[u];
       },
-      mount(u, d, p) {
+      mount(u, d, v) {
         if (!c) {
           const S = h._ceVNode || N(i, s);
           return (
             (S.appContext = o),
-            p === !0 ? (p = "svg") : p === !1 && (p = void 0),
-            t(S, u, p),
+            v === !0 ? (v = "svg") : v === !1 && (v = void 0),
+            t(S, u, v),
             (c = !0),
             (h._container = u),
             (u.__vue_app__ = h),
@@ -2708,16 +2716,16 @@ function _f(t, n) {
   };
 }
 let Mi = null;
-const xf = (t, n) =>
+const wf = (t, n) =>
   n === "modelValue" || n === "model-value"
     ? t.modelModifiers
     : t[`${n}Modifiers`] || t[`${Vn(n)}Modifiers`] || t[`${Xe(n)}Modifiers`];
-function Tf(t, n, ...e) {
+function Sf(t, n, ...e) {
   if (t.isUnmounted) return;
   const i = t.vnode.props || Gt;
   let s = e;
   const o = n.startsWith("update:"),
-    r = o && xf(i, n.slice(7));
+    r = o && wf(i, n.slice(7));
   r &&
     (r.trim && (s = e.map((u) => (tn(u) ? u.trim() : u))),
     r.number && (s = e.map(Po)));
@@ -2731,9 +2739,9 @@ function Tf(t, n, ...e) {
     ((t.emitted[l] = !0), ie(h, t, 6, s));
   }
 }
-const wf = new WeakMap();
+const Cf = new WeakMap();
 function Ru(t, n, e = !1) {
-  const i = e ? wf : n.emitsCache,
+  const i = e ? Cf : n.emitsCache,
     s = i.get(t);
   if (s !== void 0) return s;
   const o = t.emits;
@@ -2774,7 +2782,7 @@ function pl(t) {
       render: h,
       renderCache: u,
       props: d,
-      data: p,
+      data: v,
       setupState: S,
       ctx: w,
       inheritAttrs: M,
@@ -2784,25 +2792,25 @@ function pl(t) {
   try {
     if (e.shapeFlag & 4) {
       const j = s || i,
-        pt = j;
-      ((R = me(h.call(pt, j, u, d, S, p, w))), (L = l));
+        vt = j;
+      ((R = me(h.call(vt, j, u, d, S, v, w))), (L = l));
     } else {
       const j = n;
       ((R = me(
         j.length > 1 ? j(d, { attrs: l, slots: r, emit: c }) : j(d, null),
       )),
-        (L = n.props ? l : Sf(l)));
+        (L = n.props ? l : $f(l)));
     }
   } catch (j) {
-    ((ds.length = 0), Lo(j, t, 1), (R = N(En)));
+    ((ds.length = 0), Lo(j, t, 1), (R = N(In)));
   }
   let W = R;
   if (L && M !== !1) {
     const j = Object.keys(L),
-      { shapeFlag: pt } = W;
+      { shapeFlag: vt } = W;
     j.length &&
-      pt & 7 &&
-      (o && j.some(Ao) && (L = Cf(L, o)), (W = Qe(W, L, !1, !0)));
+      vt & 7 &&
+      (o && j.some(Ao) && (L = Ef(L, o)), (W = Qe(W, L, !1, !0)));
   }
   return (
     e.dirs &&
@@ -2814,18 +2822,18 @@ function pl(t) {
     R
   );
 }
-const Sf = (t) => {
+const $f = (t) => {
     let n;
     for (const e in t)
       (e === "class" || e === "style" || Io(e)) && ((n || (n = {}))[e] = t[e]);
     return n;
   },
-  Cf = (t, n) => {
+  Ef = (t, n) => {
     const e = {};
     for (const i in t) (!Ao(i) || !(i.slice(9) in n)) && (e[i] = t[i]);
     return e;
   };
-function $f(t, n, e) {
+function If(t, n, e) {
   const { props: i, children: s, component: o } = t,
     { props: r, children: l, patchFlag: c } = n,
     h = o.emitsOptions;
@@ -2836,8 +2844,8 @@ function $f(t, n, e) {
     if (c & 8) {
       const u = n.dynamicProps;
       for (let d = 0; d < u.length; d++) {
-        const p = u[d];
-        if (Ou(r, i, p) && !Vo(h, p)) return !0;
+        const v = u[d];
+        if (Ou(r, i, v) && !Vo(h, v)) return !0;
       }
     }
   } else
@@ -2866,7 +2874,7 @@ function Ou(t, n, e) {
     s = n[e];
   return e === "style" && Dt(i) && Dt(s) ? !We(i, s) : i !== s;
 }
-function Ef({ vnode: t, parent: n, suspense: e }, i) {
+function Af({ vnode: t, parent: n, suspense: e }, i) {
   for (; n;) {
     const s = n.subTree;
     if (
@@ -2883,15 +2891,15 @@ function Ef({ vnode: t, parent: n, suspense: e }, i) {
 const Lu = {},
   Bu = () => Object.create(Lu),
   qu = (t) => Object.getPrototypeOf(t) === Lu;
-function If(t, n, e, i = !1) {
+function Mf(t, n, e, i = !1) {
   const s = {},
     o = Bu();
   ((t.propsDefaults = Object.create(null)), Vu(t, n, s, o));
   for (const r in t.propsOptions[0]) r in s || (s[r] = void 0);
-  (e ? (t.props = i ? s : Om(s)) : t.type.props ? (t.props = s) : (t.props = o),
+  (e ? (t.props = i ? s : Bm(s)) : t.type.props ? (t.props = s) : (t.props = o),
     (t.attrs = o));
 }
-function Af(t, n, e, i) {
+function Nf(t, n, e, i) {
   const {
       props: s,
       attrs: o,
@@ -2904,16 +2912,16 @@ function Af(t, n, e, i) {
     if (r & 8) {
       const u = t.vnode.dynamicProps;
       for (let d = 0; d < u.length; d++) {
-        let p = u[d];
-        if (Vo(t.emitsOptions, p)) continue;
-        const S = n[p];
+        let v = u[d];
+        if (Vo(t.emitsOptions, v)) continue;
+        const S = n[v];
         if (c)
-          if (Vt(o, p)) S !== o[p] && ((o[p] = S), (h = !0));
+          if (Vt(o, v)) S !== o[v] && ((o[v] = S), (h = !0));
           else {
-            const w = Vn(p);
+            const w = Vn(v);
             s[w] = Kr(c, l, w, S, t, !1);
           }
-        else S !== o[p] && ((o[p] = S), (h = !0));
+        else S !== o[v] && ((o[v] = S), (h = !0));
       }
     }
   } else {
@@ -2978,9 +2986,9 @@ function Kr(t, n, e, i, s, o) {
   }
   return i;
 }
-const Mf = new WeakMap();
+const Pf = new WeakMap();
 function Du(t, n, e = !1) {
-  const i = e ? Mf : n.propsCache,
+  const i = e ? Pf : n.propsCache,
     s = i.get(t);
   if (s) return s;
   const o = t.props,
@@ -2990,8 +2998,8 @@ function Du(t, n, e = !1) {
   if (!It(t)) {
     const u = (d) => {
       c = !0;
-      const [p, S] = Du(d, n, !0);
-      (un(r, p), S && l.push(...S));
+      const [v, S] = Du(d, n, !0);
+      (un(r, v), S && l.push(...S));
     };
     (!e && n.mixins.length && n.mixins.forEach(u),
       t.extends && u(t.extends),
@@ -3007,8 +3015,8 @@ function Du(t, n, e = !1) {
     for (const u in o) {
       const d = Vn(u);
       if (yl(d)) {
-        const p = o[u],
-          S = (r[d] = wt(p) || It(p) ? { type: p } : un({}, p)),
+        const v = o[u],
+          S = (r[d] = wt(v) || It(v) ? { type: v } : un({}, v)),
           w = S.type;
         let M = !1,
           nt = !0;
@@ -3033,7 +3041,7 @@ function yl(t) {
 }
 const wa = (t) => t === "_" || t === "_ctx" || t === "$stable",
   Sa = (t) => (wt(t) ? t.map(me) : [me(t)]),
-  Nf = (t, n, e) => {
+  Rf = (t, n, e) => {
     if (n._n) return n;
     const i = $t((...s) => Sa(n(...s)), e);
     return ((i._c = !1), i);
@@ -3043,7 +3051,7 @@ const wa = (t) => t === "_" || t === "_ctx" || t === "$stable",
     for (const s in t) {
       if (wa(s)) continue;
       const o = t[s];
-      if (It(o)) n[s] = Nf(s, o, i);
+      if (It(o)) n[s] = Rf(s, o, i);
       else if (o != null) {
         const r = Sa(o);
         n[s] = () => r;
@@ -3057,14 +3065,14 @@ const wa = (t) => t === "_" || t === "_ctx" || t === "$stable",
   Hu = (t, n, e) => {
     for (const i in n) (e || !wa(i)) && (t[i] = n[i]);
   },
-  Pf = (t, n, e) => {
+  Of = (t, n, e) => {
     const i = (t.slots = Bu());
     if (t.vnode.shapeFlag & 32) {
       const s = n._;
       s ? (Hu(i, n, e), e && Hc(i, "_", s, !0)) : ju(n, i);
     } else n && Ku(t, n);
   },
-  Rf = (t, n, e) => {
+  Lf = (t, n, e) => {
     const { vnode: i, slots: s } = t;
     let o = !0,
       r = Gt;
@@ -3079,11 +3087,11 @@ const wa = (t) => t === "_" || t === "_ctx" || t === "$stable",
     } else n && (Ku(t, n), (r = { default: 1 }));
     if (o) for (const l in s) !wa(l) && r[l] == null && delete s[l];
   },
-  On = Vf;
-function Of(t) {
-  return Lf(t);
+  Ln = jf;
+function Bf(t) {
+  return qf(t);
 }
-function Lf(t, n) {
+function qf(t, n) {
   const e = Ro();
   e.__VUE__ = !0;
   const {
@@ -3096,7 +3104,7 @@ function Lf(t, n) {
       setText: h,
       setElementText: u,
       parentNode: d,
-      nextSibling: p,
+      nextSibling: v,
       setScopeId: S = ve,
       insertStaticContent: w,
     } = t,
@@ -3112,14 +3120,14 @@ function Lf(t, n) {
       k = !!I.dynamicChildren,
     ) => {
       if (y === I) return;
-      (y && !li(y, I) && ((it = sn(y)), vt(y, tt, Z, !0), (y = null)),
+      (y && !li(y, I) && ((it = sn(y)), yt(y, tt, Z, !0), (y = null)),
         I.patchFlag === -2 && ((k = !1), (I.dynamicChildren = null)));
       const { type: _, ref: B, shapeFlag: Y } = I;
       switch (_) {
         case Do:
           nt(y, I, K, it);
           break;
-        case En:
+        case In:
           R(y, I, K, it);
           break;
         case dr:
@@ -3130,7 +3138,7 @@ function Lf(t, n) {
           break;
         default:
           Y & 1
-            ? pt(y, I, K, it, tt, Z, ht, T, k)
+            ? vt(y, I, K, it, tt, Z, ht, T, k)
             : Y & 6
               ? _t(y, I, K, it, tt, Z, ht, T, k)
               : (Y & 64 || Y & 128) &&
@@ -3155,15 +3163,15 @@ function Lf(t, n) {
     },
     W = ({ el: y, anchor: I }, K, it) => {
       let tt;
-      for (; y && y !== I;) ((tt = p(y)), i(y, K, it), (y = tt));
+      for (; y && y !== I;) ((tt = v(y)), i(y, K, it), (y = tt));
       i(I, K, it);
     },
     j = ({ el: y, anchor: I }) => {
       let K;
-      for (; y && y !== I;) ((K = p(y)), s(y), (y = K));
+      for (; y && y !== I;) ((K = v(y)), s(y), (y = K));
       s(I);
     },
-    pt = (y, I, K, it, tt, Z, ht, T, k) => {
+    vt = (y, I, K, it, tt, Z, ht, T, k) => {
       if (
         (I.type === "svg" ? (ht = "svg") : I.type === "math" && (ht = "mathml"),
         y == null)
@@ -3180,13 +3188,13 @@ function Lf(t, n) {
     },
     ct = (y, I, K, it, tt, Z, ht, T) => {
       let k, _;
-      const { props: B, shapeFlag: Y, transition: mt, dirs: gt } = y;
+      const { props: B, shapeFlag: Y, transition: mt, dirs: bt } = y;
       if (
         ((k = y.el = r(y.type, Z, B && B.is, B)),
         Y & 8
           ? u(k, y.children)
           : Y & 16 && ot(y.children, k, null, it, tt, hr(y, Z), ht, T),
-        gt && ti(y, null, it, "created"),
+        bt && ti(y, null, it, "created"),
         O(k, y, y.scopeId, ht, it),
         B)
       ) {
@@ -3195,15 +3203,15 @@ function Lf(t, n) {
         ("value" in B && o(k, "value", null, B.value, Z),
           (_ = B.onVnodeBeforeMount) && ce(_, it, y));
       }
-      gt && ti(y, null, it, "beforeMount");
-      const St = Bf(tt, mt);
+      bt && ti(y, null, it, "beforeMount");
+      const St = Vf(tt, mt);
       (St && mt.beforeEnter(k),
         i(k, I, K),
-        ((_ = B && B.onVnodeMounted) || St || gt) &&
-          On(() => {
+        ((_ = B && B.onVnodeMounted) || St || bt) &&
+          Ln(() => {
             (_ && ce(_, it, y),
               St && mt.enter(k),
-              gt && ti(y, null, it, "mounted"));
+              bt && ti(y, null, it, "mounted"));
           }, tt));
     },
     O = (y, I, K, it, tt) => {
@@ -3231,10 +3239,10 @@ function Lf(t, n) {
       k |= y.patchFlag & 16;
       const Y = y.props || Gt,
         mt = I.props || Gt;
-      let gt;
+      let bt;
       if (
         (K && ni(K, !1),
-        (gt = mt.onVnodeBeforeUpdate) && ce(gt, K, I, y),
+        (bt = mt.onVnodeBeforeUpdate) && ce(bt, K, I, y),
         B && ti(I, y, K, "beforeUpdate"),
         K && ni(K, !0),
         _ &&
@@ -3264,9 +3272,9 @@ function Lf(t, n) {
         }
         k & 1 && y.children !== I.children && u(T, I.children);
       } else !ht && _ == null && z(T, Y, mt, K, tt);
-      ((gt = mt.onVnodeUpdated) || B) &&
-        On(() => {
-          (gt && ce(gt, K, I, y), B && ti(I, y, K, "updated"));
+      ((bt = mt.onVnodeUpdated) || B) &&
+        Ln(() => {
+          (bt && ce(bt, K, I, y), B && ti(I, y, K, "updated"));
         }, it);
     },
     x = (y, I, K, it, tt, Z, ht) => {
@@ -3296,8 +3304,8 @@ function Lf(t, n) {
     b = (y, I, K, it, tt, Z, ht, T, k) => {
       const _ = (I.el = y ? y.el : l("")),
         B = (I.anchor = y ? y.anchor : l(""));
-      let { patchFlag: Y, dynamicChildren: mt, slotScopeIds: gt } = I;
-      (gt && (T = T ? T.concat(gt) : gt),
+      let { patchFlag: Y, dynamicChildren: mt, slotScopeIds: bt } = I;
+      (bt && (T = T ? T.concat(bt) : bt),
         y == null
           ? (i(_, K, it),
             i(B, K, it),
@@ -3320,17 +3328,17 @@ function Lf(t, n) {
           : Lt(y, I, k));
     },
     At = (y, I, K, it, tt, Z, ht) => {
-      const T = (y.component = Wf(y, it, tt));
-      if ((Bo(y) && (T.ctx.renderer = jt), Gf(T, !1, ht), T.asyncDep)) {
+      const T = (y.component = Jf(y, it, tt));
+      if ((Bo(y) && (T.ctx.renderer = jt), Qf(T, !1, ht), T.asyncDep)) {
         if ((tt && tt.registerDep(T, at, ht), !y.el)) {
-          const k = (T.subTree = N(En));
+          const k = (T.subTree = N(In));
           (R(null, k, I, K), (y.placeholder = k.el));
         }
       } else at(T, y, I, K, tt, Z, ht);
     },
     Lt = (y, I, K) => {
       const it = (I.component = y.component);
-      if ($f(y, I, K))
+      if (If(y, I, K))
         if (it.asyncDep && !it.asyncResolved) {
           F(it, I, K);
           return;
@@ -3340,13 +3348,13 @@ function Lf(t, n) {
     at = (y, I, K, it, tt, Z, ht) => {
       const T = () => {
         if (y.isMounted) {
-          let { next: Y, bu: mt, u: gt, parent: St, vnode: Pt } = y;
+          let { next: Y, bu: mt, u: bt, parent: St, vnode: Pt } = y;
           {
             const an = Fu(y);
             if (an) {
               (Y && ((Y.el = Pt.el), F(y, Y, ht)),
                 an.asyncDep.then(() => {
-                  On(() => {
+                  Ln(() => {
                     y.isUnmounted || _();
                   }, tt);
                 }));
@@ -3365,18 +3373,18 @@ function Lf(t, n) {
           ((y.subTree = Xt),
             M(rn, Xt, d(rn.el), sn(rn), y, tt, Z),
             (Y.el = Xt.el),
-            Nt === null && Ef(y, Xt.el),
-            gt && On(gt, tt),
+            Nt === null && Af(y, Xt.el),
+            bt && Ln(bt, tt),
             (Kt = Y.props && Y.props.onVnodeUpdated) &&
-              On(() => ce(Kt, St, Y, Pt), tt));
+              Ln(() => ce(Kt, St, Y, Pt), tt));
         } else {
           let Y;
-          const { el: mt, props: gt } = I,
+          const { el: mt, props: bt } = I,
             { bm: St, m: Pt, parent: Nt, root: Kt, type: Xt } = y,
             rn = Ai(I);
           (ni(y, !1),
             St && Zs(St),
-            !rn && (Y = gt && gt.onVnodeBeforeMount) && ce(Y, Nt, I),
+            !rn && (Y = bt && bt.onVnodeBeforeMount) && ce(Y, Nt, I),
             ni(y, !0));
           {
             Kt.ce &&
@@ -3385,14 +3393,14 @@ function Lf(t, n) {
             const an = (y.subTree = pl(y));
             (M(null, an, K, it, y, tt, Z), (I.el = an.el));
           }
-          if ((Pt && On(Pt, tt), !rn && (Y = gt && gt.onVnodeMounted))) {
+          if ((Pt && Ln(Pt, tt), !rn && (Y = bt && bt.onVnodeMounted))) {
             const an = I;
-            On(() => ce(Y, Nt, an), tt);
+            Ln(() => ce(Y, Nt, an), tt);
           }
           ((I.shapeFlag & 256 ||
             (Nt && Ai(Nt.vnode) && Nt.vnode.shapeFlag & 256)) &&
             y.a &&
-            On(y.a, tt),
+            Ln(y.a, tt),
             (y.isMounted = !0),
             (I = K = it = null));
         }
@@ -3409,8 +3417,8 @@ function Lf(t, n) {
       const it = y.vnode.props;
       ((y.vnode = I),
         (y.next = null),
-        Af(y, I.props, it, K),
-        Rf(y, I.children, K),
+        Nf(y, I.props, it, K),
+        Lf(y, I.children, K),
         ke(),
         rl(y),
         _e());
@@ -3419,33 +3427,33 @@ function Lf(t, n) {
       const _ = y && y.children,
         B = y ? y.shapeFlag : 0,
         Y = I.children,
-        { patchFlag: mt, shapeFlag: gt } = I;
+        { patchFlag: mt, shapeFlag: bt } = I;
       if (mt > 0) {
         if (mt & 128) {
           Ct(_, Y, K, it, tt, Z, ht, T, k);
           return;
         } else if (mt & 256) {
-          bt(_, Y, K, it, tt, Z, ht, T, k);
+          pt(_, Y, K, it, tt, Z, ht, T, k);
           return;
         }
       }
-      gt & 8
+      bt & 8
         ? (B & 16 && Jt(_, tt, Z), Y !== _ && u(K, Y))
         : B & 16
-          ? gt & 16
+          ? bt & 16
             ? Ct(_, Y, K, it, tt, Z, ht, T, k)
             : Jt(_, tt, Z, !0)
-          : (B & 8 && u(K, ""), gt & 16 && ot(Y, K, it, tt, Z, ht, T, k));
+          : (B & 8 && u(K, ""), bt & 16 && ot(Y, K, it, tt, Z, ht, T, k));
     },
-    bt = (y, I, K, it, tt, Z, ht, T, k) => {
+    pt = (y, I, K, it, tt, Z, ht, T, k) => {
       ((y = y || $i), (I = I || $i));
       const _ = y.length,
         B = I.length,
         Y = Math.min(_, B);
       let mt;
       for (mt = 0; mt < Y; mt++) {
-        const gt = (I[mt] = k ? Ce(I[mt]) : me(I[mt]));
-        M(y[mt], gt, K, null, tt, Z, ht, T, k);
+        const bt = (I[mt] = k ? Ce(I[mt]) : me(I[mt]));
+        M(y[mt], bt, K, null, tt, Z, ht, T, k);
       }
       _ > B ? Jt(y, tt, Z, !0, !1, Y) : ot(I, K, it, tt, Z, ht, T, k, Y);
     },
@@ -3455,30 +3463,30 @@ function Lf(t, n) {
       let Y = y.length - 1,
         mt = B - 1;
       for (; _ <= Y && _ <= mt;) {
-        const gt = y[_],
+        const bt = y[_],
           St = (I[_] = k ? Ce(I[_]) : me(I[_]));
-        if (li(gt, St)) M(gt, St, K, null, tt, Z, ht, T, k);
+        if (li(bt, St)) M(bt, St, K, null, tt, Z, ht, T, k);
         else break;
         _++;
       }
       for (; _ <= Y && _ <= mt;) {
-        const gt = y[Y],
+        const bt = y[Y],
           St = (I[mt] = k ? Ce(I[mt]) : me(I[mt]));
-        if (li(gt, St)) M(gt, St, K, null, tt, Z, ht, T, k);
+        if (li(bt, St)) M(bt, St, K, null, tt, Z, ht, T, k);
         else break;
         (Y--, mt--);
       }
       if (_ > Y) {
         if (_ <= mt) {
-          const gt = mt + 1,
-            St = gt < B ? I[gt].el : it;
+          const bt = mt + 1,
+            St = bt < B ? I[bt].el : it;
           for (; _ <= mt;)
             (M(null, (I[_] = k ? Ce(I[_]) : me(I[_])), K, St, tt, Z, ht, T, k),
               _++);
         }
-      } else if (_ > mt) for (; _ <= Y;) (vt(y[_], tt, Z, !0), _++);
+      } else if (_ > mt) for (; _ <= Y;) (yt(y[_], tt, Z, !0), _++);
       else {
-        const gt = _,
+        const bt = _,
           St = _,
           Pt = new Map();
         for (_ = St; _ <= mt; _++) {
@@ -3492,10 +3500,10 @@ function Lf(t, n) {
           an = 0;
         const Gn = new Array(Xt);
         for (_ = 0; _ < Xt; _++) Gn[_] = 0;
-        for (_ = gt; _ <= Y; _++) {
+        for (_ = bt; _ <= Y; _++) {
           const hn = y[_];
           if (Kt >= Xt) {
-            vt(hn, tt, Z, !0);
+            yt(hn, tt, Z, !0);
             continue;
           }
           let mn;
@@ -3507,13 +3515,13 @@ function Lf(t, n) {
                 break;
               }
           mn === void 0
-            ? vt(hn, tt, Z, !0)
+            ? yt(hn, tt, Z, !0)
             : ((Gn[mn - St] = _ + 1),
               mn >= an ? (an = mn) : (rn = !0),
               M(hn, I[mn], K, null, tt, Z, ht, T, k),
               Kt++);
         }
-        const Kn = rn ? qf(Gn) : $i;
+        const Kn = rn ? Df(Gn) : $i;
         for (Nt = Kn.length - 1, _ = Xt - 1; _ >= 0; _--) {
           const hn = St + _,
             mn = I[hn],
@@ -3553,9 +3561,9 @@ function Lf(t, n) {
         if (it === 0)
           T.persisted && !Z[te]
             ? i(Z, I, K)
-            : (T.beforeEnter(Z), i(Z, I, K), On(() => T.enter(Z), tt));
+            : (T.beforeEnter(Z), i(Z, I, K), Ln(() => T.enter(Z), tt));
         else {
-          const { leave: Y, delayLeave: mt, afterLeave: gt } = T,
+          const { leave: Y, delayLeave: mt, afterLeave: bt } = T,
             St = () => {
               y.ctx.isUnmounted ? s(Z) : i(Z, I, K);
             },
@@ -3565,14 +3573,14 @@ function Lf(t, n) {
                 T.persisted && !Nt
                   ? St()
                   : Y(Z, () => {
-                      (St(), gt && gt());
+                      (St(), bt && bt());
                     }));
             };
           mt ? mt(Z, St, Pt) : Pt();
         }
       else i(Z, I, K);
     },
-    vt = (y, I, K, it = !1, tt = !1) => {
+    yt = (y, I, K, it = !1, tt = !1) => {
       const {
         type: Z,
         props: ht,
@@ -3582,13 +3590,13 @@ function Lf(t, n) {
         shapeFlag: B,
         patchFlag: Y,
         dirs: mt,
-        cacheIndex: gt,
+        cacheIndex: bt,
         memo: St,
       } = y;
       if (
         (Y === -2 && (tt = !1),
         T != null && (ke(), us(T, null, K, y, !0), _e()),
-        gt != null && (I.renderCache[gt] = void 0),
+        bt != null && (I.renderCache[bt] = void 0),
         B & 256)
       ) {
         I.ctx.deactivate(y);
@@ -3612,9 +3620,9 @@ function Lf(t, n) {
               : ((Z === dt && Y & 384) || (!tt && B & 16)) && Jt(k, I, K),
           it && Q(y));
       }
-      const Xt = St != null && gt == null;
+      const Xt = St != null && bt == null;
       ((Nt && (Kt = ht && ht.onVnodeUnmounted)) || Pt || Xt) &&
-        On(() => {
+        Ln(() => {
           (Kt && ce(Kt, I, y),
             Pt && ti(y, null, I, "unmounted"),
             Xt && (y.el = null));
@@ -3641,7 +3649,7 @@ function Lf(t, n) {
     },
     xt = (y, I) => {
       let K;
-      for (; y !== I;) ((K = p(y)), s(y), (y = K));
+      for (; y !== I;) ((K = v(y)), s(y), (y = K));
       s(I);
     },
     Bt = (y, I, K) => {
@@ -3650,34 +3658,34 @@ function Lf(t, n) {
         kl(_),
         it && Zs(it),
         tt.stop(),
-        Z && ((Z.flags |= 8), vt(ht, y, I, K)),
-        T && On(T, I),
-        On(() => {
+        Z && ((Z.flags |= 8), yt(ht, y, I, K)),
+        T && Ln(T, I),
+        Ln(() => {
           y.isUnmounted = !0;
         }, I));
     },
     Jt = (y, I, K, it = !1, tt = !1, Z = 0) => {
-      for (let ht = Z; ht < y.length; ht++) vt(y[ht], I, K, it, tt);
+      for (let ht = Z; ht < y.length; ht++) yt(y[ht], I, K, it, tt);
     },
     sn = (y) => {
       if (y.shapeFlag & 6) return sn(y.component.subTree);
       if (y.shapeFlag & 128) return y.suspense.next();
-      const I = p(y.anchor || y.el),
+      const I = v(y.anchor || y.el),
         K = I && I[bu];
-      return K ? p(K) : I;
+      return K ? v(K) : I;
     };
   let on = !1;
   const jn = (y, I, K) => {
       let it;
       (y == null
-        ? I._vnode && (vt(I._vnode, null, null, !0), (it = I._vnode.component))
+        ? I._vnode && (yt(I._vnode, null, null, !0), (it = I._vnode.component))
         : M(I._vnode || null, y, I, null, null, null, K),
         (I._vnode = y),
         on || ((on = !0), rl(it), uu(), (on = !1)));
     },
     jt = {
       p: M,
-      um: vt,
+      um: yt,
       m: Ut,
       r: Q,
       mt: At,
@@ -3687,7 +3695,7 @@ function Lf(t, n) {
       n: sn,
       o: t,
     };
-  return { render: jn, hydrate: void 0, createApp: _f(jn) };
+  return { render: jn, hydrate: void 0, createApp: Tf(jn) };
 }
 function hr({ type: t, props: n }, e) {
   return (e === "svg" && t === "foreignObject") ||
@@ -3702,7 +3710,7 @@ function hr({ type: t, props: n }, e) {
 function ni({ effect: t, job: n }, e) {
   e ? ((t.flags |= 32), (n.flags |= 4)) : ((t.flags &= -33), (n.flags &= -5));
 }
-function Bf(t, n) {
+function Vf(t, n) {
   return (!t || (t && !t.pendingBranch)) && n && !n.persisted;
 }
 function Ca(t, n, e = !1) {
@@ -3719,10 +3727,10 @@ function Ca(t, n, e = !1) {
         !e && l.patchFlag !== -2 && Ca(r, l)),
         l.type === Do &&
           (l.patchFlag === -1 && (l = s[o] = Ce(l)), (l.el = r.el)),
-        l.type === En && !l.el && (l.el = r.el));
+        l.type === In && !l.el && (l.el = r.el));
     }
 }
-function qf(t) {
+function Df(t) {
   const n = t.slice(),
     e = [0];
   let i, s, o, r, l;
@@ -3755,23 +3763,23 @@ function Uu(t) {
   return n ? Uu(n.subTree) : null;
 }
 const Wu = (t) => t.__isSuspense;
-function Vf(t, n) {
+function jf(t, n) {
   n && n.pendingBranch
     ? wt(t)
       ? n.effects.push(...t)
       : n.effects.push(t)
-    : Wm(t);
+    : Jm(t);
 }
 const dt = Symbol.for("v-fgt"),
   Do = Symbol.for("v-txt"),
-  En = Symbol.for("v-cmt"),
+  In = Symbol.for("v-cmt"),
   dr = Symbol.for("v-stc"),
   ds = [];
 let Yn = null;
 function f(t = !1) {
   ds.push((Yn = t ? null : []));
 }
-function Df() {
+function Kf() {
   (ds.pop(), (Yn = ds[ds.length - 1] || null));
 }
 let Ts = 1;
@@ -3781,7 +3789,7 @@ function co(t, n = !1) {
 function Gu(t) {
   return (
     (t.dynamicChildren = Ts > 0 ? Yn || $i : null),
-    Df(),
+    Kf(),
     Ts > 0 && Yn && Yn.push(t),
     t
   );
@@ -3802,7 +3810,7 @@ const Ju = ({ key: t }) => t ?? null,
   to = ({ ref: t, ref_key: n, ref_for: e }) => (
     typeof t == "number" && (t = "" + t),
     t != null
-      ? tn(t) || Mn(t) || It(t)
+      ? tn(t) || Nn(t) || It(t)
         ? { i: kn, r: t, k: n, f: !!e }
         : t
       : null
@@ -3859,9 +3867,9 @@ function a(
     c
   );
 }
-const N = jf;
-function jf(t, n = null, e = null, i = 0, s = null, o = !1) {
-  if (((!t || t === Iu) && (t = En), ws(t))) {
+const N = Hf;
+function Hf(t, n = null, e = null, i = 0, s = null, o = !1) {
+  if (((!t || t === Iu) && (t = In), ws(t))) {
     const l = Qe(t, n, !0);
     return (
       e && uo(l, e),
@@ -3873,8 +3881,8 @@ function jf(t, n = null, e = null, i = 0, s = null, o = !1) {
       l
     );
   }
-  if ((Xf(t) && (t = t.__vccOpts), n)) {
-    n = Kf(n);
+  if ((tg(t) && (t = t.__vccOpts), n)) {
+    n = Ff(n);
     let { class: l, style: c } = n;
     (l && !tn(l) && (n.class = Tt(l)),
       Dt(c) && (va(c) && !wt(c) && (c = un({}, c)), (n.style = Me(c))));
@@ -3882,12 +3890,12 @@ function jf(t, n = null, e = null, i = 0, s = null, o = !1) {
   const r = tn(t) ? 1 : Wu(t) ? 128 : pu(t) ? 64 : Dt(t) ? 4 : It(t) ? 2 : 0;
   return a(t, n, e, i, s, r, o, !0);
 }
-function Kf(t) {
+function Ff(t) {
   return t ? (va(t) || qu(t) ? un({}, t) : t) : null;
 }
 function Qe(t, n, e = !1, i = !1) {
   const { props: s, ref: o, patchFlag: r, children: l, transition: c } = t,
-    h = n ? Hf(s || {}, n) : s,
+    h = n ? Uf(s || {}, n) : s,
     u = {
       __v_isVNode: !0,
       __v_skip: !0,
@@ -3928,15 +3936,15 @@ function Qe(t, n, e = !1, i = !1) {
     };
   return (c && i && mi(u, c.clone(u)), u);
 }
-function yt(t = " ", n = 0) {
+function gt(t = " ", n = 0) {
   return N(Do, null, t, n);
 }
 function H(t = "", n = !1) {
-  return n ? (f(), fn(En, null, t)) : N(En, null, t);
+  return n ? (f(), fn(In, null, t)) : N(In, null, t);
 }
 function me(t) {
   return t == null || typeof t == "boolean"
-    ? N(En)
+    ? N(In)
     : wt(t)
       ? N(dt, null, t.slice())
       : ws(t)
@@ -3971,10 +3979,10 @@ function uo(t, n) {
       return;
     }
     ((n = { default: n, _ctx: kn }), (e = 32));
-  } else ((n = String(n)), i & 64 ? ((e = 16), (n = [yt(n)])) : (e = 8));
+  } else ((n = String(n)), i & 64 ? ((e = 16), (n = [gt(n)])) : (e = 8));
   ((t.children = n), (t.shapeFlag |= e));
 }
-function Hf(...t) {
+function Uf(...t) {
   const n = {};
   for (let e = 0; e < t.length; e++) {
     const i = t[e];
@@ -3995,13 +4003,13 @@ function Hf(...t) {
 function ce(t, n, e, i = null) {
   ie(t, n, 7, [e, i]);
 }
-const Ff = Pu();
-let Uf = 0;
-function Wf(t, n, e) {
+const Wf = Pu();
+let Gf = 0;
+function Jf(t, n, e) {
   const i = t.type,
-    s = (n ? n.appContext : t.appContext) || Ff,
+    s = (n ? n.appContext : t.appContext) || Wf,
     o = {
-      uid: Uf++,
+      uid: Gf++,
       vnode: t,
       type: i,
       parent: n,
@@ -4012,7 +4020,7 @@ function Wf(t, n, e) {
       effect: null,
       update: null,
       job: null,
-      scope: new bm(!0),
+      scope: new vm(!0),
       render: null,
       proxy: null,
       exposed: null,
@@ -4063,13 +4071,13 @@ function Wf(t, n, e) {
   return (
     (o.ctx = { _: o }),
     (o.root = n ? n.root : o),
-    (o.emit = Tf.bind(null, o)),
+    (o.emit = Sf.bind(null, o)),
     t.ce && t.ce(o),
     o
   );
 }
-let In = null;
-const $a = () => In || kn;
+let An = null;
+const $a = () => An || kn;
 let ho, Hr;
 {
   const t = Ro(),
@@ -4083,11 +4091,11 @@ let ho, Hr;
         }
       );
     };
-  ((ho = n("__VUE_INSTANCE_SETTERS__", (e) => (In = e))),
+  ((ho = n("__VUE_INSTANCE_SETTERS__", (e) => (An = e))),
     (Hr = n("__VUE_SSR_SETTERS__", (e) => (Ss = e))));
 }
 const Rs = (t) => {
-    const n = In;
+    const n = An;
     return (
       ho(t),
       t.scope.on(),
@@ -4097,27 +4105,27 @@ const Rs = (t) => {
     );
   },
   _l = () => {
-    (In && In.scope.off(), ho(null));
+    (An && An.scope.off(), ho(null));
   };
 function Qu(t) {
   return t.vnode.shapeFlag & 4;
 }
 let Ss = !1;
-function Gf(t, n = !1, e = !1) {
+function Qf(t, n = !1, e = !1) {
   n && Hr(n);
   const { props: i, children: s } = t.vnode,
     o = Qu(t);
-  (If(t, i, o, n), Pf(t, s, e || n));
-  const r = o ? Jf(t, n) : void 0;
+  (Mf(t, i, o, n), Of(t, s, e || n));
+  const r = o ? Yf(t, n) : void 0;
   return (n && Hr(!1), r);
 }
-function Jf(t, n) {
+function Yf(t, n) {
   const e = t.type;
-  ((t.accessCache = Object.create(null)), (t.proxy = new Proxy(t.ctx, ff)));
+  ((t.accessCache = Object.create(null)), (t.proxy = new Proxy(t.ctx, bf)));
   const { setup: i } = e;
   if (i) {
     ke();
-    const s = (t.setupContext = i.length > 1 ? Yf(t) : null),
+    const s = (t.setupContext = i.length > 1 ? Xf(t) : null),
       o = Rs(t),
       r = Ns(i, t, 0, [t.props, s]),
       l = Dc(r);
@@ -4149,23 +4157,23 @@ function Yu(t, n, e) {
     const s = Rs(t);
     ke();
     try {
-      gf(t);
+      pf(t);
     } finally {
       (_e(), s());
     }
   }
 }
-const Qf = {
+const zf = {
   get(t, n) {
-    return (Cn(t, "get", ""), t[n]);
+    return ($n(t, "get", ""), t[n]);
   },
 };
-function Yf(t) {
+function Xf(t) {
   const n = (e) => {
     t.exposed = e || {};
   };
   return {
-    attrs: new Proxy(t.attrs, Qf),
+    attrs: new Proxy(t.attrs, zf),
     slots: t.slots,
     emit: t.emit,
     expose: n,
@@ -4174,7 +4182,7 @@ function Yf(t) {
 function jo(t) {
   return t.exposed
     ? t.exposeProxy ||
-        (t.exposeProxy = new Proxy(au(Lm(t.exposed)), {
+        (t.exposeProxy = new Proxy(au(qm(t.exposed)), {
           get(n, e) {
             if (e in n) return n[e];
             if (e in hs) return hs[e](t);
@@ -4185,14 +4193,14 @@ function jo(t) {
         }))
     : t.proxy;
 }
-function zf(t, n = !0) {
+function Zf(t, n = !0) {
   return It(t) ? t.displayName || t.name : t.name || (n && t.__name);
 }
-function Xf(t) {
+function tg(t) {
   return It(t) && "__vccOpts" in t;
 }
-const lt = (t, n) => jm(t, n, Ss);
-function Zf(t, n, e) {
+const lt = (t, n) => Hm(t, n, Ss);
+function ng(t, n, e) {
   try {
     co(-1);
     const i = arguments.length;
@@ -4210,7 +4218,7 @@ function Zf(t, n, e) {
     co(1);
   }
 }
-const tg = "3.5.39";
+const eg = "3.5.39";
 let Fr;
 const Tl = typeof window < "u" && window.trustedTypes;
 if (Tl)
@@ -4218,11 +4226,11 @@ if (Tl)
     Fr = Tl.createPolicy("vue", { createHTML: (t) => t });
   } catch {}
 const zu = Fr ? (t) => Fr.createHTML(t) : (t) => t,
-  ng = "http://www.w3.org/2000/svg",
-  eg = "http://www.w3.org/1998/Math/MathML",
+  ig = "http://www.w3.org/2000/svg",
+  sg = "http://www.w3.org/1998/Math/MathML",
   Se = typeof document < "u" ? document : null,
   wl = Se && Se.createElement("template"),
-  ig = {
+  og = {
     insert: (t, n, e) => {
       n.insertBefore(t, e || null);
     },
@@ -4233,9 +4241,9 @@ const zu = Fr ? (t) => Fr.createHTML(t) : (t) => t,
     createElement: (t, n, e, i) => {
       const s =
         n === "svg"
-          ? Se.createElementNS(ng, t)
+          ? Se.createElementNS(ig, t)
           : n === "mathml"
-            ? Se.createElementNS(eg, t)
+            ? Se.createElementNS(sg, t)
             : e
               ? Se.createElement(t, { is: e })
               : Se.createElement(t);
@@ -4310,8 +4318,8 @@ const zu = Fr ? (t) => Fr.createHTML(t) : (t) => t,
     leaveToClass: String,
   },
   Zu = un({}, ku, Xu),
-  sg = (t) => ((t.displayName = "Transition"), (t.props = Zu), t),
-  mo = sg((t, { slots: n }) => Zf(tf, th(t), n)),
+  rg = (t) => ((t.displayName = "Transition"), (t.props = Zu), t),
+  mo = rg((t, { slots: n }) => ng(ef, th(t), n)),
   ei = (t, n = []) => {
     wt(t) ? t.forEach((e) => e(...n)) : t && t(...n);
   },
@@ -4331,10 +4339,10 @@ function th(t) {
       appearActiveClass: h = r,
       appearToClass: u = l,
       leaveFromClass: d = `${e}-leave-from`,
-      leaveActiveClass: p = `${e}-leave-active`,
+      leaveActiveClass: v = `${e}-leave-active`,
       leaveToClass: S = `${e}-leave-to`,
     } = t,
-    w = og(s),
+    w = ag(s),
     M = w && w[0],
     nt = w && w[1],
     {
@@ -4342,7 +4350,7 @@ function th(t) {
       onEnter: L,
       onEnterCancelled: W,
       onLeave: j,
-      onLeaveCancelled: pt,
+      onLeaveCancelled: vt,
       onBeforeAppear: ct = R,
       onAppear: O = L,
       onAppearCancelled: ot = W,
@@ -4354,7 +4362,7 @@ function th(t) {
         At && At());
     },
     x = (b, _t) => {
-      ((b._isLeaving = !1), De(b, d), De(b, S), De(b, p), _t && _t());
+      ((b._isLeaving = !1), De(b, d), De(b, S), De(b, v), _t && _t());
     },
     z = (b) => (_t, At) => {
       const Lt = b ? O : L,
@@ -4377,7 +4385,7 @@ function th(t) {
       b._isLeaving = !0;
       const At = () => x(b, _t);
       (ue(b, d),
-        b._enterCancelled ? (ue(b, p), Ur(b)) : (Ur(b), ue(b, p)),
+        b._enterCancelled ? (ue(b, v), Ur(b)) : (Ur(b), ue(b, v)),
         Cl(() => {
           b._isLeaving && (De(b, d), ue(b, S), Sl(j) || $l(b, i, nt, At));
         }),
@@ -4390,11 +4398,11 @@ function th(t) {
       (D(b, !0, void 0, !0), ei(ot, [b]));
     },
     onLeaveCancelled(b) {
-      (x(b), ei(pt, [b]));
+      (x(b), ei(vt, [b]));
     },
   });
 }
-function og(t) {
+function ag(t) {
   if (t == null) return null;
   if (Dt(t)) return [mr(t.enter), mr(t.leave)];
   {
@@ -4403,7 +4411,7 @@ function og(t) {
   }
 }
 function mr(t) {
-  return lm(t);
+  return um(t);
 }
 function ue(t, n) {
   (n.split(/\s+/).forEach((e) => e && t.classList.add(e)),
@@ -4419,9 +4427,9 @@ function Cl(t) {
     requestAnimationFrame(t);
   });
 }
-let rg = 0;
+let lg = 0;
 function $l(t, n, e, i) {
-  const s = (t._endId = ++rg),
+  const s = (t._endId = ++lg),
     o = () => {
       s === t._endId && i();
     };
@@ -4431,15 +4439,15 @@ function $l(t, n, e, i) {
   const h = r + "end";
   let u = 0;
   const d = () => {
-      (t.removeEventListener(h, p), o());
+      (t.removeEventListener(h, v), o());
     },
-    p = (S) => {
+    v = (S) => {
       S.target === t && ++u >= c && d();
     };
   (setTimeout(() => {
     u < c && d();
   }, l + 1),
-    t.addEventListener(h, p));
+    t.addEventListener(h, v));
 }
 function nh(t, n) {
   const e = window.getComputedStyle(t),
@@ -4452,18 +4460,18 @@ function nh(t, n) {
     h = El(l, c);
   let u = null,
     d = 0,
-    p = 0;
+    v = 0;
   n === qe
-    ? r > 0 && ((u = qe), (d = r), (p = o.length))
+    ? r > 0 && ((u = qe), (d = r), (v = o.length))
     : n === Xi
-      ? h > 0 && ((u = Xi), (d = h), (p = c.length))
+      ? h > 0 && ((u = Xi), (d = h), (v = c.length))
       : ((d = Math.max(r, h)),
         (u = d > 0 ? (r > h ? qe : Xi) : null),
-        (p = u ? (u === qe ? o.length : c.length) : 0));
+        (v = u ? (u === qe ? o.length : c.length) : 0));
   const S =
     u === qe &&
     /\b(?:transform|all)(?:,|$)/.test(i(`${qe}Property`).toString());
-  return { type: u, timeout: d, propCount: p, hasTransform: S };
+  return { type: u, timeout: d, propCount: v, hasTransform: S };
 }
 function El(t, n) {
   for (; t.length < n.length;) t = t.concat(t);
@@ -4475,7 +4483,7 @@ function Il(t) {
 function Ur(t) {
   return (t ? t.ownerDocument : document).body.offsetHeight;
 }
-function ag(t, n, e) {
+function cg(t, n, e) {
   const i = t[Bi];
   (i && (n = (n ? [n, ...i] : [...i]).join(" ")),
     n == null
@@ -4486,9 +4494,9 @@ function ag(t, n, e) {
 }
 const Al = Symbol("_vod"),
   eh = Symbol("_vsh"),
-  lg = Symbol(""),
-  cg = /(?:^|;)\s*display\s*:/;
-function ug(t, n, e) {
+  ug = Symbol(""),
+  hg = /(?:^|;)\s*display\s*:/;
+function dg(t, n, e) {
   const i = t.style,
     s = tn(e);
   let o = !1;
@@ -4504,13 +4512,13 @@ function ug(t, n, e) {
       r === "display" && (o = !0);
       const l = e[r];
       l != null
-        ? dg(t, r, !tn(n) && n ? n[r] : void 0, l) || is(i, r, l)
+        ? fg(t, r, !tn(n) && n ? n[r] : void 0, l) || is(i, r, l)
         : is(i, r, "");
     }
   } else if (s) {
     if (n !== e) {
-      const r = i[lg];
-      (r && (e += ";" + r), (i.cssText = e), (o = cg.test(e)));
+      const r = i[ug];
+      (r && (e += ";" + r), (i.cssText = e), (o = hg.test(e)));
     }
   } else n && t.removeAttribute("style");
   Al in t && ((t[Al] = o ? i.display : ""), t[eh] && (i.display = "none"));
@@ -4520,7 +4528,7 @@ function is(t, n, e) {
   if (wt(e)) e.forEach((i) => is(t, n, i));
   else if ((e == null && (e = ""), n.startsWith("--"))) t.setProperty(n, e);
   else {
-    const i = hg(t, n);
+    const i = mg(t, n);
     Ml.test(e)
       ? t.setProperty(Xe(i), e.replace(Ml, ""), "important")
       : (t[i] = e);
@@ -4528,7 +4536,7 @@ function is(t, n, e) {
 }
 const Nl = ["Webkit", "Moz", "ms"],
   fr = {};
-function hg(t, n) {
+function mg(t, n) {
   const e = fr[n];
   if (e) return e;
   let i = Vn(n);
@@ -4540,7 +4548,7 @@ function hg(t, n) {
   }
   return n;
 }
-function dg(t, n, e, i) {
+function fg(t, n, e, i) {
   return (
     t.tagName === "TEXTAREA" &&
     (n === "width" || n === "height") &&
@@ -4549,7 +4557,7 @@ function dg(t, n, e, i) {
   );
 }
 const Pl = "http://www.w3.org/1999/xlink";
-function Rl(t, n, e, i, s, o = fm(n)) {
+function Rl(t, n, e, i, s, o = bm(n)) {
   i && n.startsWith("xlink:")
     ? e == null
       ? t.removeAttributeNS(Pl, n.slice(6, n.length))
@@ -4589,36 +4597,36 @@ function Ol(t, n, e, i, s) {
 function Ie(t, n, e, i) {
   t.addEventListener(n, e, i);
 }
-function mg(t, n, e, i) {
+function gg(t, n, e, i) {
   t.removeEventListener(n, e, i);
 }
 const Ll = Symbol("_vei");
-function fg(t, n, e, i, s = null) {
+function bg(t, n, e, i, s = null) {
   const o = t[Ll] || (t[Ll] = {}),
     r = o[n];
   if (i && r) r.value = i;
   else {
-    const [l, c] = pg(n);
+    const [l, c] = yg(n);
     if (i) {
-      const h = (o[n] = kg(i, s));
+      const h = (o[n] = xg(i, s));
       Ie(t, l, h, c);
-    } else r && (mg(t, l, r, c), (o[n] = void 0));
+    } else r && (gg(t, l, r, c), (o[n] = void 0));
   }
 }
-const gg = /(Once|Passive|Capture)$/,
-  bg = /^on:?(?:Once|Passive|Capture)$/;
-function pg(t) {
+const pg = /(Once|Passive|Capture)$/,
+  vg = /^on:?(?:Once|Passive|Capture)$/;
+function yg(t) {
   let n, e;
-  for (; (e = t.match(gg)) && !bg.test(t);)
+  for (; (e = t.match(pg)) && !vg.test(t);)
     (n || (n = {}),
       (t = t.slice(0, t.length - e[1].length)),
       (n[e[1].toLowerCase()] = !0));
   return [t[2] === ":" ? t.slice(3) : Xe(t.slice(2)), n];
 }
 let gr = 0;
-const vg = Promise.resolve(),
-  yg = () => gr || (vg.then(() => (gr = 0)), (gr = Date.now()));
-function kg(t, n) {
+const kg = Promise.resolve(),
+  _g = () => gr || (kg.then(() => (gr = 0)), (gr = Date.now()));
+function xg(t, n) {
   const e = (i) => {
     if (!i._vts) i._vts = Date.now();
     else if (i._vts <= e.attached) return;
@@ -4636,34 +4644,34 @@ function kg(t, n) {
       }
     } else ie(s, n, 5, [i]);
   };
-  return ((e.value = t), (e.attached = yg()), e);
+  return ((e.value = t), (e.attached = _g()), e);
 }
 const Bl = (t) =>
     t.charCodeAt(0) === 111 &&
     t.charCodeAt(1) === 110 &&
     t.charCodeAt(2) > 96 &&
     t.charCodeAt(2) < 123,
-  _g = (t, n, e, i, s, o) => {
+  Tg = (t, n, e, i, s, o) => {
     const r = s === "svg";
     n === "class"
-      ? ag(t, i, r)
+      ? cg(t, i, r)
       : n === "style"
-        ? ug(t, e, i)
+        ? dg(t, e, i)
         : Io(n)
-          ? Ao(n) || fg(t, n, e, i, o)
+          ? Ao(n) || bg(t, n, e, i, o)
           : (
                 n[0] === "."
                   ? ((n = n.slice(1)), !0)
                   : n[0] === "^"
                     ? ((n = n.slice(1)), !1)
-                    : xg(t, n, i, r)
+                    : wg(t, n, i, r)
               )
             ? (Ol(t, n, i),
               !t.tagName.includes("-") &&
                 (n === "value" || n === "checked" || n === "selected") &&
                 Rl(t, n, i, r, o, n !== "value"))
             : t._isVueCE &&
-                (Tg(t, n) ||
+                (Sg(t, n) ||
                   (t._def.__asyncLoader && (/[A-Z]/.test(n) || !tn(i))))
               ? Ol(t, Vn(n), i, o, n)
               : (n === "true-value"
@@ -4671,7 +4679,7 @@ const Bl = (t) =>
                   : n === "false-value" && (t._falseValue = i),
                 Rl(t, n, i, r));
   };
-function xg(t, n, e, i) {
+function wg(t, n, e, i) {
   if (i)
     return !!(
       n === "innerHTML" ||
@@ -4696,7 +4704,7 @@ function xg(t, n, e, i) {
   }
   return Bl(n) && tn(e) ? !1 : n in t;
 }
-function Tg(t, n) {
+function Sg(t, n) {
   const e = t._def.props;
   if (!e) return !1;
   const i = Vn(n);
@@ -4708,8 +4716,8 @@ const ih = new WeakMap(),
   sh = new WeakMap(),
   fo = Symbol("_moveCb"),
   ql = Symbol("_enterCb"),
-  wg = (t) => (delete t.props.mode, t),
-  Sg = wg({
+  Cg = (t) => (delete t.props.mode, t),
+  $g = Cg({
     name: "TransitionGroup",
     props: un({}, Zu, { tag: String, moveClass: String }),
     setup(t, { slots: n }) {
@@ -4720,21 +4728,21 @@ const ih = new WeakMap(),
         Cu(() => {
           if (!s.length) return;
           const r = t.moveClass || `${t.name || "v"}-move`;
-          if (!Ag(s[0].el, e.vnode.el, r)) {
+          if (!Ng(s[0].el, e.vnode.el, r)) {
             s = [];
             return;
           }
-          (s.forEach($g), s.forEach(Eg));
-          const l = s.filter(Ig);
+          (s.forEach(Ig), s.forEach(Ag));
+          const l = s.filter(Mg);
           (Ur(e.vnode.el),
             l.forEach((c) => {
               const h = c.el,
                 u = h.style;
               (ue(h, r),
                 (u.transform = u.webkitTransform = u.transitionDuration = ""));
-              const d = (h[fo] = (p) => {
-                (p && p.target !== h) ||
-                  ((!p || p.propertyName.endsWith("transform")) &&
+              const d = (h[fo] = (v) => {
+                (v && v.target !== h) ||
+                  ((!v || v.propertyName.endsWith("transform")) &&
                     (h.removeEventListener("transitionend", d),
                     (h[fo] = null),
                     De(h, r)));
@@ -4765,15 +4773,15 @@ const ih = new WeakMap(),
       );
     },
   }),
-  Cg = Sg;
-function $g(t) {
+  Eg = $g;
+function Ig(t) {
   const n = t.el;
   (n[fo] && n[fo](), n[ql] && n[ql]());
 }
-function Eg(t) {
+function Ag(t) {
   sh.set(t, oh(t.el));
 }
-function Ig(t) {
+function Mg(t) {
   const n = ih.get(t),
     e = sh.get(t),
     i = n.left - e.left,
@@ -4801,7 +4809,7 @@ function oh(t) {
   const n = t.getBoundingClientRect();
   return { left: n.left, top: n.top };
 }
-function Ag(t, n, e) {
+function Ng(t, n, e) {
   const i = t.cloneNode(),
     s = t[Bi];
   (s &&
@@ -4819,7 +4827,7 @@ const Ye = (t) => {
   const n = t.props["onUpdate:modelValue"] || !1;
   return wt(n) ? (e) => Zs(n, e) : n;
 };
-function Mg(t) {
+function Pg(t) {
   t.target.composing = !0;
 }
 function Vl(t) {
@@ -4842,7 +4850,7 @@ const ut = {
             t.value = Dl(t.value, e, o);
           }),
         n ||
-          (Ie(t, "compositionstart", Mg),
+          (Ie(t, "compositionstart", Pg),
           Ie(t, "compositionend", Vl),
           Ie(t, "change", Vl)));
     },
@@ -4869,7 +4877,7 @@ const ut = {
         (t.value = c);
     },
   },
-  Ln = {
+  Sn = {
     deep: !0,
     created(t, n, e) {
       ((t[ee] = Ye(e)),
@@ -4908,7 +4916,7 @@ function jl(t, { value: n, oldValue: e }, i) {
   }
   t.checked !== s && (t.checked = s);
 }
-const Ng = {
+const Rg = {
     created(t, { value: n }, e) {
       ((t.checked = We(n, e.props.value)),
         (t[ee] = Ye(e)),
@@ -4989,7 +4997,7 @@ const Hl = {
     Us(t, n, e, i, "updated");
   },
 };
-function Pg(t, n) {
+function Og(t, n) {
   switch (t) {
     case "SELECT":
       return Ni;
@@ -4998,20 +5006,20 @@ function Pg(t, n) {
     default:
       switch (n) {
         case "checkbox":
-          return Ln;
+          return Sn;
         case "radio":
-          return Ng;
+          return Rg;
         default:
           return ut;
       }
   }
 }
 function Us(t, n, e, i, s) {
-  const r = Pg(t.tagName, e.props && e.props.type)[s];
+  const r = Og(t.tagName, e.props && e.props.type)[s];
   r && r(t, n, e, i);
 }
-const Rg = ["ctrl", "shift", "alt", "meta"],
-  Og = {
+const Lg = ["ctrl", "shift", "alt", "meta"],
+  Bg = {
     stop: (t) => t.stopPropagation(),
     prevent: (t) => t.preventDefault(),
     self: (t) => t.target !== t.currentTarget,
@@ -5022,7 +5030,7 @@ const Rg = ["ctrl", "shift", "alt", "meta"],
     left: (t) => "button" in t && t.button !== 0,
     middle: (t) => "button" in t && t.button !== 1,
     right: (t) => "button" in t && t.button !== 2,
-    exact: (t, n) => Rg.some((e) => t[`${e}Key`] && !n.includes(e)),
+    exact: (t, n) => Lg.some((e) => t[`${e}Key`] && !n.includes(e)),
   },
   pe = (t, n) => {
     if (!t) return t;
@@ -5032,14 +5040,14 @@ const Rg = ["ctrl", "shift", "alt", "meta"],
       e[i] ||
       (e[i] = (s, ...o) => {
         for (let r = 0; r < n.length; r++) {
-          const l = Og[n[r]];
+          const l = Bg[n[r]];
           if (l && l(s, n)) return;
         }
         return t(s, ...o);
       })
     );
   },
-  Lg = {
+  qg = {
     esc: "escape",
     space: " ",
     up: "arrow-up",
@@ -5056,26 +5064,26 @@ const Rg = ["ctrl", "shift", "alt", "meta"],
       (e[i] = (s) => {
         if (!("key" in s)) return;
         const o = Xe(s.key);
-        if (n.some((r) => r === o || Lg[r] === o)) return t(s);
+        if (n.some((r) => r === o || qg[r] === o)) return t(s);
       })
     );
   },
-  Bg = un({ patchProp: _g }, ig);
+  Vg = un({ patchProp: Tg }, og);
 let Fl;
-function qg() {
-  return Fl || (Fl = Of(Bg));
+function Dg() {
+  return Fl || (Fl = Bf(Vg));
 }
 const ah = (...t) => {
-  const n = qg().createApp(...t),
+  const n = Dg().createApp(...t),
     { mount: e } = n;
   return (
     (n.mount = (i) => {
-      const s = Dg(i);
+      const s = Kg(i);
       if (!s) return;
       const o = n._component;
       (!It(o) && !o.render && !o.template && (o.template = s.innerHTML),
         s.nodeType === 1 && (s.textContent = ""));
-      const r = e(s, !1, Vg(s));
+      const r = e(s, !1, jg(s));
       return (
         s instanceof Element &&
           (s.removeAttribute("v-cloak"), s.setAttribute("data-v-app", "")),
@@ -5085,16 +5093,16 @@ const ah = (...t) => {
     n
   );
 };
-function Vg(t) {
+function jg(t) {
   if (t instanceof SVGElement) return "svg";
   if (typeof MathMLElement == "function" && t instanceof MathMLElement)
     return "mathml";
 }
-function Dg(t) {
+function Kg(t) {
   return tn(t) ? document.querySelector(t) : t;
 }
 const ss = "baibai_book",
-  jg = ["\\[mvu[\\s\\S]*?\\]"],
+  Hg = ["\\[mvu[\\s\\S]*?\\]"],
   Ul = "bbs.api.v1",
   Wr = "bbs.ui.v1";
 function Wl(t) {
@@ -5170,6 +5178,7 @@ function Gr() {
     excludedWorldNames: [],
     excludedWorldInfoPatterns: [],
     wiPatternsSeeded: !1,
+    renderWorldInfoTemplates: !0,
     leafBatchThreshold: 12,
     resummaryThreshold: 7,
     recentResolvedPlansCount: 5,
@@ -5229,7 +5238,11 @@ function Gl(t) {
         )
       : []),
     (e.wiPatternsSeeded =
-      typeof e.wiPatternsSeeded == "boolean" ? e.wiPatternsSeeded : !1));
+      typeof e.wiPatternsSeeded == "boolean" ? e.wiPatternsSeeded : !1),
+    (e.renderWorldInfoTemplates =
+      typeof e.renderWorldInfoTemplates == "boolean"
+        ? e.renderWorldInfoTemplates
+        : !0));
   const s = t.vector ?? {};
   ((e.vector = {
     ...n.vector,
@@ -5244,7 +5257,7 @@ function Gl(t) {
       e.vector.recall.minAiFloors >= 0
         ? Math.floor(e.vector.recall.minAiFloors)
         : 0),
-    (e.channels = (Array.isArray(e.channels) ? e.channels : []).map(Kg)),
+    (e.channels = (Array.isArray(e.channels) ? e.channels : []).map(Fg)),
     (e.verbosity = e.verbosity === "concise" ? "concise" : "detailed"),
     (e.recentResolvedPlansCount =
       Number.isFinite(e.recentResolvedPlansCount) &&
@@ -5312,7 +5325,7 @@ function br(t, n) {
         : n.retries,
   };
 }
-function Kg(t) {
+function Fg(t) {
   return {
     id: typeof t.id == "string" ? t.id : `ch_${Date.now()}_${++Jr}`,
     name: typeof t.name == "string" ? t.name : "Kênh mới",
@@ -5331,7 +5344,7 @@ function Kg(t) {
 const C = Un(Gr());
 let go = !1;
 const ch = [];
-function Hg(t) {
+function Ug(t) {
   go ? t() : ch.push(t);
 }
 function Jl(t, n) {
@@ -5348,6 +5361,7 @@ function Jl(t, n) {
     (t.excludedWorldNames = n.excludedWorldNames),
     (t.excludedWorldInfoPatterns = n.excludedWorldInfoPatterns),
     (t.wiPatternsSeeded = n.wiPatternsSeeded),
+    (t.renderWorldInfoTemplates = n.renderWorldInfoTemplates),
     (t.leafBatchThreshold = n.leafBatchThreshold),
     (t.resummaryThreshold = n.resummaryThreshold),
     (t.recentResolvedPlansCount = n.recentResolvedPlansCount),
@@ -5358,13 +5372,13 @@ function Jl(t, n) {
     (t.varsGlobalTemplate = n.varsGlobalTemplate),
     (t.varsTemplateByChar = n.varsTemplateByChar));
 }
-function Fg() {
+function Wg() {
   const t = ft();
   t?.extensionSettings &&
     ((t.extensionSettings[ss] = JSON.parse(JSON.stringify(C))),
     t.saveSettingsDebounced?.());
 }
-function Ug() {
+function Gg() {
   if (go) return;
   const t = ft();
   if (!t?.extensionSettings) return;
@@ -5393,7 +5407,7 @@ function Ug() {
     } catch {}
   }
   if (!C.wiPatternsSeeded) {
-    for (const e of jg)
+    for (const e of Hg)
       C.excludedWorldInfoPatterns.includes(e) ||
         C.excludedWorldInfoPatterns.push(e);
     ((C.wiPatternsSeeded = !0),
@@ -5409,12 +5423,12 @@ function Ug() {
 Dn(
   C,
   () => {
-    go && Fg();
+    go && Wg();
   },
   { deep: !0 },
 );
 let Jr = 0;
-function Wg() {
+function Jg() {
   return (
     (Jr += 1),
     {
@@ -5431,7 +5445,7 @@ function Wg() {
     }
   );
 }
-function Gg() {
+function Qg() {
   const t = ft();
   if (!t || t.groupId) return null;
   const n = t.characterId;
@@ -5447,15 +5461,15 @@ function Ea() {
   const e = t.characters?.[Number(n)];
   return e?.avatar || e?.name || null;
 }
-function Jg() {
+function Yg() {
   if (!C.excludedChars.length) return !1;
-  const t = Gg();
+  const t = Qg();
   return t !== null && C.excludedChars.includes(t);
 }
 function Wn() {
-  return C.enabled && !Jg();
+  return C.enabled && !Yg();
 }
-function Qg(t) {
+function zg(t) {
   const n = C.assignments[t];
   return n ? (C.channels.find((e) => e.id === n) ?? null) : null;
 }
@@ -5472,7 +5486,7 @@ function Ko(t) {
     retries: i.retries,
   };
 }
-const Yg = "/api/backends/chat-completions/generate";
+const Xg = "/api/backends/chat-completions/generate";
 class Fn extends Error {}
 function uh(t) {
   let n = t.trim().replace(/\/+$/, "");
@@ -5509,7 +5523,7 @@ async function hh(t, n, e = {}) {
     const d = u.trim();
     d && delete r[d];
   }
-  const l = await fetch(Yg, {
+  const l = await fetch(Xg, {
     method: "POST",
     headers: i.getRequestHeaders(),
     body: JSON.stringify(r),
@@ -5520,7 +5534,7 @@ async function hh(t, n, e = {}) {
     throw new Fn(`Yêu cầu API phụ thất bại (${l.status}): ${u.slice(0, 300)}`);
   }
   if (s) {
-    const u = await zg(l);
+    const u = await Zg(l);
     if (!u) throw new Fn("API phụ trả về nội dung trống");
     return u;
   }
@@ -5530,7 +5544,7 @@ async function hh(t, n, e = {}) {
   if (!h) throw new Fn("API phụ trả về nội dung trống");
   return h;
 }
-async function zg(t) {
+async function Zg(t) {
   const n = t.body?.getReader();
   if (!n) {
     const o = await t.json().catch(() => null);
@@ -5554,11 +5568,11 @@ async function zg(t) {
         try {
           const d = JSON.parse(u);
           if (d?.error) throw new Fn(d.error.message || "API phụ trả về lỗi");
-          const p =
+          const v =
             d?.choices?.[0]?.delta?.content ??
             d?.choices?.[0]?.message?.content ??
             d?.choices?.[0]?.text;
-          typeof p == "string" && (s += p);
+          typeof v == "string" && (s += v);
         } catch (d) {
           if (d instanceof Fn) throw d;
         }
@@ -5574,21 +5588,21 @@ function dh(t) {
     ""
   ).trim();
 }
-const Xg = 65535;
-function Zg() {
+const tb = 65535;
+function nb() {
   return typeof ft()?.generateRaw == "function";
 }
-async function tb(t, n = {}) {
+async function eb(t, n = {}) {
   const e = ft();
   if (typeof e?.generateRaw != "function")
     throw new Fn(
       "Phiên bản ST hiện tại không hỗ trợ generateRaw, không thể đi theo API chính",
     );
-  const i = (await e.generateRaw({ prompt: t, responseLength: Xg }))?.trim();
+  const i = (await e.generateRaw({ prompt: t, responseLength: tb }))?.trim();
   if (!i) throw new Fn("API chính trả về nội dung trống");
   return i;
 }
-async function nb(t) {
+async function ib(t) {
   try {
     return {
       ok: !0,
@@ -5598,7 +5612,7 @@ async function nb(t) {
     return { ok: !1, message: n instanceof Error ? n.message : String(n) };
   }
 }
-const eb = "/api/backends/chat-completions/status";
+const sb = "/api/backends/chat-completions/status";
 async function Ql(t) {
   const n = ft();
   if (!n) throw new Fn("Ngữ cảnh SillyTavern không khả dụng");
@@ -5608,7 +5622,7 @@ async function Ql(t) {
       reverse_proxy: uh(t.url),
       proxy_password: t.key || "",
     },
-    i = await fetch(eb, {
+    i = await fetch(sb, {
       method: "POST",
       headers: n.getRequestHeaders(),
       body: JSON.stringify(e),
@@ -5640,7 +5654,7 @@ function zt(t, n = "info") {
   } catch {}
   console.log("[Bách Bảo Thư]", t);
 }
-const ib = [
+const ob = [
     { token: "{{user}}", desc: "Tên nhân vật chính" },
     { token: "{{char}}", desc: "Tên nhân vật" },
     {
@@ -5684,7 +5698,7 @@ const ib = [
       desc: "Phạm vi số chữ mục tiêu của tóm tắt (thay đổi theo mức chi tiết/ngắn gọn)",
     },
   ],
-  sb = [
+  rb = [
     { token: "{{user}}", desc: "Tên nhân vật chính" },
     { token: "{{char}}", desc: "Tên nhân vật" },
     { token: "{{content}}", desc: "Nhiều đoạn chính văn tóm tắt cần dung hợp" },
@@ -5693,7 +5707,7 @@ const ib = [
       desc: "Phạm vi số chữ mục tiêu của tổng kết (thay đổi theo mức chi tiết/ngắn gọn)",
     },
   ],
-  ob = [
+  ab = [
     { token: "{{user}}", desc: "Tên nhân vật chính" },
     { token: "{{char}}", desc: "Tên nhân vật" },
     {
@@ -5709,12 +5723,12 @@ const ib = [
     "〔Bản tin mật hệ thống ký ức｜Chỉ bạn nhìn thấy〕Nội dung dưới đây do hệ thống ký ức cung cấp ở hậu đài, chỉ để bạn tham khảo nhằm giữ cho cốt truyện mạch lạc nhất quán; nghiêm cấm nhắc lại, liệt kê, tường thuật hay xuất ra nội dung phần này dưới bất kỳ hình thức nào trong chính văn trả lời, cũng không được đề cập đến sự tồn tại của nó.",
   Aa =
     "〔Bản tin mật kết thúc〕Trên đây chỉ để bạn nắm bắt tình tiết trước, hãy viết tiếp chính văn một cách tự nhiên như một người kể chuyện đã đọc qua những tình tiết này, đừng nhắc lại bản tin.",
-  rb = `【Nguyên tắc cơ sở dữ liệu dài hạn (Vô cùng quan trọng)】
+  lb = `【Nguyên tắc cơ sở dữ liệu dài hạn (Vô cùng quan trọng)】
 summary dùng để ghi lại cốt truyện xảy ra trong hiệp này; các trường khác (items, plans...) thuộc về cơ sở dữ liệu trạng thái dài hạn.
 Chỉ những thông tin xứng đáng lưu giữ sau hàng chục chương trong tương lai, có ảnh hưởng đến việc tạo cốt truyện tiếp theo mới được ghi vào các trường này.
 Bất kể hành động trong hiệp này, hội thoại thông thường, trạng thái tạm thời, sự kiện diễn ra một lần, sinh hoạt thường ngày, hoặc thông tin mà summary đã có thể diễn đạt đầy đủ, tuyệt đối không được ghi vào các trường khác.
 Khi không chắc chắn, thà không ghi còn hơn là suy đoán hoặc ghi lại những thông tin có giá trị thấp.`,
-  ab = `═══ 【Quy tắc vật phẩm】(trường items, sàng lọc nghiêm ngặt) ═══
+  cb = `═══ 【Quy tắc vật phẩm】(trường items, sàng lọc nghiêm ngặt) ═══
 Mặc định không ghi. Chỉ khi thỏa mãn đồng thời ba điều kiện sau mới ghi, thiếu một là bỏ:
   ✓ Nhân vật chủ động thu nhận và có ý định giữ lại (mua, nhặt, được tặng, trộm, chế tạo)
   ✓ Có ý nghĩa đối với cốt truyện (có thể giao dịch/sử dụng/có giá trị tình cảm/là manh mối/là vũ khí trang bị)
@@ -5742,7 +5756,7 @@ Ba điều kiện trên đã loại trừ hầu hết đạo cụ môi trường
   ✦ Di chuyển vật phẩm: nhân vật lấy lại đồ đã cất mang theo người → update vật phẩm đó carried:true; đặt đồ mang theo người xuống/gửi ở đâu đó → update carried:false + location. Khi nhân vật chỉ di chuyển vị trí, không động đến vật phẩm cụ thể, không được sửa carried/location của vật phẩm.
   ✦ Chuyển dịch vật phẩm gửi (A→B): một vật phẩm **đã gửi** bị dời từ nơi này sang nơi khác (vẫn không mang theo người, như rương kho báu từ hầm rượu chuyển lên xe ngựa, thuốc giải từ phòng Giáp chuyển sang phòng Ất, hoặc bị người khác mang đi nơi khác) → update vật phẩm đó sửa location thành **địa điểm mới** (carried vẫn là false). Vật phẩm đổi chỗ mà không cập nhật location, hệ thống sẽ luôn tưởng nó ở chỗ cũ — đây là điểm thường bị rò rỉ khi cập nhật, nhất định phải kiểm tra kỹ.
   ✦ Không chắc chắn có gửi hay không → mặc định mang theo (không viết carried/location), thà mang theo còn hơn tự dưng sắp xếp một địa điểm cất giữ.`,
-  lb = `═══ 【Quy tắc bối cảnh/địa điểm】(trường scenes, mặc định không ghi) ═══
+  ub = `═══ 【Quy tắc bối cảnh/địa điểm】(trường scenes, mặc định không ghi) ═══
 Chỉ ghi lại địa điểm **có tên, nhân vật thực tế đi đến, và bạn có thể viết miêu tả cụ thể**; đi ngang qua, không tên, nơi chốn tạm thời không ghi.
 【Miêu tả là bắt buộc (Luật sắt)】 Mỗi địa điểm được ghi lại đều phải viết được một câu miêu tả cụ thể, khách quan (nó là gì, đặc trưng then chốt/yếu tố liên quan đến cốt truyện).
   ✦ Địa điểm không viết nổi miêu tả có ý nghĩa = không có giá trị ghi lại, trực tiếp bỏ qua. Điều này đồng thời dùng để lọc bối cảnh quá chung chung:
@@ -5769,7 +5783,7 @@ Chỉ ghi lại địa điểm **có tên, nhân vật thực tế đi đến, v
   ✦ location là văn bản tự do, có thể chi tiết tùy ý (trong phòng/trước cửa/bên cửa sổ), dùng để hiển thị vị trí hiện tại.
   ✦ locationPath là đường dẫn hoàn chỉnh của **nút đó tương ứng trong cây [Địa điểm đã biết]** (từ thô đến tinh), làm điểm neo định vị chính xác — việc phán đoán vật phẩm/NPC "có ở bên cạnh hay không" đều dựa vào nó.
   ✦ Khi location viết chi tiết hơn bất kỳ nút đã ghi nào (như "trong phòng 302" mà trong cây chỉ đến "phòng 302"), thì locationPath điền đến **cấp có thể khớp được** (["...","phòng 302"]); khi location cùng tên với một nút nào đó, locationPath hướng đến nút đó. Khi thay đổi location bắt buộc phải đồng bộ locationPath.`,
-  cb = `═══ 【Quy tắc NPC】(trường npcs, sàng lọc cực kỳ nghiêm ngặt) ═══
+  hb = `═══ 【Quy tắc NPC】(trường npcs, sàng lọc cực kỳ nghiêm ngặt) ═══
 Bản thân {{user}} không ghi. **Mặc định không ghi**, ngưỡng vào còn cao hơn vật phẩm — thà ghi sót, tuyệt đối không ghi bừa; hầu hết các tầng không tạo ra bất kỳ npcs.add nào.
 ━━ Ngưỡng vào cứng (phải thỏa mãn một trong các điều kiện sau, nếu không tuyệt đối không ghi) ━━
   ① Nhân vật đó với {{user}} đã xảy ra **tương tác trực tiếp, cụ thể và có ý nghĩa cốt truyện**: đối thoại có qua có lại, xung đột đối đầu, giao dịch, kết bạn đồng hành, trao đổi tình cảm, cung cấp thông tin/vật phẩm then chốt... Tiếp xúc mang tính phục vụ một lần (gọi món, hỏi đường, mua đồ, soát vé) **không tính** là tương tác.
@@ -5807,7 +5821,7 @@ Bản thân {{user}} không ghi. **Mặc định không ghi**, ngưỡng vào c�
   ✦ Ranh giới nghiêm ngặt: suy luận này **chỉ giới hạn ở nhân vật chính, chỉ giới hạn ở ba trường ghi đè outfit/location/condition**; **tuyệt đối không được** lan sang chính văn summary, items, kế hoạch, cũng không được dùng cho nhân vật phụ thông thường — những đối tượng đó vẫn tuân thủ nghiêm ngặt chỉ ghi chính văn miêu tả rõ ràng, cấm tự tưởng tượng. Suy luận phải hợp tình hợp lý, điểm đến là dừng, không bịa đặt sự kiện cốt truyện cụ thể.
 【Rời sân (remove)】 NPC rời sân vĩnh viễn (chết, hoàn toàn rời khỏi cốt truyện và không xuất hiện lại nữa) mới remove; chỉ là tạm thời xa nhau, đi nơi khác thì dùng location/follow để biểu đạt, không được remove.
 【Tái sử dụng đã có, nghiêm cấm lặp lại】 [NPC đã xuất hiện] ở trên là danh sách đã ghi. Cùng một nhân vật bắt buộc tái sử dụng tên đã có, đừng đổi cách gọi khác rồi ghi lại lần nữa; đã có trong danh sách và không thay đổi → không xuất ra npcs.`,
-  ub = `═══ 【Quy tắc kế hoạch/huyền niệm】(trường plans) ═══
+  db = `═══ 【Quy tắc kế hoạch/huyền niệm】(trường plans) ═══
 Chia thành hai loại "kế hoạch" (plan) và "huyền niệm" (suspense). Luật sắt chung: 【Mặc định không viết】. Chỉ khi tin chắc một sự việc phải được ghi nhớ lâu dài, nếu không sẽ tổn hại đến cốt truyện tiếp theo, mới ghi. Hầu hết các tầng không tạo ra bất kỳ plans.add nào.
 ━━ Cửa ải số 1: Kiểm tra sinh tồn qua bối cảnh (Quan trọng nhất) ━━
 Hỏi: "Chuyện này có nhận được kết quả trong diễn tiến tự nhiên của một hai hiệp tới không?"
@@ -5835,7 +5849,7 @@ reason bắt buộc điền một câu, viết rõ "tại sao kết thúc / kế
   · Có thời hạn rõ ràng → viết thời gian cụ thể (như "sau khi tan học" "1988/10/1");
   · Là mong ước chung chung, không có thời hạn rõ ràng (như "sau này có cơ hội nhất định phải đi xem") → targetTime có thể viết miêu tả mơ hồ hoặc trực tiếp bỏ qua trường này.
   · Huyền niệm (suspense) thường không có thời gian mục tiêu, có thể bỏ qua targetTime.`,
-  hb = `═══ 【Quy tắc biến số tùy chỉnh】(trường vars, lệnh đường dẫn) ═══
+  mb = `═══ 【Quy tắc biến số tùy chỉnh】(trường vars, lệnh đường dẫn) ═══
 [Biến số tùy chỉnh · Trạng thái hiện tại] ở trên là một cây trạng thái JSON (quyết toán đến thời điểm này); [Ý nghĩa biến số] cho bạn biết từng trường là gì; [Quy tắc thay đổi biến số] cho bạn biết khi nào thay đổi thế nào, có được tạo mới hay không.
 Khi chính văn trong hiệp này xảy ra sự kiện rõ ràng, cụ thể, dẫn đến trạng thái cần thay đổi, hãy xuất ra một **mảng lệnh** trong trường vars để sửa đổi nó. Mỗi lệnh là một đối tượng:
   · Gán giá trị/ghi đè: { "op":"set", "path":"đường dẫn", "value":giá trị mới }
@@ -5882,7 +5896,7 @@ Nguyên tắc cốt lõi: chỉ trích xuất thông tin được nêu rõ trong
 【Hội thoại hiệp này】
 {{content}}
 
-${rb}
+${lb}
 
 【Nhiệm vụ của bạn】 Xuất ra một đối tượng JSON, các trường như sau (trường không có thay đổi có thể lược bỏ):
 
@@ -5914,13 +5928,13 @@ ${rb}
 
 {{time_rule}}
 
-${ab}
-
-${lb}
-
 ${cb}
 
 ${ub}
+
+${hb}
+
+${db}
 {{vars_rule}}
 ${mh}
 
@@ -5928,7 +5942,7 @@ ${mh}
 - summary là bắt buộc điền, các trường còn lại tùy nhu cầu; chỉ xuất ra lệnh tương ứng khi thực sự có thay đổi, không có thay đổi thì đừng bao gồm mảng hoặc trường đó.
 - Nghiêm cấm xuất ra bất kỳ nội dung nào ngoài JSON (không giải thích, không chuỗi suy nghĩ, không khung mã markdown).
 - Trong giá trị chuỗi, nếu chính văn có dấu ngoặc kép tiếng Anh "(như lời thoại tiếng Anh He said "hi"), bắt buộc phải thoát bằng " , nếu không sẽ làm hỏng JSON; dấu ngoặc đơn ' không cần thoát; dấu ngoặc kép tiếng Trung 「」『』 cứ dùng trực tiếp là được.`,
-  db = `Bạn là một người chỉnh lý bộ nhớ cốt truyện nghiêm ngặt. Dưới đây là [Nhiều tầng liên tiếp], vui lòng **tuân thủ nghiêm ngặt theo thứ tự trước sau từng tầng** để tạo ra một bản tóm tắt cho mỗi tầng, gộp thành một đối tượng JSON và xuất ra.
+  fb = `Bạn là một người chỉnh lý bộ nhớ cốt truyện nghiêm ngặt. Dưới đây là [Nhiều tầng liên tiếp], vui lòng **tuân thủ nghiêm ngặt theo thứ tự trước sau từng tầng** để tạo ra một bản tóm tắt cho mỗi tầng, gộp thành một đối tượng JSON và xuất ra.
 Nguyên tắc cốt lõi: chỉ trích xuất thông tin được nêu rõ trong văn bản, không có thì không viết, cấm bịa đặt.
 
 【Nhân vật chính】{{user}}  【Nhân vật】{{char}}
@@ -5978,24 +5992,24 @@ ${mh}
 - Chỉ xuất ra một đối tượng JSON, khóa gốc chỉ có floors; độ dài floors nghiêm ngặt bằng {{floor_count}}, n liên tục từ 1 đến {{floor_count}}, không được thiếu tầng, không được thừa tầng, không được sai trật tự.
 - Mỗi phần tử chỉ chứa n / summary / timeStart / timeEnd, đừng xuất ra các trường items / plans / location...
 - Nghiêm cấm xuất ra bất kỳ nội dung nào ngoài JSON (không giải thích, không chuỗi suy nghĩ, không khung mã markdown).`,
-  mb = `【Suy nghĩ trước khi xuất (Ngắn gọn)】
+  gb = `【Suy nghĩ trước khi xuất (Ngắn gọn)】
 Rà soát nhanh trong thẻ <thinking>, sau đó chỉ xuất ra JSON:
 1. Định vị từng tầng: đợt này có tổng cộng {{floor_count}} tầng, tôi sẽ **tuân thủ nghiêm ngặt theo thứ tự trước sau** tạo ra một phần tử mảng cho mỗi tầng, n lần lượt từ 1..{{floor_count}}, không sót, không lặp, không xáo trộn.
 2. Thời gian đơn điệu: mỗi tầng đánh dấu thời gian bắt đầu và kết thúc, tầng sau không sớm hơn tầng trước; không có căn cứ thì suy luận hợp lý theo tiến trình cốt truyện.
 3. Dừng bút: summary của mỗi tầng dừng lại ở hành động minh văn cuối cùng của chính văn tầng đó, không viết tiếp, không lấn sang tầng sau.
 4. Chỉ tạo tóm tắt + thời gian: mỗi phần tử chỉ chứa n / summary / timeStart / timeEnd, không xuất ra các trường vật phẩm, kế hoạch, địa điểm...
 Sau khi suy nghĩ xong trực tiếp xuất ra đối tượng JSON (khóa gốc floors), không có khung markdown, không giải thích.`,
-  fb = `<thinking>
+  bb = `<thinking>
 Đã nhận, tôi sẽ rà soát tuần tự từng tầng theo thứ tự, tổng cộng {{floor_count}} tầng, từng tầng tiếp nhận biến động trạng thái từ các tầng trước, sau đó chỉ xuất ra một đối tượng JSON (khóa gốc floors, độ dài mảng {{floor_count}}, n liên tục từ 1).
 
 Tầng 1:`,
-  gb =
+  pb =
     "  // Thời gian đã được cung cấp bởi thẻ chính văn, không cần xuất ra trường time",
-  bb = `═══ 【Quy tắc thời gian】 ═══
+  vb = `═══ 【Quy tắc thời gian】 ═══
 Chính văn hiệp này đã kèm thẻ thời gian, thời gian trong truyện sẽ được hệ thống tự động đọc, bạn **không cần xuất ra các trường time / timeStart / timeEnd**, cũng đừng tính thời gian riêng ngoài summary.`,
-  pb = `  "timeStart": "Thời gian trong truyện khi bắt đầu đoạn này, xem [Quy tắc thời gian] bên dưới.",
+  yb = `  "timeStart": "Thời gian trong truyện khi bắt đầu đoạn này, xem [Quy tắc thời gian] bên dưới.",
   "timeEnd": "Thời gian trong truyện khi kết thúc đoạn này, xem [Quy tắc thời gian] bên dưới.",`,
-  vb = `═══ 【Quy tắc thời gian】(trường timeStart / timeEnd) ═══
+  kb = `═══ 【Quy tắc thời gian】(trường timeStart / timeEnd) ═══
 Chính văn hiệp này không có thẻ thời gian, vui lòng đưa ra hai giá trị thời gian bắt đầu (timeStart) và thời gian kết thúc (timeEnd) cho đoạn này, làm điểm neo thời gian của cốt truyện.
 - Thời gian phải cụ thể, định vị được rõ ràng, phong cách nhất quán với thế giới quan của chính văn: đề tài hiện đại dùng ngày giờ con số (như 1988/9/29 21:30); đề tài cổ trang/kỳ ảo dùng niên hiệu và giờ thần tương ứng (như Khánh Lịch năm thứ tư cuối xuân · giờ Thìn ba khắc). Trọng tâm là "có thể định vị đến một thời khắc cụ thể", không bắt buộc số Ả Rập.
 - Tuyệt đối cấm các cách nói mơ hồ không thể định vị đến thời khắc cụ thể như "không rõ", "ngày nào đó", "muộn hơn", "không lâu sau", "cùng ngày".
@@ -6076,7 +6090,7 @@ function Ma(t) {
 `)
     : "  (Không có)";
 }
-function yb(t) {
+function _b(t) {
   return t.length
     ? [...t]
         .sort((e, i) => e.path.join("/").localeCompare(i.path.join("/")))
@@ -6109,7 +6123,7 @@ function ph(t) {
 `)
     : "  (Không có)";
 }
-function kb(t) {
+function xb(t) {
   if (!t.length) return "  (Không có)";
   const n = (e) =>
     e === "add" ? "Nhận được" : e === "remove" ? "Gỡ bỏ" : "Thay đổi";
@@ -6168,7 +6182,7 @@ function vh(t, n) {
       .slice(0, n);
   return [...s, ...o].sort(i);
 }
-function _b(t, n) {
+function Tb(t, n) {
   return t === "suspense"
     ? n === "done"
       ? "Đã hé lộ"
@@ -6192,7 +6206,7 @@ function yh(t) {
         (n.createdTime?.trim() && e.push(`Lập lúc ${n.createdTime.trim()}`),
           n.targetTime?.trim() && e.push(`Mục tiêu ${n.targetTime.trim()}`));
         const i = e.length ? `(${e.join(" · ")})` : "",
-          s = `${n.kind === "suspense" ? "Huyền niệm" : "Kế hoạch"}·${_b(n.kind, n.outcome)}`,
+          s = `${n.kind === "suspense" ? "Huyền niệm" : "Kế hoạch"}·${Tb(n.kind, n.outcome)}`,
           o = yn(n.resolvedReason) ? ` —— ${yn(n.resolvedReason)}` : "";
         return `  - [${s}] ${yn(n.content)}${o}${i}`;
       }).join(`
@@ -6231,7 +6245,7 @@ const Yl = {
 function Ho() {
   return Yl[C.verbosity] ?? Yl.detailed;
 }
-function xb(t) {
+function wb(t) {
   const n = C.prompts.summary.trim() || fh;
   return Cs(n, {
     user: t.user || "Nhân vật chính",
@@ -6240,14 +6254,14 @@ function xb(t) {
     state_time: t.time || "(Chưa rõ)",
     state_location: t.location || "(Chưa rõ)",
     items_block: Ma(t.items),
-    itemlog_block: kb(t.itemLog),
-    scenes_block: yb(t.scenes),
+    itemlog_block: xb(t.itemLog),
+    scenes_block: _b(t.scenes),
     npcs_block: ph(t.npcs),
     plans_block: Na(t.openPlans),
     resolved_plans_block: yh(t.resolvedPlans),
     content: t.content,
-    time_field: t.hasTimeTags ? gb : pb,
-    time_rule: t.hasTimeTags ? bb : vb,
+    time_field: t.hasTimeTags ? pb : yb,
+    time_rule: t.hasTimeTags ? vb : kb,
     summary_words: Ho().summaryWords,
     vars_state_block: pr(t)
       ? `- Biến tùy chỉnh · Trạng thái hiện tại (JSON đã quyết toán đến thời điểm này, chỉ đọc tham khảo, nghiêm cấm quyết toán lặp lại):
@@ -6263,10 +6277,10 @@ ${t.varsMeaning.trim()}`
 ${t.varsRule.trim()}`
           : "")
       : "",
-    vars_field: pr(t) ? Tb : "",
+    vars_field: pr(t) ? Sb : "",
     vars_rule: pr(t)
       ? `
-${hb}
+${mb}
 `
       : "",
     vars_block: Qr(t.varsState),
@@ -6283,10 +6297,10 @@ function pr(t) {
     t.varsRule.trim().length > 0
   );
 }
-const Tb = `,
+const Sb = `,
   "vars": [ { "op": "set|add|assign|remove", "path": "đường dẫn dấu chấm/ngoặc", "key": "dùng cho assign/remove (tùy chọn)", "value": "dùng cho set/assign (tùy chọn)", "delta": "số dùng cho add (tùy chọn)" } ]`;
-function wb(t) {
-  return Cs(db, {
+function Cb(t) {
+  return Cs(fb, {
     user: t.user || "Nhân vật chính",
     char: t.char || "Nhân vật",
     history_block: t.history.trim() || "(Không có, đây là mở đầu)",
@@ -6297,14 +6311,14 @@ function wb(t) {
     summary_words: Ho().summaryWords,
   });
 }
-function Sb(t) {
+function $b(t) {
   const n = String(t);
   return {
-    checklist: Cs(mb, { floor_count: n }),
-    prefill: Cs(fb, { floor_count: n }),
+    checklist: Cs(gb, { floor_count: n }),
+    prefill: Cs(bb, { floor_count: n }),
   };
 }
-function Cb(t) {
+function Eb(t) {
   const n = Ho();
   return Math.max(n.resummary2Floor, Math.round(t * n.resummary2Ratio));
 }
@@ -6318,7 +6332,7 @@ function kh(t) {
     char: t.char || "Nhân vật",
     content: t.content,
     resummary_words: Ho().resummaryWords,
-    target: n ? String(Cb(t.content.length)) : "",
+    target: n ? String(Eb(t.content.length)) : "",
   });
 }
 function _h(t) {
@@ -6339,7 +6353,7 @@ Dưới đây là thiết lập nhân vật của nhân vật hiện tại, dùn
 
 ${t.trim()}`;
 }
-const $b = `【Suy nghĩ trước khi xuất】
+const Ib = `【Suy nghĩ trước khi xuất】
 Trước khi xuất ra JSON cuối cùng, hãy hoàn thành phân tích bên trong thẻ <thinking>, bao quát các điểm phán đoán sau (thứ tự và cách diễn đạt tự do):
 
 1. Sự kiện cốt lõi của tầng này
@@ -6398,7 +6412,7 @@ Trước khi xuất ra JSON cuối cùng, hãy hoàn thành phân tích bên tro
    - Chỉ xuất ra một đối tượng JSON, không có khung markdown, không giải thích.
 
 Sau khi kết thúc suy nghĩ trực tiếp xuất ra JSON, không chèn bất kỳ giải thích nào giữa thẻ <thinking> và JSON.`,
-  Eb = `<thinking>
+  Ab = `<thinking>
 Đã nhận, tôi sẽ rà soát từng mục theo điểm kiểm tra trước, sau đó chỉ xuất ra một đối tượng JSON (các trường summary/time/location/items/scenes/npcs/plans),
 không xuất ra khung markdown, không chèn giải thích giữa phần suy nghĩ và JSON.
 
@@ -6512,7 +6526,7 @@ Q: Đặc điểm ngoại hình và hành vi tấn công của ác ma khi Mộc 
 Q: Các thiết lập đã biết về năng lực chiến đấu như hình thái biến thân, vũ khí, giới hạn ma lực của Mộc Bạch Bạch
 Q: Miêu tả cụ thể về cách thức bổ sung ma lực và trạng thái phục hồi sau khi bổ sung của Mộc Bạch Bạch
 Q: Quy luật thời gian và sự thay đổi phạm vi hoạt động của việc ác ma lan rộng ở các địa điểm khác nhau gần đây`,
-  Ib = `Hãy nhớ nhiệm vụ của bạn:
+  Mb = `Hãy nhớ nhiệm vụ của bạn:
 - Bạn là bộ quy hoạch bối cảnh, không phải người nhập vai, đừng viết tiếp cốt truyện
 - Hãy suy nghĩ xem AI viết tiếp đoạn sau cần tham khảo những thông tin lịch sử nào đã xảy ra
 - Tất cả truy vấn chỉ được hướng đến những sự việc đã xảy ra trong quá khứ
@@ -6536,7 +6550,7 @@ Quy tắc:
 - Nếu đây là mở đầu câu chuyện, trước đó chưa có thời gian đã biết nào, hãy tự thiết lập một thời điểm bắt đầu cụ thể phù hợp với thế giới quan này, sau đó lấy đó làm chuẩn để thúc đẩy —— đây là thiết lập hợp lý cần thiết để hệ thống ký ức tạo mốc thời gian, không coi là bịa đặt; tuyệt đối không dùng các từ tạm như "một ngày nọ" để làm cho có.
 - Mỗi nhãn chỉ xuất hiện đúng một lần, nằm ngay sát đầu và cuối văn bản cốt truyện; bên trong nhãn chỉ ghi thời gian, đừng viết bất cứ gì khác.
 - Hai nhãn này là mốc định vị để hệ thống ký ức đọc, vui lòng bắt buộc phải xuất ra mỗi lần.`;
-function Ab() {
+function Nb() {
   return C.prompts.timeTag.trim() || wh;
 }
 const Sh = new RegExp(`<${Vi}\\b[^>]*>([\\s\\S]*?)</${Vi}>`, "i"),
@@ -6556,32 +6570,32 @@ function Uo(t) {
       o = s || i;
     if (o) return o;
     const r = e.extra?.bbs_leaf;
-    if (r?.id && r.delta && Mb(r, e)) {
+    if (r?.id && r.delta && Pb(r, e)) {
       const l = r.timeEnd?.trim() || r.timeStart?.trim();
       if (l) return l;
     }
   }
   return "";
 }
-function Mb(t, n) {
+function Pb(t, n) {
   const e = typeof t.swipe == "number" ? t.swipe : 0,
     i = typeof n.swipe_id == "number" ? n.swipe_id : 0;
   return e === i;
 }
-function Nb(t) {
+function Rb(t) {
   return [
     new RegExp(`<${t}(?=[\\s/>])[^>]*>[\\s\\S]*?</${t}>`, "gi"),
     new RegExp(`<\\/?${t}(?=[\\s/>])[^>]*\\/?>`, "gi"),
   ];
 }
-function Pb(t) {
+function Ob(t) {
   let n = t;
   for (const e of C.customStripTags)
-    if (e) for (const i of Nb(e)) n = n.replace(i, "");
+    if (e) for (const i of Rb(e)) n = n.replace(i, "");
   return n;
 }
 const $h = /<think(?:ing)?\b[\s\S]*?<\/think(?:ing)?>/gi;
-function Rb(t) {
+function Lb(t) {
   return String(t ?? "").replace($h, "");
 }
 function Pa(t, n) {
@@ -6590,7 +6604,7 @@ function Pa(t, n) {
   for (let i = n.exec(t); i; i = n.exec(t)) e = i.index + i[0].length;
   return e;
 }
-function Ob(t) {
+function Bb(t) {
   const n = [];
   let e = 0;
   for (; e < t.length;) {
@@ -6605,13 +6619,13 @@ function Ob(t) {
   }
   return n;
 }
-function Lb(t, n) {
+function qb(t, n) {
   return new RegExp(`^[ \\t]*<${n}\\b[^>]*>[ \\t]*$`, "i").test(t);
 }
-function Bb(t, n) {
+function Vb(t, n) {
   return new RegExp(`^[ \\t]*</${n}>[ \\t]*$`, "i").test(t);
 }
-function qb(t, n) {
+function Db(t, n) {
   const e = n
     .split(/\r?\n/)
     .map((s) => s.trim())
@@ -6626,12 +6640,12 @@ function qb(t, n) {
 function $s(t, n) {
   const e = [],
     i = [];
-  for (const s of Ob(t))
-    if (Lb(s.text, n)) e.push({ start: s.start, innerStart: s.end });
-    else if (Bb(s.text, n) && e.length) {
+  for (const s of Bb(t))
+    if (qb(s.text, n)) e.push({ start: s.start, innerStart: s.end });
+    else if (Vb(s.text, n) && e.length) {
       const o = e.pop(),
         r = t.slice(o.innerStart, s.start);
-      qb(n, r) &&
+      Db(n, r) &&
         i.push({
           start: o.start,
           end: s.end,
@@ -6641,13 +6655,13 @@ function $s(t, n) {
     }
   return i;
 }
-function Vb(t, n) {
+function jb(t, n) {
   const e = $s(t, n).sort((s, o) => o.start - s.start);
   let i = t;
   for (const s of e) i = i.slice(0, s.start) + i.slice(s.end);
   return i;
 }
-function Db(t) {
+function Kb(t) {
   const n = [...$s(t, ye), ...$s(t, di)].sort(
     (s, o) => s.start - o.start || s.end - o.end,
   );
@@ -6663,17 +6677,17 @@ function Db(t) {
 }
 function Ra(t) {
   const n = Pa(t, Oa);
-  return n >= 0 ? n : Db(t);
+  return n >= 0 ? n : Kb(t);
 }
 function bo(t, n) {
   const e = String(t ?? ""),
     i = Ra(e);
-  return i < 0 ? e : e.slice(0, i) + Vb(e.slice(i), n);
+  return i < 0 ? e : e.slice(0, i) + jb(e.slice(i), n);
 }
-function jb(t) {
+function Hb(t) {
   return bo(bo(t, ye), di);
 }
-function Kb(t, n) {
+function Fb(t, n) {
   const e = String(t ?? ""),
     i = Ra(e);
   if (i < 0) return -1;
@@ -6681,14 +6695,14 @@ function Kb(t, n) {
     o = s[s.length - 1];
   return o ? i + o.end : -1;
 }
-function Hb(t, n) {
+function Ub(t, n) {
   const e = String(t ?? ""),
     i = Ra(e);
   if (i < 0) return null;
   const s = $s(e.slice(i), n)[0];
   return s ? e.slice(i + s.innerStart, i + s.innerEnd).trim() : null;
 }
-function Fb(t) {
+function Wb(t) {
   const n = /<content\b[^>]*>/gi;
   let e = null;
   for (let o = n.exec(t); o; o = n.exec(t))
@@ -6703,7 +6717,7 @@ function Ui(t) {
     .replace($h, "")
     .replace(/<!--[\s\S]+?-->/g, "")
     .replace(/<horae[\s\S]*?>[\s\S]*?<\/horae[\s\S]*?>/gi, "");
-  ((n = Pb(n)), (n = Fb(n)), (n = jb(n)));
+  ((n = Ob(n)), (n = Wb(n)), (n = Hb(n)));
   const e = new RegExp(`<${Vi}\\b`, "gi");
   let i = -1;
   for (let o = e.exec(n); o; o = e.exec(n)) i = o.index;
@@ -6727,14 +6741,14 @@ function Ui(t) {
   );
 }
 function Wo(t) {
-  return Ub(Ui(t));
+  return Gb(Ui(t));
 }
-function Ub(t) {
+function Gb(t) {
   return String(t ?? "")
     .replace(Sh, (n, e) => `(Thời gian bắt đầu: ${String(e).trim()})`)
     .replace(Ch, (n, e) => `(Thời gian kết thúc: ${String(e).trim()})`);
 }
-const Wb = /[\s/／\-－年月日]/;
+const Jb = /[\s/／\-－年月日]/;
 function Eh(t, n) {
   if (!t || !n) return t || n || "";
   if (t === n || t.startsWith(n)) return t;
@@ -6742,7 +6756,7 @@ function Eh(t, n) {
   const i = Math.min(t.length, n.length);
   for (; e < i && t[e] === n[e];) e++;
   let s = 0;
-  for (let r = 0; r < e; r++) Wb.test(t[r]) && (s = r + 1);
+  for (let r = 0; r < e; r++) Jb.test(t[r]) && (s = r + 1);
   const o = n.slice(s).trim();
   return o ? `${t} - ${o}` : t;
 }
@@ -6782,8 +6796,8 @@ ${s}${e.slice(o)}`
     : `${e.trimEnd()}
 ${s}`;
 }
-function Gb(t) {
-  return Hb(t, ye);
+function Qb(t) {
+  return Ub(t, ye);
 }
 function Ih(t, n) {
   const e = bo(t, di),
@@ -6792,7 +6806,7 @@ function Ih(t, n) {
   const s = `<${di}>
 ${i}
 </${di}>`,
-    o = Kb(e, ye),
+    o = Fb(e, ye),
     r = o >= 0 ? o : Pa(e, Oa);
   return r >= 0
     ? `${e.slice(0, r)}
@@ -6801,17 +6815,17 @@ ${s}${e.slice(r)}`
 ${s}`;
 }
 const zr = "bbs-time-tag-hide",
-  Jb = "Bách Bảo Khố · Ẩn nhãn ký ức",
-  Qb = 0,
-  Yb = 1,
-  zb = 2;
-function Xb() {
+  Yb = "Bách Bảo Khố · Ẩn nhãn ký ức",
+  zb = 0,
+  Xb = 1,
+  Zb = 2;
+function tp() {
   const t = `${Vi}|${fi}`,
     n = `(^|\\r?\\n)[ \\t]*<${ye}\\b[^>]*>[ \\t]*\\r?\\n(?:[ \\t]*(?:Nhận được|消耗|Tiêu hao|失去|Mất|获得)\\s+[^\\r\\n]*(?:\\r?\\n))+[ \\t]*<\\/${ye}>[ \\t]*(?=\\r?\\n|$)`,
     e = `(^|\\r?\\n)[ \\t]*<${di}\\b[^>]*>[ \\t]*\\r?\\n(?:[ \\t]*(?:Thiết lập|设定|Thay đổi|变更|Thêm mới|新增|Xóa|删除)\\s+[^\\r\\n]*(?:\\r?\\n))+[ \\t]*<\\/${di}>[ \\t]*(?=\\r?\\n|$)`;
   return `/${n}|${e}|<(${t})\\b[^>]*>[\\s\\S]*?<\\/\\3>/gi`;
 }
-function Zb() {
+function np() {
   const t = ft(),
     n = t?.extensionSettings;
   if (!n) return;
@@ -6819,11 +6833,11 @@ function Zb() {
   const e = n.regex,
     i = {
       id: zr,
-      scriptName: Jb,
-      findRegex: Xb(),
+      scriptName: Yb,
+      findRegex: tp(),
       replaceString: "",
       trimStrings: [],
-      placement: [Qb, Yb, zb],
+      placement: [zb, Xb, Zb],
       disabled: !1,
       markdownOnly: !0,
       promptOnly: !1,
@@ -6836,7 +6850,7 @@ function Zb() {
   (s >= 0 ? (e[s] = { ...e[s], ...i }) : e.push(i),
     t?.saveSettingsDebounced?.());
 }
-function tp() {
+function ep() {
   const t = ft(),
     n = t?.extensionSettings;
   if (!n || !Array.isArray(n.regex)) return;
@@ -6845,7 +6859,7 @@ function tp() {
   i.length !== e.length && ((n.regex = i), t?.saveSettingsDebounced?.());
 }
 function Ah() {
-  C.autoSummaryEnabled ? Zb() : tp();
+  C.autoSummaryEnabled ? np() : ep();
 }
 const U = Un(Eo()),
   en = Un({
@@ -6917,7 +6931,7 @@ function Ze() {
   };
   ((t.chatMetadata[qc] = n), t.saveMetadataDebounced?.());
 }
-function np(t, n) {
+function ip(t, n) {
   if (!n || n.length === 0) return null;
   const e = Eo();
   e.version = As;
@@ -6963,7 +6977,7 @@ function np(t, n) {
       }
     if (o >= 0 && !n[o].extra?.bbs_leaf) {
       const r = {};
-      for (const l of s) ep(r, l);
+      for (const l of s) sp(r, l);
       n[o].extra = {
         ...(n[o].extra ?? {}),
         bbs_leaf: {
@@ -6989,7 +7003,7 @@ function np(t, n) {
       });
   return e;
 }
-function ep(t, n) {
+function sp(t, n) {
   if (
     (n.time && (t.time = n.time),
     n.location && (t.location = n.location),
@@ -7019,7 +7033,7 @@ function ep(t, n) {
 function Ws(t, n, e) {
   ((t.version = As), (t.summaries = n), (t.varTemplates = e));
 }
-function ip(t) {
+function op(t) {
   const n = Ea();
   return {
     global: Ci(C.varsGlobalTemplate),
@@ -7031,12 +7045,12 @@ function Xl() {
   const t = ft(),
     e = t?.chatMetadata?.[qc],
     i = t?.chat ?? null,
-    s = ip(e?.varsTemplate);
+    s = op(e?.varsTemplate);
   if (e && typeof e == "object")
     if ((typeof e.version == "number" ? e.version : 1) >= As)
       Ws(U, Array.isArray(e.summaries) ? e.summaries : [], s);
     else {
-      const r = np(e, i);
+      const r = ip(e, i);
       if (r) (Ws(U, r.summaries, s), Go(), Ze());
       else {
         const l = (Array.isArray(e.summaries) ? e.summaries : []).filter(
@@ -7060,7 +7074,7 @@ function Zl(t, n) {
   } else Ze();
   wn();
 }
-function sp() {
+function rp() {
   const t = ft();
   !t?.eventSource ||
     !t?.eventTypes ||
@@ -7070,7 +7084,7 @@ function sp() {
     Xl());
 }
 let tc = 0;
-function op(t) {
+function ap(t) {
   return ((tc += 1), `${t}_${Ba()}_${tc}`);
 }
 function Ba() {
@@ -7085,7 +7099,7 @@ function Hn(t) {
 function Zn(t) {
   return `npc:${Pe(t)}`;
 }
-function rp(t, n) {
+function lp(t, n) {
   return `plan:${t}#${n}`;
 }
 function no(t) {
@@ -7116,7 +7130,7 @@ function vo(t, n, e) {
       (r = l);
   return r?.id ?? "";
 }
-function ap(t, n) {
+function cp(t, n) {
   let e = 0;
   const i = Math.min(t.length, n.length);
   for (; e < i && Pe(t[e]) === Pe(n[e]);) e++;
@@ -7138,7 +7152,7 @@ function Mh(t, n, e, i) {
   if (!s) return yo(t.location, e) ? "present" : "absent";
   const o = n.find((l) => l.id === vo(n, t.location ?? "")) ?? null;
   if (!o) return yo(t.location, e) ? "present" : "absent";
-  const r = ap(s.path, o.path);
+  const r = cp(s.path, o.path);
   return r === "same" ? "present" : r === "near" ? "nearby" : "absent";
 }
 function yo(t, n) {
@@ -7155,11 +7169,11 @@ function ko() {
 function dn(t) {
   return t?.extra?.bbs_leaf;
 }
-function lp(t) {
+function up(t) {
   const n = dn(t);
   return !!(n && n.id && n.delta);
 }
-function cp(t) {
+function hp(t) {
   const n = t.match(/^plan:(.+)#(\d+)$/);
   if (!n) return "";
   const e = n[1],
@@ -7172,15 +7186,15 @@ function cp(t) {
   }
   return "";
 }
-function up(t) {
+function dp(t) {
   return typeof t.swipe == "number" ? t.swipe : 0;
 }
-function hp(t) {
+function mp(t) {
   return typeof t.swipe_id == "number" ? t.swipe_id : 0;
 }
 function bn(t) {
   const n = dn(t);
-  return !n || !n.id || !n.delta || !t ? !1 : up(n) === hp(t);
+  return !n || !n.id || !n.delta || !t ? !1 : dp(n) === mp(t);
 }
 function vr(t, n) {
   if (
@@ -7216,7 +7230,7 @@ function nc(t, n, e, i, s) {
         c = Qn(l),
         h = r > 1 ? Qn(o.slice(0, r - 1)) : "",
         u = r === o.length,
-        d = t.scenes.find((p) => p.id === c);
+        d = t.scenes.find((v) => v.id === c);
       d
         ? u &&
           e?.trim() &&
@@ -7232,14 +7246,14 @@ function nc(t, n, e, i, s) {
           });
     }
 }
-function dp(t, n) {
+function fp(t, n) {
   const e = _n(n);
   if (!e.length) return;
   const i = Qn(e),
     s = `${i}/`;
   t.scenes = t.scenes.filter((o) => o.id !== i && !o.id.startsWith(s));
 }
-function mp(t, n, e) {
+function gp(t, n, e) {
   const i = _n(n.node),
     s = _n(n.newPath);
   if (!i.length || !s.length) return;
@@ -7248,14 +7262,14 @@ function mp(t, n, e) {
   const l = Qn(s);
   if (l === o || l.startsWith(`${o}/`)) return;
   for (let d = 1; d < s.length; d++) {
-    const p = s.slice(0, d),
-      S = Qn(p);
+    const v = s.slice(0, d),
+      S = Qn(v);
     if (t.scenes.some((M) => M.id === S)) continue;
-    const w = p[p.length - 1];
+    const w = v[v.length - 1];
     t.scenes.push({
       id: S,
       name: w,
-      path: p,
+      path: v,
       parentId: d > 1 ? Qn(s.slice(0, d - 1)) : "",
       desc: n.descs?.[w]?.trim() || void 0,
       createdAt: e,
@@ -7268,11 +7282,11 @@ function mp(t, n, e) {
   for (const d of t.scenes)
     if (d.id === o) {
       ((d.id = l), (d.path = [...s]), (d.name = u), (d.parentId = h));
-      const p = n.descs?.[u]?.trim();
-      (p && (d.desc = p), (d.updatedAt = e));
+      const v = n.descs?.[u]?.trim();
+      (v && (d.desc = v), (d.updatedAt = e));
     } else if (d.id.startsWith(c)) {
-      const p = d.path.slice(i.length);
-      ((d.path = [...s, ...p]),
+      const v = d.path.slice(i.length);
+      ((d.path = [...s, ...v]),
         (d.id = Qn(d.path)),
         (d.parentId = Qn(d.path.slice(0, d.path.length - 1))),
         (d.updatedAt = e));
@@ -7301,7 +7315,7 @@ function Xr(t, n) {
 function Nh(t) {
   return Xr(Xr(be(t.global.json), t.char.json), t.chat.json);
 }
-function fp(t) {
+function bp(t) {
   const n = ft()?.substituteParams;
   if (typeof n != "function") return t;
   const e = (i) => {
@@ -7316,7 +7330,7 @@ function fp(t) {
   };
   return e(t);
 }
-function gp(t) {
+function pp(t) {
   const n = [];
   for (const e of String(t ?? "").split(".")) {
     if (e === "") continue;
@@ -7337,10 +7351,10 @@ function Pi(t, n) {
 function Ti(t, n, e) {
   Array.isArray(t) ? (t[Number(n)] = e) : (t[String(n)] = e);
 }
-function bp(t, n) {
+function vp(t, n) {
   Array.isArray(t) ? t.splice(Number(n), 1) : delete t[String(n)];
 }
-function pp(t, n, e) {
+function yp(t, n, e) {
   let i = t;
   for (let s = 0; s < n.length - 1; s++) {
     const o = n[s];
@@ -7355,8 +7369,8 @@ function pp(t, n, e) {
     ? null
     : { parent: i, last: n[n.length - 1] };
 }
-function vp(t, n) {
-  const e = gp(n.path);
+function kp(t, n) {
+  const e = pp(n.path);
   if (e.length === 0) {
     if (n.op === "set" && ji(n.value)) {
       for (const l of Object.keys(t)) delete t[l];
@@ -7368,7 +7382,7 @@ function vp(t, n) {
     return;
   }
   const i = n.op === "set" || n.op === "assign" || n.op === "add",
-    s = pp(t, e, i);
+    s = yp(t, e, i);
   if (!s) return;
   const { parent: o, last: r } = s;
   switch (n.op) {
@@ -7393,7 +7407,7 @@ function vp(t, n) {
     }
     case "remove": {
       const l = Pi(o, r);
-      if (n.key === void 0) bp(o, r);
+      if (n.key === void 0) vp(o, r);
       else if (Array.isArray(l))
         if (typeof n.key == "number") l.splice(n.key, 1);
         else {
@@ -7405,11 +7419,11 @@ function vp(t, n) {
     }
   }
 }
-function yp(t, n) {
+function _p(t, n) {
   if (n?.length)
     for (const e of n)
       try {
-        vp(t, e);
+        kp(t, e);
       } catch {}
 }
 function ec(t) {
@@ -7465,7 +7479,7 @@ function Rh(t) {
   }).join(`
 `);
 }
-function kp(t) {
+function xp(t) {
   if (!Array.isArray(t)) return [];
   const n = [];
   for (const e of t) {
@@ -7553,8 +7567,8 @@ function Oh(t, n, e) {
   if (n.scenes) {
     for (const r of n.scenes.add ?? []) nc(t, r.path, r.desc, !1, i);
     for (const r of n.scenes.update ?? []) nc(t, r.path, r.desc, !0, i);
-    for (const r of n.scenes.reparent ?? []) mp(t, r, i);
-    for (const r of n.scenes.remove ?? []) dp(t, r);
+    for (const r of n.scenes.reparent ?? []) gp(t, r, i);
+    for (const r of n.scenes.remove ?? []) fp(t, r);
   }
   if (n.npcs) {
     for (const r of n.npcs.add ?? []) {
@@ -7603,7 +7617,7 @@ function Oh(t, n, e) {
   if (n.plans) {
     (n.plans.add ?? []).forEach((r, l) => {
       if (!r?.content?.trim()) return;
-      const c = rp(e.id, l);
+      const c = lp(e.id, l);
       if (t.plans.some((u) => u.id === c)) return;
       const h = {
         id: c,
@@ -7638,11 +7652,11 @@ function Oh(t, n, e) {
       l >= 0 && t.plans.splice(l, 1);
     }
   }
-  n.varOps?.length && yp(t.vars, n.varOps);
+  n.varOps?.length && _p(t.vars, n.varOps);
 }
 function xe(t, n) {
   const e = Eo();
-  if (((e.vars = fp(Nh(U.varTemplates))), !t))
+  if (((e.vars = bp(Nh(U.varTemplates))), !t))
     return {
       state: e.state,
       items: e.items,
@@ -7699,15 +7713,15 @@ function sc(t) {
   }
   return n;
 }
-function _p(t) {
+function Tp(t) {
   const n = ft()?.chat,
     e = dn(n?.[t]);
   if (!n || !e || !e.delta) return !1;
   const i = xe(n, t).items,
     s = e.timeEnd?.trim() || e.timeStart?.trim() || e.timeLabel?.trim() || "",
     o = ms(Es(e.delta, i, s)),
-    r = Gb(n[t].mes),
-    l = r === null ? "" : ms(xp(sc(r), i));
+    r = Qb(n[t].mes),
+    l = r === null ? "" : ms(wp(sc(r), i));
   if (o === l) return !1;
   const c = new Map();
   for (const d of [
@@ -7720,8 +7734,8 @@ function _p(t) {
   (h.length
     ? (e.delta.items = {
         add: h.map((d) => {
-          const p = c.get(Hn(d.name));
-          return { name: d.name, qty: d.qty, ...(p ?? {}) };
+          const v = c.get(Hn(d.name));
+          return { name: d.name, qty: d.qty, ...(v ?? {}) };
         }),
       })
     : delete e.delta.items,
@@ -7729,7 +7743,7 @@ function _p(t) {
   const u = ms(Es(e.delta, i, s));
   return ($o(n[t], La(n[t].mes, u)), wn(), Jo(), Le(), !0);
 }
-function xp(t, n) {
+function wp(t, n) {
   return t.length
     ? Es(
         { items: { add: t.map((e) => ({ name: e.name, qty: e.qty })) } },
@@ -7738,7 +7752,7 @@ function xp(t, n) {
       )
     : [];
 }
-function Tp(t) {
+function Sp(t) {
   const n = String(t)
     .trim()
     .match(/^p?(\d+)$/i);
@@ -7746,7 +7760,7 @@ function Tp(t) {
   const e = Number(n[1]);
   return Number.isFinite(e) && e > 0 ? e : null;
 }
-function wp(t, n) {
+function Cp(t, n) {
   const e = {};
   (typeof t.time == "string" && t.time.trim() && (e.time = t.time.trim()),
     typeof t.location == "string" &&
@@ -7768,7 +7782,7 @@ function wp(t, n) {
       o = (u) =>
         (u ?? [])
           .map((d) => {
-            const p = _n(d.node),
+            const v = _n(d.node),
               S = _n(d.newPath),
               w = {};
             for (const [M, nt] of Object.entries(d.descs ?? {})) {
@@ -7776,7 +7790,7 @@ function wp(t, n) {
                 L = String(nt ?? "").trim();
               R && L && (w[R] = L);
             }
-            return { node: p, newPath: S, descs: w };
+            return { node: v, newPath: S, descs: w };
           })
           .filter((d) => d.node.length && d.newPath.length),
       r = {},
@@ -7822,7 +7836,7 @@ function wp(t, n) {
       const o = [];
       for (const r of t.plans.resolve) {
         const l = typeof r == "string" ? r : r.id,
-          c = Tp(l);
+          c = Sp(l);
         if (c === null) continue;
         const h = n[c - 1];
         if (h)
@@ -7844,14 +7858,14 @@ function wp(t, n) {
     Object.keys(s).length && (e.plans = s);
   }
   if (t.vars?.length) {
-    const s = kp(t.vars);
+    const s = xp(t.vars);
     s.length && (e.varOps = s);
   }
   return e;
 }
 function Lh(t) {
   const n = {
-    id: t.id ?? op("sum"),
+    id: t.id ?? ap("sum"),
     text: t.text,
     level: t.level ?? 1,
     createdAt: t.createdAt ?? Ba(),
@@ -7863,14 +7877,14 @@ function Lh(t) {
   };
   return (U.summaries.push(n), Ze(), n);
 }
-function Sp() {
+function $p() {
   const t = ft()?.chat ?? [];
   for (let n = t.length - 1; n >= 0; n--)
     if (bn(t[n])) return { index: n, leaf: dn(t[n]) };
   return null;
 }
 function xn(t) {
-  const n = Sp();
+  const n = $p();
   if (!n) return !1;
   const { index: e, leaf: i } = n,
     s = (i.delta ??= {});
@@ -7941,10 +7955,10 @@ function xn(t) {
     !0
   );
 }
-function Cp(t) {
+function Ep(t) {
   return xn({ varOps: [{ op: "set", path: "", value: t }] });
 }
-function $p(t, n) {
+function Ip(t, n) {
   const e = n.name?.trim() || t,
     i = n.desc?.trim() || void 0,
     s = typeof n.qty == "number" && Number.isFinite(n.qty) ? n.qty : void 0,
@@ -7965,7 +7979,7 @@ function $p(t, n) {
         },
       });
 }
-function Ep(t) {
+function Ap(t) {
   const n = t.name.trim();
   return n
     ? xn({
@@ -7987,7 +8001,7 @@ function Ep(t) {
       })
     : !1;
 }
-function Ip(t, n) {
+function Mp(t, n) {
   const e = n.name?.trim() || t,
     i = n.title?.trim() || void 0,
     s = n.desc?.trim() || void 0,
@@ -7998,7 +8012,7 @@ function Ip(t, n) {
     h = n.outfit !== void 0 ? n.outfit.trim() || void 0 : r?.outfit,
     u = n.condition !== void 0 ? n.condition.trim() || void 0 : r?.condition,
     d = n.important !== void 0 ? n.important : r?.important,
-    p = {
+    v = {
       title: i,
       desc: s,
       personality: o,
@@ -8009,8 +8023,8 @@ function Ip(t, n) {
       location: c,
     };
   return Pe(e) !== Pe(t)
-    ? xn({ npcs: { remove: [t], add: [{ name: e, ...p }] } })
-    : xn({ npcs: { update: [{ name: e, ...p }] } });
+    ? xn({ npcs: { remove: [t], add: [{ name: e, ...v }] } })
+    : xn({ npcs: { update: [{ name: e, ...v }] } });
 }
 function oc(t, n, e) {
   const i = t.trim();
@@ -8018,34 +8032,34 @@ function oc(t, n, e) {
   const s = n ? void 0 : e?.trim() || void 0;
   return xn({ npcs: { update: [{ name: i, follow: n, location: s }] } });
 }
-function Ap(t, n) {
+function Np(t, n) {
   const e = t.trim();
   return e ? xn({ npcs: { update: [{ name: e, important: n }] } }) : !1;
 }
-function Mp(t) {
+function Pp(t) {
   const n = t.trim();
   return n ? xn({ npcs: { remove: [n] } }) : !1;
 }
-function Np(t, n) {
+function Rp(t, n) {
   const e = _n(t);
   return e.length
     ? xn({ scenes: { add: [{ path: e, desc: n?.trim() || void 0 }] } })
     : !1;
 }
-function Pp(t, n) {
+function Op(t, n) {
   const e = _n(t);
   return e.length
     ? xn({ scenes: { update: [{ path: e, desc: n.trim() || void 0 }] } })
     : !1;
 }
-function Rp(t, n, e) {
+function Lp(t, n, e) {
   const i = _n(t),
     s = _n(n);
   return !i.length || !s.length || Qn(s) === Qn(i)
     ? !1
     : xn({ scenes: { reparent: [{ node: i, newPath: s, descs: e }] } });
 }
-function Op(t) {
+function Bp(t) {
   const n = _n(t);
   return n.length ? xn({ scenes: { remove: [n] } }) : !1;
 }
@@ -8055,7 +8069,7 @@ function Bh(t) {
     ? !1
     : (delete n[t].extra.bbs_leaf, wn(), Jo(), Le(), !0);
 }
-function Lp(t, n, e, i) {
+function qp(t, n, e, i) {
   const s = ft()?.chat,
     o = dn(s?.[t]);
   if (!s || !o) return !1;
@@ -8089,20 +8103,20 @@ function _r(t, n) {
     o ? (r.time = o) : s ? (r.time = s) : delete r.time,
     (i.delta = r),
     (e[t].extra = { ...(e[t].extra ?? {}), bbs_leaf: i }),
-    Bp(e, t, r),
+    Vp(e, t, r),
     wn(),
     Le(),
     !0
   );
 }
-function Bp(t, n, e) {
+function Vp(t, n, e) {
   const i = dn(t[n]),
     s = i?.timeEnd?.trim() || i?.timeStart?.trim() || "",
     o = xe(t, n).items;
   let r = La(t[n].mes, ms(Es(e, o, s)));
   ((r = Ih(r, Rh(e.varOps))), $o(t[n], r));
 }
-function qp(t, n) {
+function Dp(t, n) {
   const e = t.match(/^plan:(.+)#(\d+)$/);
   if (!e) return !1;
   const i = e[1],
@@ -8131,11 +8145,11 @@ function qp(t, n) {
       !0)
     : !1;
 }
-function Vp(t, n) {
+function jp(t, n) {
   const e = U.summaries.find((i) => i.id === t);
   return e ? ((e.text = n.trim()), Ze(), !0) : !1;
 }
-function Dp(t) {
+function Kp(t) {
   const n = U.summaries.findIndex((e) => e.id === t);
   if (n < 0) return !1;
   for (const e of U.summaries)
@@ -8145,7 +8159,7 @@ function Dp(t) {
 function Jo() {
   const t = ft()?.chat ?? null,
     n = new Set();
-  if (t) for (const l of t) lp(l) && n.add(dn(l).id);
+  if (t) for (const l of t) up(l) && n.add(dn(l).id);
   const e = new Map(U.summaries.map((l) => [l.id, l])),
     i = new Map(),
     s = (l, c) => {
@@ -8179,8 +8193,8 @@ function Qo(t) {
       n.toLowerCase().lastIndexOf("</thinking>"),
     );
     if (d >= 0) {
-      const p = n.slice(d).match(/^<\/think(?:ing)?>/i)?.[0] ?? "";
-      n = n.slice(d + p.length).trim();
+      const v = n.slice(d).match(/^<\/think(?:ing)?>/i)?.[0] ?? "";
+      n = n.slice(d + v.length).trim();
     }
   }
   const i = n.match(/```(?:json)?\s*([\s\S]*?)```/i);
@@ -8243,7 +8257,7 @@ const os = [
     "Thứ bảy",
   ],
   qh = 1440 * 60 * 1e3,
-  jp = 7 * qh;
+  Hp = 7 * qh;
 function Vh(t) {
   return (
     t &&
@@ -8255,7 +8269,7 @@ function Vh(t) {
       .replace(/^(\d{1,2})[.．。﹒](\d{1,2})(?=$|\s)/, "$1/$2")
   );
 }
-function Kp(t) {
+function Fp(t) {
   return t
     ? /^(?:\d{4,}[/.\-．。﹒]\d{1,2}[/.\-．。﹒]\d{1,2}|\d{1,2}[/.\-．。﹒]\d{1,2})(?=$|\s)/.test(
         t,
@@ -8264,14 +8278,14 @@ function Kp(t) {
         /^\d{1,2}\s*月\s*\d{1,2}\s*日?(?=$|\s)/.test(t)
     : !1;
 }
-function Hp(t) {
+function Up(t) {
   if (!t) return null;
   const n = t.match(/(\d+)\s*[日号]/) || t.match(/第\s*(\d+)/);
   if (n) return parseInt(n[1], 10);
   const e = t.match(/(\d+)/);
   return e ? parseInt(e[1], 10) : null;
 }
-function Fp(t) {
+function Wp(t) {
   if (!t) return null;
   const n = t.match(/([^\s\d]+月)/);
   if (n) return n[1];
@@ -8292,7 +8306,7 @@ const xr = {
     八: 8,
     九: 9,
   },
-  Up = "[一二三四五六七八九十两零〇廿卅]";
+  Gp = "[一二三四五六七八九十两零〇廿卅]";
 function Zi(t) {
   if (!t) return null;
   const n = t.trim();
@@ -8321,9 +8335,9 @@ function gi(t) {
   if (e) {
     const u = parseInt(e[1], 10),
       d = parseInt(e[2], 10),
-      p = parseInt(e[3], 10);
-    if (d >= 1 && d <= 12 && p >= 1 && p <= 31)
-      return { year: u, month: d, day: p, type: "standard" };
+      v = parseInt(e[3], 10);
+    if (d >= 1 && d <= 12 && v >= 1 && v <= 31)
+      return { year: u, month: d, day: v, type: "standard" };
   }
   const i = n.match(/^(\d{1,2})[/\-](\d{1,2})(?:\s|$)/);
   if (i) {
@@ -8332,25 +8346,25 @@ function gi(t) {
     if (u >= 1 && u <= 12 && d >= 1 && d <= 31)
       return { month: u, day: d, type: "standard" };
   }
-  const s = `(?:\\d+|${Up}+)`,
+  const s = `(?:\\d+|${Gp}+)`,
     o = `(?:初)?${s}`,
     r = n.match(new RegExp(`(${s})年\\s*(${s})月\\s*(${o})日?`));
   if (r) {
     const u = Zi(r[1]),
       d = Zi(r[2]),
-      p = Zi(r[3]);
+      v = Zi(r[3]);
     if (
       u != null &&
       d != null &&
-      p != null &&
+      v != null &&
       d >= 1 &&
       d <= 12 &&
-      p >= 1 &&
-      p <= 31
+      v >= 1 &&
+      v <= 31
     ) {
       const S = n.indexOf(r[0]),
         w = n.substring(0, S).trim() || void 0;
-      return { year: u, month: d, day: p, type: "standard", calendarPrefix: w };
+      return { year: u, month: d, day: v, type: "standard", calendarPrefix: w };
     }
   }
   const l = n.match(new RegExp(`(${s})月\\s*(${o})日?`));
@@ -8360,14 +8374,14 @@ function gi(t) {
     if (u != null && d != null && u >= 1 && u <= 12 && d >= 1 && d <= 31)
       return { month: u, day: d, type: "standard" };
   }
-  if (Kp(n)) return null;
-  const c = Fp(n),
-    h = Hp(n);
+  if (Fp(n)) return null;
+  const c = Wp(n),
+    h = Up(n);
   return c || h !== null
     ? { monthId: c ?? void 0, day: h, type: "fantasy", raw: t.trim() }
     : null;
 }
-function Wp(t, n) {
+function Jp(t, n) {
   if (!t || !n) return null;
   const e = (o) =>
     Vh(
@@ -8406,7 +8420,7 @@ function Wp(t, n) {
   }
   return null;
 }
-function Gp(t, n) {
+function Qp(t, n) {
   const e = gi(t),
     i = gi(n);
   if (e?.type !== "standard" || i?.type !== "standard") return null;
@@ -8424,7 +8438,7 @@ function ac(t, n) {
       o = s === 0 ? -6 : 1 - s;
     return Date.UTC(i.getFullYear(), i.getMonth(), i.getDate() + o);
   };
-  return Math.round((e(n) - e(t)) / jp);
+  return Math.round((e(n) - e(t)) / Hp);
 }
 function Js(t, n) {
   return (
@@ -8447,7 +8461,7 @@ function qa(t, n) {
   const e = t?.trim(),
     i = n?.trim();
   if (!e || !i) return "";
-  const s = Wp(e, i);
+  const s = Jp(e, i);
   if (s == null) return "";
   if (s === 0) return "Hôm nay";
   if (s === 1) return "Hôm qua";
@@ -8458,7 +8472,7 @@ function qa(t, n) {
   if (s === -3) return "3 ngày sau";
   const o = !!gi(e)?.calendarPrefix,
     r = !!gi(i)?.calendarPrefix,
-    l = o || r ? null : Gp(e, i);
+    l = o || r ? null : Qp(e, i);
   if (s > 0) {
     if (s < 4) return `${s} ngày trước`;
     if (s >= 4 && s <= 13 && l) {
@@ -8481,8 +8495,8 @@ function qa(t, n) {
       return `${S > 0 ? S : Math.floor(s / 30)} tháng trước`;
     }
     const d = Math.floor(s / 365),
-      p = Math.round((s % 365) / 30);
-    return p > 0 && d < 5 ? `${d} năm ${p} tháng trước` : `${d} năm trước`;
+      v = Math.round((s % 365) / 30);
+    return v > 0 && d < 5 ? `${d} năm ${v} tháng trước` : `${d} năm trước`;
   }
   const c = Math.abs(s);
   if (c < 4) return `${c} ngày sau`;
@@ -8504,65 +8518,65 @@ function qa(t, n) {
 }
 function Dh(t, n) {
   const { byId: e, roots: i } = t,
-    s = (p, S) => {
-      if (p.kind === "leaf") {
-        S.push(p);
+    s = (v, S) => {
+      if (v.kind === "leaf") {
+        S.push(v);
         return;
       }
-      for (const w of p.childIds) {
+      for (const w of v.childIds) {
         const M = e.get(w);
         M && s(M, S);
       }
     },
     o = new Map(),
-    r = (p) => {
-      if (p.kind === "leaf") return !0;
-      const S = o.get(p.id);
+    r = (v) => {
+      if (v.kind === "leaf") return !0;
+      const S = o.get(v.id);
       if (S !== void 0) return S;
-      o.set(p.id, !1);
-      let w = p.childIds.length > 0;
-      for (const M of p.childIds) {
+      o.set(v.id, !1);
+      let w = v.childIds.length > 0;
+      for (const M of v.childIds) {
         const nt = e.get(M);
         if (!nt || !r(nt)) {
           w = !1;
           break;
         }
       }
-      return (o.set(p.id, w), w);
+      return (o.set(v.id, w), w);
     },
-    l = (p) => {
-      if (!r(p)) return !1;
+    l = (v) => {
+      if (!r(v)) return !1;
       const S = [];
-      return (s(p, S), S.length > 0 && S.every(n));
+      return (s(v, S), S.length > 0 && S.every(n));
     },
     c = [],
     h = new Set(),
-    u = (p) => {
-      if (!h.has(p.id)) {
-        if ((h.add(p.id), p.kind === "leaf")) {
-          n(p) && c.push(p);
+    u = (v) => {
+      if (!h.has(v.id)) {
+        if ((h.add(v.id), v.kind === "leaf")) {
+          n(v) && c.push(v);
           return;
         }
-        if (l(p)) {
-          c.push(p);
+        if (l(v)) {
+          c.push(v);
           return;
         }
-        for (const S of p.childIds) {
+        for (const S of v.childIds) {
           const w = e.get(S);
           w && u(w);
         }
       }
     };
-  for (const p of i) u(p);
-  const d = (p) => {
-    if (p.kind === "leaf") return p.msgIndex;
+  for (const v of i) u(v);
+  const d = (v) => {
+    if (v.kind === "leaf") return v.msgIndex;
     const S = [];
     return (
-      s(p, S),
+      s(v, S),
       S.length ? Math.min(...S.map((w) => w.msgIndex)) : Number.MAX_SAFE_INTEGER
     );
   };
-  return c.sort((p, S) => d(p) - d(S));
+  return c.sort((v, S) => d(v) - d(S));
 }
 const Ke = 1,
   He = 0,
@@ -8571,13 +8585,13 @@ const Ke = 1,
   Hh = "baibai_book_memory_state",
   Fh = "baibai_book_time_tag",
   Uh = 9999,
-  Jp = 1,
+  Yp = 1,
   fs = 2,
   Wh = 0;
-function Qp(t, n) {
+function zp(t, n) {
   return t ? t[n]?.is_system === !0 : !1;
 }
-function Yp(t) {
+function Xp(t) {
   return !t || t.is_user || typeof t.mes != "string" || !t.mes.trim()
     ? !1
     : t.extra?.bbs_hidden
@@ -8587,10 +8601,10 @@ function Yp(t) {
 function Gh(t) {
   if (!t) return fs;
   for (let n = t.length - 1; n >= 0; n--)
-    if (Yp(t[n])) return bn(t[n]) ? Jp : fs;
+    if (Xp(t[n])) return bn(t[n]) ? Yp : fs;
   return fs;
 }
-function zp(t, n) {
+function Zp(t, n) {
   const e = new Map();
   if (n)
     for (let o = 0; o < n.length; o++) {
@@ -8607,7 +8621,7 @@ function zp(t, n) {
         createdAt: r.createdAt,
         childIds: [],
         msgIndex: o,
-        active: Qp(n, o),
+        active: zp(n, o),
       });
     }
   for (const o of t)
@@ -8630,9 +8644,9 @@ function zp(t, n) {
   return { byId: e, roots: s };
 }
 function Jh(t, n, e) {
-  return Dh(zp(t, n), e);
+  return Dh(Zp(t, n), e);
 }
-function Xp(t, n) {
+function tv(t, n) {
   return Jh(t, n, (e) => e.active);
 }
 function Ls(t, n, e) {
@@ -8653,7 +8667,7 @@ function Bs(t) {
 
 `);
 }
-function Zp(t) {
+function nv(t) {
   return t.timeEnd
     ? t.timeEnd
     : t.timeStart
@@ -8662,12 +8676,12 @@ function Zp(t) {
         ? (po(t.timeLabel).end ?? "")
         : "";
 }
-function tv(t, n) {
+function ev(t, n) {
   return t.map((e) => {
     const i = Qh(e);
     if (!i) return e.text;
     if (e.kind !== "leaf") return `【${i}】${e.text}`;
-    const s = Zp(e),
+    const s = nv(e),
       o = [qa(s, n), _o(s)].filter(Boolean);
     return o.length
       ? `【(${o.join("·")}) ${i}】${e.text}`
@@ -8676,13 +8690,13 @@ function tv(t, n) {
 
 `);
 }
-function nv() {
+function iv() {
   const t = ft()?.chat ?? null,
-    n = Xp(U.summaries, t);
+    n = tv(U.summaries, t);
   return n.length
     ? `${Ia}
 [Tóm tắt cốt truyện lịch sử]
-${tv(n, Uo(t))}
+${ev(n, Uo(t))}
 ${Aa}`
     : "";
 }
@@ -8712,7 +8726,7 @@ function lc(t, n, e) {
       : !1
     : Tr(t, n);
 }
-function ev(t, n, e) {
+function sv(t, n, e) {
   if (!t.length) return "";
   const i = Yh(t, n, e),
     s = zh(t, i),
@@ -8749,7 +8763,7 @@ function cc(t, n) {
     e.length ? ` 〔${e.join(";")}〕` : ""
   );
 }
-function iv(t, n, e, i) {
+function ov(t, n, e, i) {
   if (!t.length) return "";
   const s = [],
     o = [],
@@ -8777,10 +8791,10 @@ ${h}`);
     const h = o.map((u) => {
       const d = [u.name];
       Wt(u.title) && d.push(`(${Wt(u.title)})`);
-      const p = [];
-      (Wt(u.personality) && p.push(`Tính cách: ${Wt(u.personality)}`),
-        Wt(u.desc) && p.push(Wt(u.desc)));
-      const S = p.length ? ` —— ${p.join(";")}` : "",
+      const v = [];
+      (Wt(u.personality) && v.push(`Tính cách: ${Wt(u.personality)}`),
+        Wt(u.desc) && v.push(Wt(u.desc)));
+      const S = v.length ? ` —— ${v.join(";")}` : "",
         w = u.follow ? " [Đồng hành]" : "";
       return `  - ${d.join("")}${w}${S}${cc(u, !1)}`;
     }).join(`
@@ -8791,9 +8805,9 @@ ${h}`);
   if (r.length) {
     const h = r.map((u) => {
       const d = Wt(u.title) ? `(${Wt(u.title)})` : "",
-        p = Wt(u.personality) ? ` —— Tính cách: ${Wt(u.personality)}` : "",
+        v = Wt(u.personality) ? ` —— Tính cách: ${Wt(u.personality)}` : "",
         S = Wt(u.location) ? ` [Tại:${Wt(u.location)}]` : "";
-      return `  - ${u.name}${d}${p}${S}`;
+      return `  - ${u.name}${d}${v}${S}`;
     }).join(`
 `);
     c.push(`Nhân vật cùng khu vực (ở gần nhưng chưa chắc chạm mặt; có thể cho xuất hiện tự nhiên khi cần, không tự ý đổi thiết lập):
@@ -8802,8 +8816,8 @@ ${h}`);
   if (l.length) {
     const h = l.map((u) => {
       const d = Wt(u.title) ? `(${Wt(u.title)})` : "",
-        p = Wt(u.location);
-      return `  - ${u.name}${d}${p ? ` [Tại:${p}]` : ""}`;
+        v = Wt(u.location);
+      return `  - ${u.name}${d}${v ? ` [Tại:${v}]` : ""}`;
     }).join(`
 `);
     c.push(`Các nhân vật đã biết khác (không ở bối cảnh hiện tại, chỉ tên và thân phận):
@@ -8812,7 +8826,7 @@ ${h}`);
   return c.join(`
 `);
 }
-function sv() {
+function rv() {
   const t = [];
   if (U.state.time) {
     const w = _o(U.state.time);
@@ -8821,7 +8835,7 @@ function sv() {
   U.state.location && t.push(`Địa điểm hiện tại:${Wt(U.state.location)}`);
   const n = U.state.location || "",
     e = U.state.locationPath,
-    i = ev(U.scenes, n, e);
+    i = sv(U.scenes, n, e);
   i &&
     t.push(`Ký ức địa điểm:
 ${i}`);
@@ -8842,7 +8856,7 @@ ${Ma(r.map((w) => ({ name: w.name, qty: w.qty, desc: w.desc, carried: w.carried,
     t.push(`Vật phẩm gửi ở nơi khác (trở về địa điểm tương ứng mới có thông tin đầy đủ):
 ${w}`);
   }
-  const c = iv(U.npcs, U.scenes, n, e);
+  const c = ov(U.npcs, U.scenes, n, e);
   c &&
     t.push(`Danh sách NPC:
 ${c}`);
@@ -8865,8 +8879,8 @@ ${yh(u)}`);
       .filter(Boolean).join(`
 
 `),
-    p = Object.keys(U.vars).length > 0;
-  if (p) {
+    v = Object.keys(U.vars).length > 0;
+  if (v) {
     let w = `Biến số tùy chỉnh (trạng thái hiện tại, tham khảo chỉ đọc - nghiêm cấm lặp lại, liệt kê hay xuất các biến số/lệnh này trong cốt truyện):
 ${Qr(U.vars)}`;
     (d &&
@@ -8881,7 +8895,7 @@ ${d}`),
     U.scenes.length ||
     U.npcs.length ||
     h.length ||
-    p
+    v
     ? `${Ia}
 [Trạng thái hiện tại]
 ${t.join(`
@@ -8899,9 +8913,9 @@ function gn() {
   if (typeof n != "function") return;
   const e = Gh(t?.chat ?? null);
   (n(jh, "", Ke, fs, !1, He, null),
-    n(Kh, nv(), Ke, Uh, !1, He, null),
-    n(Hh, sv(), Ke, e, !1, He, null),
-    n(Fh, C.autoSummaryEnabled ? Ab() : "", Ke, Wh, !1, He, null));
+    n(Kh, iv(), Ke, Uh, !1, He, null),
+    n(Hh, rv(), Ke, e, !1, He, null),
+    n(Fh, C.autoSummaryEnabled ? Nb() : "", Ke, Wh, !1, He, null));
 }
 function Xh() {
   const t = ft(),
@@ -8912,13 +8926,13 @@ function Xh() {
     t?.setExtensionPrompt?.(Fh, "", Ke, Wh, !1, He, null));
 }
 const Zh = "/api/plugins/baibaoku/v1";
-function ov() {
+function av() {
   return ft()?.getRequestHeaders?.() ?? { "Content-Type": "application/json" };
 }
 async function Wi(t, n) {
   const e = await fetch(`${Zh}/${t}`, {
       method: "POST",
-      headers: ov(),
+      headers: av(),
       body: JSON.stringify(n),
     }),
     i = await e.json().catch(() => null);
@@ -8943,10 +8957,10 @@ async function td() {
     return !1;
   }
 }
-function rv(t, n, e) {
+function lv(t, n, e) {
   return Wi("vec/upsert", { database: t, scope: n, items: e });
 }
-function av(t, n, e, i = {}) {
+function cv(t, n, e, i = {}) {
   return Wi("vec/search", {
     database: t,
     scopes: n,
@@ -8955,29 +8969,29 @@ function av(t, n, e, i = {}) {
     excludeLeafIds: i.excludeLeafIds,
   });
 }
-function lv(t, n) {
+function uv(t, n) {
   return Wi("vec/clear-scope", { database: t, scope: n });
 }
-function cv(t, n, e) {
+function hv(t, n, e) {
   return Wi("vec/reconcile", { database: t, scope: n, present: e });
 }
-function uv(t, n) {
+function dv(t, n) {
   return Wi("vec/stats", { database: t, scopes: n });
 }
-function hv(t, n) {
+function mv(t, n) {
   return Wi("vec/bundle/create", { database: t, sourceChatId: n });
 }
-class $n extends Error {}
-const dv = 800;
+class En extends Error {}
+const fv = 800;
 async function Va(t, n, e) {
   const { timeoutSec: i, retries: s, label: o, externalSignal: r } = e,
     l = Math.max(1, 1 + Math.max(0, s));
   let c;
   for (let h = 0; h < l; h++) {
-    if (r?.aborted) throw new $n(`${o} đã hủy bỏ`);
+    if (r?.aborted) throw new En(`${o} đã hủy bỏ`);
     const u = new AbortController();
     let d = !1;
-    const p = setTimeout(
+    const v = setTimeout(
         () => {
           ((d = !0), u.abort());
         },
@@ -8988,21 +9002,21 @@ async function Va(t, n, e) {
     try {
       const w = await fetch(t, { ...n, signal: u.signal });
       if ((w.status >= 500 || w.status === 429) && h < l - 1)
-        c = new $n(`${o} API ${w.status}`);
+        c = new En(`${o} API ${w.status}`);
       else return w;
     } catch (w) {
-      if (r?.aborted && !d) throw new $n(`${o} đã hủy bỏ`);
+      if (r?.aborted && !d) throw new En(`${o} đã hủy bỏ`);
       c = d
-        ? new $n(`${o} hết thời gian (>${i}s)`)
-        : new $n(
+        ? new En(`${o} hết thời gian (>${i}s)`)
+        : new En(
             `${o} lỗi mạng: ${w instanceof Error ? w.message : String(w)}`,
           );
     } finally {
-      (clearTimeout(p), r?.removeEventListener("abort", S));
+      (clearTimeout(v), r?.removeEventListener("abort", S));
     }
-    h < l - 1 && (await new Promise((w) => setTimeout(w, dv)));
+    h < l - 1 && (await new Promise((w) => setTimeout(w, fv)));
   }
-  throw c instanceof Error ? c : new $n(`${o} yêu cầu thất bại`);
+  throw c instanceof Error ? c : new En(`${o} yêu cầu thất bại`);
 }
 function nd(t) {
   const n = t instanceof Float32Array ? t : Float32Array.from(t),
@@ -9019,10 +9033,10 @@ function uc(t) {
   for (let i = 0; i < n.length; i++) e[i] = n.charCodeAt(i);
   return new Float32Array(e.buffer);
 }
-function mv(t, n) {
+function gv(t, n) {
   return /gemini|googleapis|generativelanguage|v1beta/i.test(`${t} ${n}`);
 }
-function fv(t) {
+function bv(t) {
   return /googleapis\.com|generativelanguage/i.test(t || "");
 }
 function Zr(t) {
@@ -9031,10 +9045,10 @@ function Zr(t) {
     .replace(/\/chat\/completions$/i, "")
     .replace(/\/embeddings$/i, "");
 }
-function gv(t, n, e) {
+function pv(t, n, e) {
   const i = t.url,
     s = t.key || "";
-  if (!mv(i, n))
+  if (!gv(i, n))
     return {
       endpoint: `${Zr(i)}/embeddings`,
       headers: {
@@ -9044,16 +9058,16 @@ function gv(t, n, e) {
       body: JSON.stringify({ model: n, input: e }),
       parse: (d) => {
         if (!d?.data || !Array.isArray(d.data))
-          throw new $n("embedding trả về thiếu mảng data");
+          throw new En("embedding trả về thiếu mảng data");
         return d.data
           .slice()
-          .sort((p, S) => p.index - S.index)
-          .map((p) => p.embedding);
+          .sort((v, S) => v.index - S.index)
+          .map((v) => v.embedding);
       },
     };
   const o = Zr(i).replace(/\/v\d+(beta\d*|alpha\d*)?(?:\/.*)?$/i, ""),
     r = n.startsWith("models/") ? n : `models/${n}`,
-    l = fv(o),
+    l = bv(o),
     c = `${o}/v1beta/${r}:batchEmbedContents${l ? `?key=${encodeURIComponent(s)}` : ""}`,
     h = { "Content-Type": "application/json" };
   return (
@@ -9069,7 +9083,7 @@ function gv(t, n, e) {
       }),
       parse: (u) => {
         if (!u?.embeddings || !Array.isArray(u.embeddings))
-          throw new $n("Gemini embedding trả về thiếu mảng embeddings");
+          throw new En("Gemini embedding trả về thiếu mảng embeddings");
         return u.embeddings.map((d) => d.values);
       },
     }
@@ -9077,7 +9091,7 @@ function gv(t, n, e) {
 }
 const wr = 64;
 async function hc(t, n, e, i) {
-  const s = gv(t, n, e),
+  const s = pv(t, n, e),
     o = await Va(
       s.endpoint,
       { method: "POST", headers: s.headers, body: s.body },
@@ -9090,19 +9104,19 @@ async function hc(t, n, e, i) {
     );
   if (!o.ok) {
     const c = await o.text().catch(() => "");
-    throw new $n(`embedding API ${o.status}: ${c.slice(0, 200)}`);
+    throw new En(`embedding API ${o.status}: ${c.slice(0, 200)}`);
   }
   const r = await o.json(),
     l = s.parse(r);
   if (!Array.isArray(l) || l.some((c) => !Array.isArray(c)))
-    throw new $n("Dữ liệu vectơ từ embedding trả về không hợp lệ");
+    throw new En("Dữ liệu vectơ từ embedding trả về không hợp lệ");
   return l.map((c) => Float32Array.from(c));
 }
 async function ed(t, n) {
   if (!t.length) return [];
   const e = Ko("embedding");
-  if (!e.url) throw new $n("Ký ức vectơ: Chưa cấu hình địa chỉ Embedding");
-  if (!e.model) throw new $n("Ký ức vectơ: Chưa cấu hình mô hình Embedding");
+  if (!e.url) throw new En("Ký ức vectơ: Chưa cấu hình địa chỉ Embedding");
+  if (!e.model) throw new En("Ký ức vectơ: Chưa cấu hình mô hình Embedding");
   if (t.length <= wr) return hc(e, e.model, t, n);
   const i = [];
   for (let s = 0; s < t.length; s += wr) {
@@ -9111,9 +9125,9 @@ async function ed(t, n) {
   }
   return i;
 }
-const bv = 32768,
-  pv = 0.68,
-  vv = 1800,
+const vv = 32768,
+  yv = 0.68,
+  kv = 1800,
   Sr = 24;
 function gs(t) {
   if (!t) return 0;
@@ -9131,7 +9145,7 @@ function gs(t) {
   const i = Math.max(0, n.length - e);
   return Math.ceil((e * 1.35 + i * 0.45 + 8) * 1.18);
 }
-function yv(t, n) {
+function _v(t, n) {
   if (!t || n <= 0) return "";
   if (gs(t) <= n) return t;
   let e = 0,
@@ -9143,10 +9157,10 @@ function yv(t, n) {
   }
   return t.slice(0, s).trimEnd();
 }
-const kv = 4;
-function _v(t, n) {
+const xv = 4;
+function Tv(t, n) {
   const e = gs(t),
-    i = Math.max(1024, Math.floor(bv * pv) - vv - e),
+    i = Math.max(1024, Math.floor(vv * yv) - kv - e),
     s = Math.max(768, i - 256),
     o = [];
   let r = [],
@@ -9158,16 +9172,16 @@ function _v(t, n) {
   };
   for (let u = 0; u < n.length; u++) {
     let d = n[u] ?? "",
-      p = gs(d) + Sr;
-    (p > s && ((d = yv(d, Math.max(512, s - Sr))), (p = gs(d) + Sr)),
-      r.length && c + p > i && h(),
+      v = gs(d) + Sr;
+    (v > s && ((d = _v(d, Math.max(512, s - Sr))), (v = gs(d) + Sr)),
+      r.length && c + v > i && h(),
       r.push(u),
       l.push(d),
-      (c += p));
+      (c += v));
   }
   return (h(), o);
 }
-async function xv(t, n, e, i, s, o, r, l) {
+async function wv(t, n, e, i, s, o, r, l) {
   const c = await Va(
     t,
     {
@@ -9187,23 +9201,23 @@ async function xv(t, n, e, i, s, o, r, l) {
   );
   if (!c.ok) {
     const d = await c.text().catch(() => "");
-    throw new $n(`rerank API ${c.status}: ${d.slice(0, 200)}`);
+    throw new En(`rerank API ${c.status}: ${d.slice(0, 200)}`);
   }
   const h = await c.json(),
     u = h?.results ?? h?.data;
-  if (!Array.isArray(u)) throw new $n("rerank trả về thiếu mảng results");
+  if (!Array.isArray(u)) throw new En("rerank trả về thiếu mảng results");
   return u.map((d) => ({
     index: d.index,
     score: d.relevance_score ?? d.score ?? 0,
   }));
 }
-async function Tv(t, n, e, i) {
+async function Sv(t, n, e, i) {
   if (!n.length) return [];
   const s = Ko("rerank");
-  if (!s.url) throw new $n("Ký ức vectơ: Chưa cấu hình địa chỉ Rerank");
-  if (!s.model) throw new $n("Ký ức vectơ: Chưa cấu hình mô hình Rerank");
+  if (!s.url) throw new En("Ký ức vectơ: Chưa cấu hình địa chỉ Rerank");
+  if (!s.model) throw new En("Ký ức vectơ: Chưa cấu hình mô hình Rerank");
   const o = `${Zr(s.url)}/rerank`,
-    r = _v(t, n),
+    r = Tv(t, n),
     l = s.key || "",
     c = s.model,
     h = [];
@@ -9213,36 +9227,36 @@ async function Tv(t, n, e, i) {
         const S = u++;
         if (S >= r.length) break;
         const w = r[S],
-          M = await xv(o, c, l, t, w.documents, s.timeoutSec, s.retries, i);
+          M = await wv(o, c, l, t, w.documents, s.timeoutSec, s.retries, i);
         for (const nt of M) {
           const R = w.indices[nt.index];
           R !== void 0 && h.push({ index: R, score: nt.score });
         }
       }
     },
-    p = Math.min(kv, r.length);
+    v = Math.min(xv, r.length);
   return (
-    await Promise.all(Array.from({ length: p }, () => d())),
+    await Promise.all(Array.from({ length: v }, () => d())),
     h.sort((S, w) => w.score - S.score)
   );
 }
-const wv = {
+const Cv = {
     kind: "backend",
-    upsert: rv,
-    search: (t, n, e, i = {}) => av(t, n, e, i),
-    reconcile: cv,
-    clearScope: lv,
-    stats: uv,
+    upsert: lv,
+    search: (t, n, e, i = {}) => cv(t, n, e, i),
+    reconcile: hv,
+    clearScope: uv,
+    stats: dv,
   },
-  Sv = "bbs_vec_local",
-  Cv = 1,
+  $v = "bbs_vec_local",
+  Ev = 1,
   fe = "items";
 let Qs = null;
 function eo() {
   return (
     Qs ||
     ((Qs = new Promise((t, n) => {
-      const e = indexedDB.open(Sv, Cv);
+      const e = indexedDB.open($v, Ev);
       ((e.onupgradeneeded = () => {
         const i = e.result;
         i.objectStoreNames.contains(fe) ||
@@ -9263,7 +9277,7 @@ function Cr(t) {
       (t.onabort = () => e(t.error)));
   });
 }
-function $v(t) {
+function Iv(t) {
   return new Promise((n, e) => {
     ((t.onsuccess = () => n(t.result)), (t.onerror = () => e(t.error)));
   });
@@ -9273,9 +9287,9 @@ async function Ys(t, n) {
     .transaction(fe, "readonly")
     .objectStore(fe)
     .index("by_scope");
-  return await $v(s.getAll(IDBKeyRange.only([t, n])));
+  return await Iv(s.getAll(IDBKeyRange.only([t, n])));
 }
-function Ev(t) {
+function Av(t) {
   let n = 0;
   for (let s = 0; s < t.length; s++) n += t[s] * t[s];
   const e = Math.sqrt(n);
@@ -9284,7 +9298,7 @@ function Ev(t) {
   for (let s = 0; s < t.length; s++) i[s] = t[s] / e;
   return i;
 }
-function Iv(t, n) {
+function Mv(t, n) {
   if (t.length !== n.length) return -1;
   let e = 0,
     i = 0;
@@ -9319,20 +9333,20 @@ const dc = {
     const s = Number.isInteger(i.topK) && i.topK > 0 ? i.topK : 20,
       o = new Set((i.excludeLeafIds ?? []).map(String));
     if (!n.length || !e.length) return { results: [] };
-    const r = e.map(uc).map(Ev),
+    const r = e.map(uc).map(Av),
       l = new Map();
     for (const h of n) {
       const u = await Ys(t, h);
       for (const d of u) {
         if (o.has(String(d.leafId))) continue;
-        const p =
+        const v =
           d.vector instanceof Float32Array
             ? d.vector
             : Float32Array.from(d.vector);
         let S = -1,
           w = -1;
         for (let R = 0; R < r.length; R++) {
-          const L = Iv(r[R], p);
+          const L = Mv(r[R], v);
           L > S && ((S = L), (w = R));
         }
         const M = String(d.leafId),
@@ -9394,42 +9408,42 @@ const dc = {
   },
 };
 let wi = null;
-const Av = 5 * 6e4,
-  Mv = 15e3;
+const Nv = 5 * 6e4,
+  Pv = 15e3;
 async function qs() {
   const t = Date.now();
   if (wi) {
-    const e = wi.store.kind === "backend" ? Av : Mv;
+    const e = wi.store.kind === "backend" ? Nv : Pv;
     if (t - wi.at < e) return wi.store;
   }
   let n;
   try {
-    n = (await td()) ? wv : dc;
+    n = (await td()) ? Cv : dc;
   } catch {
     n = dc;
   }
   return ((wi = { store: n, at: t }), n);
 }
-async function Nv() {
+async function Rv() {
   return (await qs()).kind;
 }
 function id() {
   wi = null;
 }
-async function Pv(t, n, e) {
+async function Ov(t, n, e) {
   return (await qs()).upsert(t, n, e);
 }
-async function Rv(t, n, e, i = {}) {
+async function Lv(t, n, e, i = {}) {
   return (await qs()).search(t, n, e, i);
 }
 async function sd(t, n, e) {
   return (await qs()).reconcile(t, n, e);
 }
-async function Ov(t, n) {
+async function Bv(t, n) {
   return (await qs()).clearScope(t, n);
 }
 const Da = "bbs_bundles";
-function Lv(t) {
+function qv(t) {
   let n = 2166136261;
   for (let i = 0; i < t.length; i++)
     ((n ^= t.charCodeAt(i)), (n = Math.imul(n, 16777619)));
@@ -9441,7 +9455,7 @@ function pi() {
   const n = t.characterId;
   if (n == null || n === "") return null;
   const i = t.characters?.[Number(n)]?.avatar;
-  return i ? Lv(i) : null;
+  return i ? qv(i) : null;
 }
 function Gi() {
   return ft()?.getCurrentChatId?.() ?? null;
@@ -9461,17 +9475,17 @@ function rd() {
   const t = od();
   return t ? [t, ...ja().map((n) => `bundle:${n}`)] : [];
 }
-function Bv(t, n, e) {
+function Vv(t, n, e) {
   const i = new Set([...n, e].filter(Boolean));
   t[Da] = [...i];
 }
-function qv(t) {
+function Dv(t) {
   let n = 2166136261;
   for (let e = 0; e < t.length; e++)
     ((n ^= t.charCodeAt(e)), (n = Math.imul(n, 16777619)));
   return (n >>> 0).toString(16).padStart(8, "0");
 }
-function Vv(t) {
+function jv(t) {
   const n = t.timeStart?.trim() || "",
     e = t.timeEnd?.trim() || "";
   return n && e
@@ -9480,7 +9494,7 @@ function Vv(t) {
       : `${n} - ${e}`
     : n || e || t.timeLabel?.trim() || "";
 }
-function Dv() {
+function Kv() {
   const t = new Set();
   for (const n of U.summaries)
     if (n.id.startsWith("sum_carry_"))
@@ -9488,7 +9502,7 @@ function Dv() {
   return t;
 }
 function ad(t) {
-  const n = Dv(),
+  const n = Kv(),
     e = [];
   for (let i = 0; i < t.length; i++) {
     if (!bn(t[i])) continue;
@@ -9498,10 +9512,10 @@ function ad(t) {
     o &&
       e.push({
         leafId: s.id,
-        docHash: qv(o),
+        docHash: Dv(o),
         document: o,
-        mesFull: Rb(t[i].mes),
-        storyTime: Vv(s),
+        mesFull: Lb(t[i].mes),
+        storyTime: jv(s),
         msgIndex: i,
       });
   }
@@ -9559,9 +9573,9 @@ async function cd(t, n, e, i) {
         msgIndex: r.msgIndex,
       };
     });
-  return (await Pv(t, n, o), o.length);
+  return (await Ov(t, n, o), o.length);
 }
-async function jv(t) {
+async function Hv(t) {
   if (!Ka() || Ri) return;
   const n = pi(),
     e = Gi();
@@ -9571,12 +9585,12 @@ async function jv(t) {
   Ri = !0;
   try {
     const r = ad(s),
-      l = r.map((p) => ({ leafId: p.leafId, docHash: p.docHash })),
+      l = r.map((v) => ({ leafId: v.leafId, docHash: v.docHash })),
       { missing: c } = await sd(n, o, l);
     if (!c.length) return;
     const h = vi(s),
       u = new Set(c),
-      d = r.filter((p) => u.has(p.leafId) && p.msgIndex < h);
+      d = r.filter((v) => u.has(v.leafId) && v.msgIndex < h);
     d.length && (await cd(n, o, d, t));
   } catch (r) {
     console.warn(
@@ -9587,12 +9601,12 @@ async function jv(t) {
     Ri = !1;
   }
 }
-async function Kv() {
+async function Fv() {
   const t = pi(),
     n = Gi();
   if (!t || !n) return 0;
   id();
-  const { deleted: e } = await Ov(t, `chat:${n}`);
+  const { deleted: e } = await Bv(t, `chat:${n}`);
   return e;
 }
 function Ha() {
@@ -9602,12 +9616,12 @@ function Ha() {
       ((zs = null), ld());
     }, 2500)));
 }
-const Hv = 6,
-  Fv = 220;
-function Uv(t) {
+const Uv = 6,
+  Wv = 220;
+function Gv(t) {
   return Wo(t.mes);
 }
-function Wv(t, n) {
+function Jv(t, n) {
   const e = xe(t, n),
     i = [];
   (e.items.length &&
@@ -9628,13 +9642,13 @@ ${i.join(`
       : ""
   );
 }
-function Gv(t, n) {
+function Qv(t, n) {
   for (let e = n; e < t.length; e++) if (!bn(t[e])) return e;
   return t.length;
 }
-function Jv(t) {
+function Yv(t) {
   const n = vi(t),
-    e = Gv(t, n),
+    e = Qv(t, n),
     i = Bs(Ls(U.summaries, t, n)),
     o = [
       {
@@ -9651,11 +9665,11 @@ ${i}`
   for (let c = n; c < t.length; c++) {
     const h = t[c];
     if (!h || (h.is_system && h.extra?.type)) continue;
-    const u = Uv(h);
+    const u = Gv(h);
     u &&
       r.push({ role: h.is_user ? "user" : "assistant", content: u, index: c });
   }
-  const l = Wv(t, e);
+  const l = Jv(t, e);
   if (l)
     if (!r.length) o.push({ role: "user", content: l });
     else {
@@ -9677,9 +9691,9 @@ ${l}`;
       }
     }
   for (const c of r) o.push({ role: c.role, content: c.content });
-  return (o.push({ role: "user", content: Ib }), o);
+  return (o.push({ role: "user", content: Mb }), o);
 }
-function Qv(t) {
+function zv(t) {
   const n = String(t || "")
     .trim()
     .replace(/\/+$/, "")
@@ -9687,7 +9701,7 @@ function Qv(t) {
     .replace(/\/chat\/completions$/i, "");
   return n ? `${n}/chat/completions` : "";
 }
-function Yv(t) {
+function Xv(t) {
   const n = String(t || "")
     .replace(
       /\r\n?/g,
@@ -9722,7 +9736,7 @@ function Yv(t) {
       if (!h) continue;
       const u = h.toLowerCase();
       if (s.has(u)) continue;
-      if ((s.add(u), i.push(h), i.length >= Hv)) break;
+      if ((s.add(u), i.push(h), i.length >= Uv)) break;
     }
   }
   return { intent: e, queries: i };
@@ -9733,16 +9747,16 @@ function mc(t) {
     .replace(/^["'“”‘’`]+|["'“”‘’`]+$/g, "")
     .replace(/\s+/g, " ")
     .trim()
-    .slice(0, Fv);
+    .slice(0, Wv);
 }
-async function zv(t) {
+async function Zv(t) {
   const n = Ko("queryRewrite");
   if (!n.model) throw new Error("Chưa cấu hình mô hình Viết lại truy vấn");
-  const e = Qv(n.url);
+  const e = zv(n.url);
   if (!e) throw new Error("Chưa cấu hình địa chỉ Viết lại truy vấn");
   const s = ft()?.chat ?? [];
   if (!s.length) throw new Error("Không có ngữ cảnh đối thoại để viết lại");
-  const o = Jv(s),
+  const o = Yv(s),
     r = await Va(
       e,
       {
@@ -9775,7 +9789,7 @@ async function zv(t) {
   const c = (await r.json())?.choices?.[0]?.message?.content,
     h = typeof c == "string" ? c : "";
   if (!h.trim()) throw new Error("Viết lại truy vấn trả về nội dung trống");
-  const u = Yv(h);
+  const u = Xv(h);
   if (!u.queries.length)
     throw new Error(
       "Viết lại truy vấn không phân tích được bất kỳ query tìm kiếm nào",
@@ -9800,28 +9814,28 @@ function hd(t, n = 80) {
     .trim();
   return e.length > n ? `${e.slice(0, n)}…` : e;
 }
-function Xv() {
+function ty() {
   Object.assign(Ft, ud(), { at: Date.now(), status: "Đang tiến hành..." });
 }
 function _i(t) {
   ((Ft.status = t), Ft.at || (Ft.at = Date.now()));
 }
-function Zv(t, n) {
+function ny(t, n) {
   ((Ft.intent = t), (Ft.queries = [...n]));
 }
-function ty(t) {
+function ey(t) {
   Ft.embedding = t;
 }
-function ny(t) {
+function iy(t) {
   Ft.rerank = t;
 }
-function ey(t) {
+function sy(t) {
   Ft.injectedText = t;
 }
-function iy() {
+function oy() {
   return JSON.parse(JSON.stringify(Ft));
 }
-function sy(t) {
+function ry(t) {
   Object.assign(Ft, t);
 }
 const ta = "baibai_book_vector_recall",
@@ -9835,22 +9849,22 @@ function Fa(t, n) {
       : "Trò chuyện này"
     : "Hồ sơ cũ";
 }
-function oy(t) {
+function ay(t) {
   const n = vi(t),
     e = [];
   for (let i = n; i < t.length; i++) bn(t[i]) && e.push(dn(t[i]).id);
   return e;
 }
-function ry(t) {
+function ly(t) {
   let n = 0;
   for (const e of t) Tn(e) && n++;
   return n;
 }
-function ay(t) {
+function cy(t) {
   if (ja().length > 0) return !0;
   if (vi(t) === 0) return !1;
   const n = Math.max(0, C.vector.recall.minAiFloors);
-  return !(n > 0 && ry(t) < n);
+  return !(n > 0 && ly(t) < n);
 }
 function fc(t) {
   let n = 2166136261;
@@ -9859,7 +9873,7 @@ function fc(t) {
   return (n >>> 0).toString(16).padStart(8, "0");
 }
 const dd = "bbs_vec_recall_cache";
-function ly() {
+function uy() {
   try {
     const t = localStorage.getItem(dd);
     return t ? JSON.parse(t) : null;
@@ -9867,12 +9881,12 @@ function ly() {
     return null;
   }
 }
-function cy(t) {
+function hy(t) {
   try {
     localStorage.setItem(dd, JSON.stringify(t));
   } catch {}
 }
-function uy(t) {
+function dy(t) {
   return [
     t.rerankCandidates,
     t.embeddingThreshold,
@@ -9881,7 +9895,7 @@ function uy(t) {
     t.finalRecallCount,
   ].join(",");
 }
-function hy(t, n) {
+function my(t, n) {
   const e = Gi();
   if (!e) return null;
   let i = -1;
@@ -9898,20 +9912,20 @@ function hy(t, n) {
       o = t[r]?.mes ?? "";
       break;
     }
-  return `${e}|${i}|${fc(s)}|${fc(o)}|${uy(n)}`;
+  return `${e}|${i}|${fc(s)}|${fc(o)}|${dy(n)}`;
 }
 let $r = !1;
-function dy() {
+function fy() {
   return !Wn() || !C.vector.enabled ? !1 : !!pi() && rd().length > 0;
 }
-function my(t) {
+function gy(t) {
   return t !== "continue" && t !== "quiet" && t !== "impersonate";
 }
 function Si() {
   ft()?.setExtensionPrompt?.(ta, "", na, ia, !1, ea, null);
 }
-async function fy(t) {
-  if (!dy()) {
+async function by(t) {
+  if (!fy()) {
     Si();
     return;
   }
@@ -9922,7 +9936,7 @@ async function fy(t) {
     i = e?.chat ?? [],
     s = e?.setExtensionPrompt;
   if (typeof s != "function" || !i.length) return;
-  if (!ay(i)) {
+  if (!cy(i)) {
     (_i(
       "Không triệu hồi: Số tầng chưa đạt ngưỡng hoặc toàn bộ nằm trong cửa sổ",
     ),
@@ -9931,35 +9945,35 @@ async function fy(t) {
   }
   const o = C.vector.recall,
     r = rd(),
-    l = hy(i, o),
-    c = l ? ly() : null;
+    l = my(i, o),
+    c = l ? uy() : null;
   if (l && c && c.key === l) {
     (s(ta, c.text, na, ia, !1, ea, null),
-      sy(c.debug),
+      ry(c.debug),
       _i(`${c.debug.status} (Tái sử dụng bộ nhớ đệm)`));
     return;
   }
   $r = !0;
   try {
-    (Xv(), await jv(t));
-    const { queryVectors: h, rerankQuery: u } = await by(t);
+    (ty(), await Hv(t));
+    const { queryVectors: h, rerankQuery: u } = await vy(t);
     if (!h.length) {
       (_i("Không triệu hồi: Viết lại truy vấn không tạo ra query nào"), Si());
       return;
     }
-    const d = oy(i),
-      p = od(),
-      { results: S } = await Rv(n, r, h, {
+    const d = ay(i),
+      v = od(),
+      { results: S } = await Lv(n, r, h, {
         topK: Math.max(1, o.rerankCandidates),
         excludeLeafIds: d,
       });
     if (
-      (ty(
+      (ey(
         S.map((L) => ({
           leafId: L.leafId,
           similarity: L.similarity,
           queryIndex: L.queryIndex ?? -1,
-          source: Fa(L, p),
+          source: Fa(L, v),
           storyTime: Di((L.storyTime || "").trim()),
           preview: hd(L.document),
         })),
@@ -9969,18 +9983,18 @@ async function fy(t) {
       (_i("Không triệu hồi: Tìm kiếm không có ứng viên"), Si());
       return;
     }
-    const w = await py(u, S, t),
+    const w = await yy(u, S, t),
       M = Uo(i),
-      { text: nt, tiers: R } = vy(w, o, p, M);
-    (gy(w, R, p),
+      { text: nt, tiers: R } = ky(w, o, v, M);
+    (py(w, R, v),
       s(ta, nt, na, ia, !1, ea, null),
-      ey(nt),
+      sy(nt),
       _i(
         nt
           ? "Triệu hồi hoàn tất"
           : "Triệu hồi hoàn tất: không có nội dung đạt chuẩn, lượt này không chèn",
       ),
-      l && cy({ key: l, text: nt, debug: iy() }));
+      l && hy({ key: l, text: nt, debug: oy() }));
   } catch (h) {
     (console.warn(
       "[Vectơ Bách Bảo Thư] Triệu hồi thất bại (giảm cấp thành không triệu hồi):",
@@ -9992,7 +10006,7 @@ async function fy(t) {
     $r = !1;
   }
 }
-function gy(t, n, e) {
+function py(t, n, e) {
   const i = new Set(),
     s = [];
   for (const o of t)
@@ -10007,18 +10021,18 @@ function gy(t, n, e) {
         storyTime: Di((o.storyTime || "").trim()),
         preview: hd(o.document),
       }));
-  ny(s);
+  iy(s);
 }
-async function by(t) {
-  const { intent: n, queries: e } = await zv(t);
-  if ((Zv(n, e), !e.length))
+async function vy(t) {
+  const { intent: n, queries: e } = await Zv(t);
+  if ((ny(n, e), !e.length))
     throw new Error("Viết lại truy vấn không tạo ra bất kỳ query nào");
   return {
     queryVectors: (await ed(e, t)).map((o) => nd(o)),
     rerankQuery: n || e[0],
   };
 }
-async function py(t, n, e) {
+async function yy(t, n, e) {
   try {
     const i = n.map((o) => {
       const r = o.mesFull ? Wo(o.mesFull).trim() : "";
@@ -10030,14 +10044,14 @@ async function py(t, n, e) {
 ${l}`
         : l;
     });
-    return (await Tv(t, i, n.length, e))
+    return (await Sv(t, i, n.length, e))
       .filter((o) => n[o.index])
       .map((o) => ({ ...n[o.index], rerankScore: o.score }));
   } catch {
     return n.map((i) => ({ ...i, rerankScore: i.similarity }));
   }
 }
-function vy(t, n, e, i) {
+function ky(t, n, e, i) {
   const s = new Set(),
     o = new Map(),
     r = [],
@@ -10047,18 +10061,18 @@ function vy(t, n, e, i) {
     if (s.size >= n.finalRecallCount) break;
     if (s.has(u.leafId)) continue;
     if (u.rerankScore >= n.rerankThreshold && c < n.fullTextCount) {
-      const p = u.mesFull ? Wo(u.mesFull).trim() : "",
-        S = !!p,
-        w = p || (u.document || "").trim();
+      const v = u.mesFull ? Wo(u.mesFull).trim() : "",
+        S = !!v,
+        w = v || (u.document || "").trim();
       if (!w) continue;
       (s.add(u.leafId),
         o.set(u.leafId, "full"),
         c++,
         r.push(gc(u, w, S, e, i)));
     } else if (u.similarity >= n.embeddingThreshold) {
-      const p = (u.document || "").trim();
-      if (!p) continue;
-      (s.add(u.leafId), o.set(u.leafId, "brief"), l.push(gc(u, p, !1, e, i)));
+      const v = (u.document || "").trim();
+      if (!v) continue;
+      (s.add(u.leafId), o.set(u.leafId, "brief"), l.push(gc(u, v, !1, e, i)));
     }
   }
   const h = [...r, ...l];
@@ -10074,7 +10088,7 @@ ${Aa}`,
       }
     : { text: "", tiers: o };
 }
-function yy(t, n) {
+function _y(t, n) {
   const e = t.trim();
   if (!e) return "";
   const i = Di(e),
@@ -10085,15 +10099,15 @@ function yy(t, n) {
 function gc(t, n, e, i, s) {
   const o = `[${Fa(t, i)}]`;
   if (e) return `${o} ${n}`;
-  const r = yy(t.storyTime || "", s);
+  const r = _y(t.storyTime || "", s);
   return r ? `${o}${r}${n}` : `${o} ${n}`;
 }
 const Mt = Un({ running: !1, lastError: "", lastRunAt: 0 }),
-  Sn = Un({ running: !1, done: 0, total: 0, cancelRequested: !1 });
+  Cn = Un({ running: !1, done: 0, total: 0, cancelRequested: !1 });
 function bc() {
-  Sn.running && (Sn.cancelRequested = !0);
+  Cn.running && (Cn.cancelRequested = !0);
 }
-let An = !1,
+let Mn = !1,
   io = null;
 function pc() {
   return io;
@@ -10126,7 +10140,7 @@ function md(t) {
     )
     .trim();
 }
-function ky(t) {
+function xy(t) {
   const n = t.world?.trim();
   if (n && C.excludedWorldNames.includes(n)) return !0;
   const e = t.comment?.trim();
@@ -10144,7 +10158,7 @@ function ky(t) {
   }
   return !1;
 }
-function _y(t, n, e, i) {
+function Ty(t, n, e, i) {
   return n
     .map((s) => {
       const o = t[s];
@@ -10155,43 +10169,67 @@ function _y(t, n, e, i) {
     .filter(Boolean);
 }
 const fd = 1e9;
-async function xy(t) {
-  const n = ft()?.getWorldInfoPrompt;
-  if (typeof n != "function") return "";
-  const e = await n(t, fd, !0);
-  if (!e) return "";
-  const i = [];
-  (typeof e.worldInfoBefore == "string" && i.push(e.worldInfoBefore),
-    typeof e.worldInfoAfter == "string" && i.push(e.worldInfoAfter));
-  for (const s of e.worldInfoDepth ?? [])
-    for (const o of s?.entries ?? []) typeof o == "string" && i.push(o);
-  for (const s of e.anBefore ?? []) typeof s == "string" && i.push(s);
-  for (const s of e.anAfter ?? []) typeof s == "string" && i.push(s);
-  return md(i);
-}
-async function gd(t, n, e, i) {
-  const s = _y(t, n, e, i);
-  if (!s.length) return "";
+async function gd(t, n, e) {
+  if (!C.renderWorldInfoTemplates) return t;
+  const i = ft();
+  let s = typeof i?.substituteParams == "function" ? i.substituteParams(t) : t;
+  if (!s.includes("<%")) return s;
+  const o = om();
+  if (!o) return s;
   try {
-    const o = await im();
-    if (!o) return await xy(s);
-    const l = (await o(s, fd, !0))?.allActivatedEntries;
-    if (!l) return "";
-    const h = (l instanceof Map ? [...l.values()] : [...l])
-      .filter((u) => u && !ky(u))
-      .map((u) => (typeof u.content == "string" ? u.content : ""));
-    return md(h);
-  } catch (o) {
+    const r = await o.prepareContext({ world_info: n }, e),
+      l = await o.evalTemplate(s, r);
+    typeof l == "string" && (s = l);
+  } catch (r) {
+    console.log(
+      "[Bách Bảo Khố] Kết xuất EJS Thế giới thư thất bại (khôi phục văn bản chưa thực thi):",
+      r,
+    );
+  }
+  return s;
+}
+async function wy(t, n) {
+  const e = ft()?.getWorldInfoPrompt;
+  if (typeof e != "function") return "";
+  const i = await e(t, fd, !0);
+  if (!i) return "";
+  const s = [];
+  (typeof i.worldInfoBefore == "string" && s.push(i.worldInfoBefore),
+    typeof i.worldInfoAfter == "string" && s.push(i.worldInfoAfter));
+  for (const r of i.worldInfoDepth ?? [])
+    for (const l of r?.entries ?? []) typeof l == "string" && s.push(l);
+  for (const r of i.anBefore ?? []) typeof r == "string" && s.push(r);
+  for (const r of i.anAfter ?? []) typeof r == "string" && s.push(r);
+  const o = await Promise.all(s.map((r) => gd(r, void 0, n)));
+  return md(o);
+}
+async function bd(t, n, e, i) {
+  const s = Ty(t, n, e, i);
+  if (!s.length) return "";
+  const o = n.length ? n[n.length - 1] : void 0;
+  try {
+    const r = await sm();
+    if (!r) return await wy(s, o);
+    const c = (await r(s, fd, !0))?.allActivatedEntries;
+    if (!c) return "";
+    const h = c instanceof Map ? [...c.values()] : [...c],
+      u = await Promise.all(
+        h
+          .filter((d) => d && !xy(d))
+          .map((d) => gd(typeof d.content == "string" ? d.content : "", d, o)),
+      );
+    return md(u);
+  } catch (r) {
     return (
       console.log(
         "[Bách Bảo Thư] Kích hoạt thế giới thư thất bại (lùi về không kèm thiết lập):",
-        o,
+        r,
       ),
       ""
     );
   }
 }
-function bd() {
+function pd() {
   const t = ft();
   if (!t || t.groupId) return "";
   const n = t.characterId;
@@ -10220,7 +10258,7 @@ ${c}`);
     )
     .trim();
 }
-function pd() {
+function vd() {
   const t = ft();
   return !t || typeof t.substituteParams != "function"
     ? ""
@@ -10263,7 +10301,7 @@ function vc(t) {
   return n < 0 ? [] : zo(t).filter((e) => e < n);
 }
 const yc = "Đã chặn lượt tạo văn bản này";
-function Ty(t) {
+function Sy(t) {
   let n = -1;
   for (let i = t.length - 1; i >= 0; i--)
     if (Tn(t[i])) {
@@ -10276,7 +10314,7 @@ function Ty(t) {
   const e = Fo(Ui(t[n].mes));
   return e.start && e.end ? -1 : n;
 }
-async function wy(t, n) {
+async function Cy(t, n) {
   if (
     !Wn() ||
     !C.autoSummaryEnabled ||
@@ -10288,13 +10326,13 @@ async function wy(t, n) {
   const e = ft();
   if (!e || !e.getCurrentChatId?.()) return !1;
   const i = e.chat ?? [],
-    s = Ty(i);
+    s = Sy(i);
   if (s >= 0) {
     const c = pc();
     c
       ? (zt("Đang tạo mốc thời gian cho lời mở đầu, vui lòng đợi...", "info"),
         await c)
-      : An ||
+      : Mn ||
         (zt("Đang tạo mốc thời gian cho lời mở đầu, vui lòng đợi...", "info"),
         await Wa(s));
   }
@@ -10333,20 +10371,20 @@ async function wy(t, n) {
   return !0;
 }
 async function bi(t) {
-  (await yd(t), gn());
+  (await kd(t), gn());
 }
-async function vd() {
+async function yd() {
   const t = ft()?.chat ?? [];
   Wn() && C.autoSummaryEnabled ? await bi(t) : gn();
 }
-async function Sy(t) {
-  if (!Wn() || An) return;
+async function $y(t) {
+  if (!Wn() || Mn) return;
   const n = ft();
   if (!n) return;
   const e = n.chat ?? [];
   !Tn(e[t]) || bn(e[t]) || (await Wa(t), await bi(e));
 }
-async function Cy(t, n) {
+async function Ey(t, n) {
   const e = ft();
   if (!e) return;
   const s = (e.chat ?? [])[t];
@@ -10356,16 +10394,16 @@ async function Cy(t, n) {
       const { bbs_omit: r, ...l } = s.extra ?? {};
       s.extra = l;
     }
-    (wn(), await vd(), Le());
+    (wn(), await yd(), Le());
   }
 }
 async function kc(t) {
-  if (!Wn() || !C.autoSummaryEnabled || An) return;
+  if (!Wn() || !C.autoSummaryEnabled || Mn) return;
   const n = ft();
   if (!n) return;
   const e = n.chat ?? [];
   if (e.length === 0) return;
-  const i = $y(e, t);
+  const i = Iy(e, t);
   if (i < 0) return;
   const s = zo(e).find((o) => o <= i);
   if (s === void 0) {
@@ -10374,7 +10412,7 @@ async function kc(t) {
   }
   (await Wa(s), await bi(e));
 }
-function $y(t, n) {
+function Iy(t, n) {
   let e = -1;
   for (let i = t.length - 1; i >= 0; i--)
     if (Tn(t[i])) {
@@ -10395,7 +10433,7 @@ function _c(t) {
   }
   return e;
 }
-async function yd(t) {
+async function kd(t) {
   const n = vi(t),
     e = Ga(t),
     i = ft();
@@ -10418,16 +10456,16 @@ async function yd(t) {
         for (let u = l; u <= c; u++) {
           const d = t[u];
           if (!d?.extra?.bbs_hidden) continue;
-          const { bbs_hidden: p, ...S } = d.extra;
+          const { bbs_hidden: v, ...S } = d.extra;
           d.extra = S;
         }
         await r(`/unhide ${h}`);
       } catch (u) {
         for (let d = l; d <= c; d++) {
-          const p = t[d];
-          if (p && ((p.is_system = !1), p.extra?.bbs_hidden)) {
-            const { bbs_hidden: S, ...w } = p.extra;
-            p.extra = w;
+          const v = t[d];
+          if (v && ((v.is_system = !1), v.extra?.bbs_hidden)) {
+            const { bbs_hidden: S, ...w } = v.extra;
+            v.extra = w;
           }
         }
         Mt.lastError = `/unhide ${h} thất bại: ${u instanceof Error ? u.message : String(u)}`;
@@ -10464,12 +10502,12 @@ async function yd(t) {
   }
 }
 function Xo(t) {
-  const n = Qg(t);
+  const n = zg(t);
   return n
     ? { send: (e) => hh(n, e), label: `Kênh 「${n.name}」(${n.model})` }
-    : Zg()
+    : nb()
       ? {
-          send: (e) => tb(e),
+          send: (e) => eb(e),
           label: "API chính (đang dùng trên giao diện chính)",
         }
       : {
@@ -10494,7 +10532,7 @@ async function Zo(t, n, e) {
   throw s instanceof Error ? s : new Error(String(s));
 }
 function Wa(t) {
-  const n = Ey(t).finally(() => {
+  const n = Ay(t).finally(() => {
     io === n && (io = null);
   });
   return ((io = n), n);
@@ -10508,10 +10546,10 @@ function sa(t, n, e) {
     }
   return i;
 }
-function kd(t, n, e, i) {
+function _d(t, n, e, i) {
   const s = Fo(Ui(t[n].mes)),
-    o = i.plans.filter((p) => p.status === "open"),
-    r = wp(e, o),
+    o = i.plans.filter((v) => v.status === "open"),
+    r = Cp(e, o),
     l = s.start || e.timeStart?.trim() || void 0,
     c = s.end || e.timeEnd?.trim() || e.time?.trim() || void 0;
   c && (r.time = c);
@@ -10530,7 +10568,7 @@ function kd(t, n, e, i) {
   let d = La(t[n].mes, ms(u));
   ((d = Ih(d, Rh(r.varOps))), $o(t[n], d));
 }
-async function _d(t, n, e) {
+async function xd(t, n, e) {
   const i = ft();
   if (!i) throw new Error("Không có ngữ cảnh ST");
   const s = Ga(t),
@@ -10541,11 +10579,11 @@ async function _d(t, n, e) {
     h = o[0],
     u = xe(t, h),
     d = Bs(Ls(U.summaries, t, h)),
-    p = await gd(t, o, i.name1, i.name2),
-    S = bd(),
-    w = pd(),
+    v = await bd(t, o, i.name1, i.name2),
+    S = pd(),
+    w = vd(),
     M = u.plans.filter((j) => j.status === "open"),
-    nt = xb({
+    nt = wb({
       user: i.name1,
       char: i.name2,
       time: u.state.time,
@@ -10595,11 +10633,11 @@ async function _d(t, n, e) {
   (R.push({ role: "system", content: L }),
     S && R.push({ role: "system", content: Th(S) }),
     w && R.push({ role: "system", content: _h(w) }),
-    p && R.push({ role: "system", content: xh(p) }),
+    v && R.push({ role: "system", content: xh(v) }),
     R.push(
       { role: "user", content: nt },
-      { role: "system", content: $b },
-      { role: "assistant", content: Eb },
+      { role: "system", content: Ib },
+      { role: "assistant", content: Ab },
     ));
   const W = await Zo(e.send, R, (j) => {
     console.log(
@@ -10607,27 +10645,27 @@ async function _d(t, n, e) {
 `,
       j,
     );
-    const pt = Qo(j);
-    if (!pt || !pt.summary)
+    const vt = Qo(j);
+    if (!vt || !vt.summary)
       throw new Error(
         j.trim()
           ? "Tóm tắt thất bại: AI xin lỗi hoặc sai định dạng"
           : "Tóm tắt thất bại: AI phản hồi rỗng",
       );
-    return pt;
+    return vt;
   });
-  (kd(t, n, W, u), (Mt.lastRunAt = Date.now()), wn(), gn(), Le(), Ha());
+  (_d(t, n, W, u), (Mt.lastRunAt = Date.now()), wn(), gn(), Le(), Ha());
 }
-async function Ey(t) {
+async function Ay(t) {
   if (
-    (console.log("[Bách Bảo Thư] runSummary tầng", t, "| busy =", An), !Wn())
+    (console.log("[Bách Bảo Thư] runSummary tầng", t, "| busy =", Mn), !Wn())
   ) {
     console.log(
       "[Bách Bảo Thư] runSummary thoát sớm: công tắc chính tiện ích tắt hoặc nhân vật bị loại trừ",
     );
     return;
   }
-  if (An) {
+  if (Mn) {
     console.log("[Bách Bảo Thư] runSummary thoát sớm: busy");
     return;
   }
@@ -10645,18 +10683,18 @@ async function Ey(t) {
     return;
   }
   (console.log("[Bách Bảo Thư] runSummary chuẩn bị gửi yêu cầu,", n.label),
-    (An = !0),
+    (Mn = !0),
     (Mt.running = !0),
     (Mt.lastError = ""));
   try {
-    (await _d(i, t, n), await Ja());
+    (await xd(i, t, n), await Ja());
   } catch (s) {
     Mt.lastError = s instanceof Error ? s.message : String(s);
   } finally {
-    ((An = !1), (Mt.running = !1));
+    ((Mn = !1), (Mt.running = !1));
   }
 }
-function Iy(t, n, e, i) {
+function My(t, n, e, i) {
   const s = ft(),
     o = s?.name1 ?? "",
     r = s?.name2 ?? "",
@@ -10665,15 +10703,15 @@ function Iy(t, n, e, i) {
     h = [];
   let u = [],
     d = 0;
-  for (const p of n) {
-    const S = Ua(t, [p], o, r).length;
+  for (const v of n) {
+    const S = Ua(t, [v], o, r).length;
     (u.length && (d + S > c || u.length >= l) && (h.push(u), (u = []), (d = 0)),
-      u.push(p),
+      u.push(v),
       (d += S));
   }
   return (u.length && h.push(u), h);
 }
-async function Ay(t, n, e) {
+async function Ny(t, n, e) {
   const i = ft();
   if (!i) throw new Error("Không có ngữ cảnh ST");
   const s = Ga(t),
@@ -10682,19 +10720,19 @@ async function Ay(t, n, e) {
     l = Bs(Ls(U.summaries, t, o)),
     c = [],
     h = [];
-  n.forEach((j, pt) => {
+  n.forEach((j, vt) => {
     const ct = sa(t, j, s);
     (c.push(...ct),
-      h.push(`━━ Tầng ${pt + 1} ━━
+      h.push(`━━ Tầng ${vt + 1} ━━
 ${Ua(t, ct, i.name1, i.name2)}`));
   });
   const u = h.join(`
 
 `),
-    d = await gd(t, c, i.name1, i.name2),
-    p = bd(),
-    S = pd(),
-    w = wb({
+    d = await bd(t, c, i.name1, i.name2),
+    v = pd(),
+    S = vd(),
+    w = Cb({
       user: i.name1,
       char: i.name2,
       time: r.state.time,
@@ -10703,11 +10741,11 @@ ${Ua(t, ct, i.name1, i.name2)}`));
       content: u,
       floorCount: n.length,
     }),
-    { checklist: M, prefill: nt } = Sb(n.length),
+    { checklist: M, prefill: nt } = $b(n.length),
     R = [],
     L = C.prompts.jailbreak.trim() || Os;
   (R.push({ role: "system", content: L }),
-    p && R.push({ role: "system", content: Th(p) }),
+    v && R.push({ role: "system", content: Th(v) }),
     S && R.push({ role: "system", content: _h(S) }),
     d && R.push({ role: "system", content: xh(d) }),
     R.push(
@@ -10736,11 +10774,11 @@ ${Ua(t, ct, i.name1, i.name2)}`));
       throw new Error("Tóm tắt lô thất bại: có tầng thiếu summary");
     return ct;
   });
-  (n.forEach((j, pt) => {
-    const ct = W[pt],
+  (n.forEach((j, vt) => {
+    const ct = W[vt],
       O = { summary: ct.summary, timeStart: ct.timeStart, timeEnd: ct.timeEnd },
       ot = xe(t, j);
-    kd(t, j, O, ot);
+    _d(t, j, O, ot);
   }),
     (Mt.lastRunAt = Date.now()),
     wn(),
@@ -10748,9 +10786,9 @@ ${Ua(t, ct, i.name1, i.name2)}`));
     Le(),
     Ha());
 }
-async function My(t = {}) {
+async function Py(t = {}) {
   if (!Wn()) return { done: 0, total: 0, cancelled: !1 };
-  if (An) return { done: 0, total: 0, cancelled: !1 };
+  if (Mn) return { done: 0, total: 0, cancelled: !1 };
   const n = Xo("summary");
   if ("error" in n)
     return ((Mt.lastError = n.error), { done: 0, total: 0, cancelled: !1 });
@@ -10761,7 +10799,7 @@ async function My(t = {}) {
     o = (t.floors ?? [...s]).filter((u) => s.has(u)).sort((u, d) => u - d),
     r = o.length;
   if (r === 0) return (await bi(i), { done: 0, total: 0, cancelled: !1 });
-  const l = Iy(i, o, C.batchMaxChars, C.batchMaxFloors);
+  const l = My(i, o, C.batchMaxChars, C.batchMaxFloors);
   (console.log(
     "[Bách Bảo Thư] Bổ sung tóm tắt lô:",
     r,
@@ -10770,46 +10808,46 @@ async function My(t = {}) {
     "lô,",
     n.label,
   ),
-    (An = !0),
+    (Mn = !0),
     (Mt.running = !0),
     (Mt.lastError = ""),
-    (Sn.running = !0),
-    (Sn.cancelRequested = !1),
-    (Sn.done = 0),
-    (Sn.total = r));
+    (Cn.running = !0),
+    (Cn.cancelRequested = !1),
+    (Cn.done = 0),
+    (Cn.total = r));
   let c = 0,
     h = !1;
   try {
     for (const u of l) {
-      if (Sn.cancelRequested) {
+      if (Cn.cancelRequested) {
         h = !0;
         break;
       }
       try {
-        await Ay(i, u, n);
+        await Ny(i, u, n);
       } catch (d) {
         console.log(
           "[Bách Bảo Thư] Lô thất bại, lùi về từng tầng:",
           d instanceof Error ? d.message : String(d),
         );
-        for (const p of u)
-          if (!(!Tn(i[p]) || bn(i[p])))
+        for (const v of u)
+          if (!(!Tn(i[v]) || bn(i[v])))
             try {
-              await _d(i, p, n);
+              await xd(i, v, n);
             } catch (S) {
               Mt.lastError = S instanceof Error ? S.message : String(S);
             }
       }
-      ((c = o.filter((d) => bn(i[d])).length), (Sn.done = c));
+      ((c = o.filter((d) => bn(i[d])).length), (Cn.done = c));
     }
     await Ja();
   } catch (u) {
     Mt.lastError = u instanceof Error ? u.message : String(u);
   } finally {
-    ((An = !1),
+    ((Mn = !1),
       (Mt.running = !1),
-      (Sn.running = !1),
-      (Sn.cancelRequested = !1));
+      (Cn.running = !1),
+      (Cn.cancelRequested = !1));
   }
   return (await bi(i), { done: c, total: r, cancelled: h });
 }
@@ -10823,10 +10861,10 @@ function Ga(t) {
     }
   return n;
 }
-function Ny(t) {
+function Ry(t) {
   return t === 0 ? C.leafBatchThreshold : C.resummaryThreshold;
 }
-function xd(t) {
+function Td(t) {
   return t.map((n, e) => {
     const i = n.timeStart?.trim(),
       s = n.timeEnd?.trim();
@@ -10841,7 +10879,7 @@ function xd(t) {
 
 `);
 }
-function Py(t, n) {
+function Oy(t, n) {
   const e = new Set();
   for (const i of U.summaries) for (const s of i.childIds) e.add(s);
   if (t === 0) {
@@ -10879,21 +10917,21 @@ async function Ja() {
   let e = 0;
   const i = U.summaries.reduce((s, o) => Math.max(s, o.level), 0);
   for (let s = 0; s <= i + 1; s++) {
-    const o = Ny(s);
+    const o = Ry(s);
     if (!o || o < 2) continue;
-    const r = Py(s, n);
+    const r = Oy(s, n);
     if (r.length < o) continue;
     const l = Xo("resummary");
     if ("error" in l) return ((Mt.lastError = l.error), e);
     const c = r.slice(0, o),
-      h = xd(c),
+      h = Td(c),
       u = kh({ user: t.name1, char: t.name2, content: h, level: s + 1 });
     try {
       const d = C.prompts.jailbreak.trim() || Os,
-        p = [];
-      (d && p.push({ role: "system", content: d }),
-        p.push({ role: "user", content: u }));
-      const S = await Zo(l.send, p, (R) => {
+        v = [];
+      (d && v.push({ role: "system", content: d }),
+        v.push({ role: "user", content: u }));
+      const S = await Zo(l.send, v, (R) => {
           console.log(
             `[Bách Bảo Thư] Phản hồi tổng kết thô (chưa làm sạch):
 `,
@@ -10930,7 +10968,7 @@ async function Ja() {
   }
   return e;
 }
-function Ry(t) {
+function Ly(t) {
   const n = new Map(),
     e = new Map();
   for (let o = 0; o < t.length; o++) {
@@ -10976,19 +11014,19 @@ function Ry(t) {
   }
   return n;
 }
-async function Oy(t) {
+async function By(t) {
   if (!Wn())
     return {
       made: 0,
       error: "Tiện ích chưa kích hoạt trong cuộc trò chuyện hiện tại",
     };
-  if (An) return { made: 0, error: "Đang bận, vui lòng thử lại sau" };
+  if (Mn) return { made: 0, error: "Đang bận, vui lòng thử lại sau" };
   if (t.length < 2)
     return { made: 0, error: "Cần chọn ít nhất 2 mục mới có thể gộp" };
   const n = ft();
   if (!n) return { made: 0, error: "Không có ngữ cảnh ST" };
   const e = n.chat ?? [],
-    i = Ry(e),
+    i = Ly(e),
     s = [];
   for (const w of t) {
     const M = i.get(w);
@@ -11029,9 +11067,9 @@ async function Oy(t) {
   const u = Xo("resummary");
   if ("error" in u) return { made: 0, error: u.error };
   const d = Math.max(...s.map((w) => w.level)) + 1,
-    p = xd(s),
-    S = kh({ user: n.name1, char: n.name2, content: p, level: d });
-  ((An = !0), (Mt.running = !0), (Mt.lastError = ""));
+    v = Td(s),
+    S = kh({ user: n.name1, char: n.name2, content: v, level: d });
+  ((Mn = !0), (Mt.running = !0), (Mt.lastError = ""));
   try {
     const w = C.prompts.jailbreak.trim() || Os,
       M = [];
@@ -11045,11 +11083,11 @@ async function Oy(t) {
         );
         const j = Qo(W);
         if (!j?.summary) {
-          const pt = d === 1 ? "Tổng kết" : "Tổng kết cấp hai";
+          const vt = d === 1 ? "Tổng kết" : "Tổng kết cấp hai";
           throw new Error(
             W.trim()
-              ? `${pt} thất bại: AI xin lỗi hoặc sai định dạng`
-              : `${pt} thất bại: AI phản hồi rỗng`,
+              ? `${vt} thất bại: AI xin lỗi hoặc sai định dạng`
+              : `${vt} thất bại: AI phản hồi rỗng`,
           );
         }
         return j;
@@ -11070,17 +11108,17 @@ async function Oy(t) {
     const M = w instanceof Error ? w.message : String(w);
     return ((Mt.lastError = M), { made: 0, error: M });
   } finally {
-    ((An = !1), (Mt.running = !1));
+    ((Mn = !1), (Mt.running = !1));
   }
   return (await bi(e), { made: 1 });
 }
-async function Ly() {
-  if (!Wn() || An) return 0;
-  ((An = !0), (Mt.running = !0), (Mt.lastError = ""));
+async function qy() {
+  if (!Wn() || Mn) return 0;
+  ((Mn = !0), (Mt.running = !0), (Mt.lastError = ""));
   try {
     return await Ja();
   } finally {
-    ((An = !1), (Mt.running = !1));
+    ((Mn = !1), (Mt.running = !1));
   }
 }
 let Xs = null;
@@ -11088,7 +11126,7 @@ function Er(t = !1) {
   (Xs && clearTimeout(Xs),
     (Xs = setTimeout(() => {
       if (((Xs = null), Jo(), wn(), Ha(), t && Wn() && C.autoSummaryEnabled)) {
-        yd(ft()?.chat ?? [])
+        kd(ft()?.chat ?? [])
           .catch((n) => {
             Mt.lastError = n instanceof Error ? n.message : String(n);
           })
@@ -11098,7 +11136,7 @@ function Er(t = !1) {
       gn();
     }, 200)));
 }
-function By() {
+function Vy() {
   const t = ft();
   if (!t?.eventSource || !t?.eventTypes) return;
   const n = t.eventSource,
@@ -11132,7 +11170,7 @@ function By() {
         setTimeout(() => {
           if (typeof i == "number")
             try {
-              _p(i);
+              Tp(i);
             } catch (s) {
               console.warn(
                 "[Bách Bảo Thư] Phân tích ngược chú giải vật phẩm thất bại",
@@ -11160,23 +11198,23 @@ function By() {
       },
     ));
 }
-const Td = "0.9.8";
-function wd(t, n) {
+const wd = "0.9.9";
+function Sd(t, n) {
   const e = new URL(t, n);
-  return (e.searchParams.set("ver", Td), e.href);
+  return (e.searchParams.set("ver", wd), e.href);
 }
-const Sd = Td,
-  qy =
+const Cd = wd,
+  Dy =
     "https://raw.githubusercontent.com/baibai-git/ST-BaiBai-Book/main/manifest.json",
   ln = Un({
-    current: Sd,
+    current: Cd,
     latest: "",
     available: !1,
     checking: !1,
     updating: !1,
   });
 let xc = !1;
-function Vy(t, n) {
+function jy(t, n) {
   if (!t || !n) return !1;
   const e = t.split(".").map((o) => Number.parseInt(o, 10) || 0),
     i = n.split(".").map((o) => Number.parseInt(o, 10) || 0),
@@ -11189,12 +11227,12 @@ function Vy(t, n) {
   }
   return !1;
 }
-async function Dy() {
+async function Ky() {
   try {
     const t = new AbortController(),
       n = setTimeout(() => t.abort(), 8e3);
     try {
-      const e = await fetch(`${qy}?t=${Date.now()}`, {
+      const e = await fetch(`${Dy}?t=${Date.now()}`, {
         method: "GET",
         cache: "no-store",
         signal: t.signal,
@@ -11213,14 +11251,14 @@ async function oa(t = !1) {
   if (!ln.checking && !(xc && !t)) {
     ln.checking = !0;
     try {
-      const n = await Dy();
-      (n && ((ln.latest = n), (ln.available = Vy(n, Sd))), (xc = !0));
+      const n = await Ky();
+      (n && ((ln.latest = n), (ln.available = jy(n, Cd))), (xc = !0));
     } finally {
       ln.checking = !1;
     }
   }
 }
-function jy() {
+function Hy() {
   try {
     const t = new URL(import.meta.url).pathname,
       n = "/third-party/",
@@ -11232,7 +11270,7 @@ function jy() {
   } catch {}
   return "ST-BaiBai-Book";
 }
-async function Ky(t) {
+async function Fy(t) {
   try {
     const n = ft()?.getRequestHeaders?.() ?? {},
       e = await fetch("/api/extensions/discover", {
@@ -11250,12 +11288,12 @@ async function Ky(t) {
     return null;
   }
 }
-async function Hy() {
+async function Uy() {
   if (!ln.updating) {
     ln.updating = !0;
     try {
-      const t = jy(),
-        n = await Ky(t),
+      const t = Hy(),
+        n = await Fy(t),
         e = ft()?.getRequestHeaders?.() ?? {
           "Content-Type": "application/json",
         },
@@ -11274,8 +11312,8 @@ async function Hy() {
     }
   }
 }
-const Fy = ["innerHTML"],
-  Uy = Nn({
+const Wy = ["innerHTML"],
+  Gy = Pn({
     __name: "Icon",
     props: { name: {}, size: {} },
     setup(t) {
@@ -11345,17 +11383,17 @@ const Fy = ["innerHTML"],
           },
           null,
           12,
-          Fy,
+          Wy,
         )
       );
     },
   }),
-  Pn = (t, n) => {
+  Rn = (t, n) => {
     const e = t.__vccOpts || t;
     for (const [i, s] of n) e[i] = s;
     return e;
   },
-  X = Pn(Uy, [["__scopeId", "data-v-06a3c0be"]]),
+  X = Rn(Gy, [["__scopeId", "data-v-06a3c0be"]]),
   Is = st(null),
   Ue = [
     { value: "day", label: "Ban ngày", icon: "sun" },
@@ -11364,53 +11402,53 @@ const Fy = ["innerHTML"],
     { value: "green", label: "Gỗ trắng", icon: "sparkles" },
     { value: "st", label: "Theo ST", icon: "plug" },
   ],
-  Wy = [
+  Jy = [
     { value: "bookmark", label: "Thẻ sách" },
     { value: "circle", label: "Hình tròn" },
     { value: "square", label: "Hình vuông" },
   ];
-function Cd(t) {
+function $d(t) {
   return t === "bookmark" || t === "circle" || t === "square" ? t : "bookmark";
 }
-const $d = "bbs.ui.page.v1";
-function Gy() {
+const Ed = "bbs.ui.page.v1";
+function Qy() {
   try {
-    return localStorage.getItem($d) || "summary";
+    return localStorage.getItem(Ed) || "summary";
   } catch {
     return "summary";
   }
 }
-function Ed(t) {
+function Id(t) {
   return Ue.some((n) => n.value === t) ? t : "day";
 }
-function Id(t) {
+function Ad(t) {
   return t === "top" || t === "bottom" || t === "auto" ? t : "auto";
 }
 const rt = Un({
   open: !1,
-  activePage: Gy(),
-  theme: Ed(C.ui.theme),
-  navPosition: Id(C.ui.navPosition),
+  activePage: Qy(),
+  theme: Id(C.ui.theme),
+  navPosition: Ad(C.ui.navPosition),
   navTapClose: C.ui.navTapClose,
   showTopBar: C.ui.showTopBar,
   showQuickReply: C.ui.showQuickReply,
   showFloorPanel: C.ui.showFloorPanel,
   showOrb: C.ui.showOrb,
   orbImage: C.ui.orbImage,
-  orbShape: Cd(C.ui.orbShape),
+  orbShape: $d(C.ui.orbShape),
   orbOpacity: C.ui.orbOpacity,
   orbSize: C.ui.orbSize,
 });
-Hg(() => {
-  ((rt.theme = Ed(C.ui.theme)),
-    (rt.navPosition = Id(C.ui.navPosition)),
+Ug(() => {
+  ((rt.theme = Id(C.ui.theme)),
+    (rt.navPosition = Ad(C.ui.navPosition)),
     (rt.navTapClose = C.ui.navTapClose),
     (rt.showTopBar = C.ui.showTopBar),
     (rt.showQuickReply = C.ui.showQuickReply),
     (rt.showFloorPanel = C.ui.showFloorPanel),
     (rt.showOrb = C.ui.showOrb),
     (rt.orbImage = C.ui.orbImage),
-    (rt.orbShape = Cd(C.ui.orbShape)),
+    (rt.orbShape = $d(C.ui.orbShape)),
     (rt.orbOpacity = C.ui.orbOpacity),
     (rt.orbSize = C.ui.orbSize));
 });
@@ -11446,13 +11484,13 @@ Dn(
   () => rt.activePage,
   () => {
     try {
-      localStorage.setItem($d, rt.activePage);
+      localStorage.setItem(Ed, rt.activePage);
     } catch {}
   },
 );
-let Ad = 0;
+let Md = 0;
 function Ki(t) {
-  ((rt.open = !0), (Ad = performance.now()));
+  ((rt.open = !0), (Md = performance.now()));
 }
 function ri() {
   rt.open = !1;
@@ -11461,7 +11499,7 @@ function Tc() {
   const t = Ue.findIndex((n) => n.value === rt.theme);
   rt.theme = Ue[(t + 1) % Ue.length].value;
 }
-const Jy = Nn({
+const Yy = Pn({
     __name: "ModalMask",
     props: { open: { type: Boolean }, topLayer: { type: Boolean } },
     emits: ["close"],
@@ -11506,40 +11544,40 @@ const Jy = Nn({
       );
     },
   }),
-  qn = Pn(Jy, [["__scopeId", "data-v-0b674a87"]]),
-  Qy = { class: "bbs-page" },
-  Yy = { class: "bbs-additem" },
-  zy = ["placeholder", "disabled"],
-  Xy = ["disabled"],
-  Zy = { key: 0, class: "bbs-item-list" },
-  tk = { class: "bbs-item-head" },
-  nk = { class: "bbs-item-main" },
-  ek = { class: "bbs-item-name" },
-  ik = { key: 0, class: "bbs-item-qty" },
-  sk = { key: 1, class: "bbs-item-loc" },
-  ok = { class: "bbs-item-loc-text" },
-  rk = { class: "bbs-item-acts" },
-  ak = ["onClick"],
-  lk = ["onClick"],
-  ck = { key: 0, class: "bbs-item-desc" },
-  uk = { key: 1, class: "bbs-empty" },
-  hk = { class: "bbs-empty-icon" },
-  dk = {
+  qn = Rn(Yy, [["__scopeId", "data-v-0b674a87"]]),
+  zy = { class: "bbs-page" },
+  Xy = { class: "bbs-additem" },
+  Zy = ["placeholder", "disabled"],
+  tk = ["disabled"],
+  nk = { key: 0, class: "bbs-item-list" },
+  ek = { class: "bbs-item-head" },
+  ik = { class: "bbs-item-main" },
+  sk = { class: "bbs-item-name" },
+  ok = { key: 0, class: "bbs-item-qty" },
+  rk = { key: 1, class: "bbs-item-loc" },
+  ak = { class: "bbs-item-loc-text" },
+  lk = { class: "bbs-item-acts" },
+  ck = ["onClick"],
+  uk = ["onClick"],
+  hk = { key: 0, class: "bbs-item-desc" },
+  dk = { key: 1, class: "bbs-empty" },
+  mk = { class: "bbs-empty-icon" },
+  fk = {
     key: 0,
     class: "bbs-modal",
     role: "dialog",
     "aria-modal": "true",
     "aria-label": "Chỉnh sửa vật phẩm",
   },
-  mk = { class: "bbs-modal-head" },
-  fk = { class: "bbs-modal-field" },
-  gk = { class: "bbs-modal-field" },
-  bk = { class: "bbs-modal-field bbs-modal-check" },
-  pk = { key: 0, class: "bbs-modal-field" },
-  vk = { class: "bbs-modal-field" },
-  yk = { class: "bbs-modal-foot" },
-  kk = ["disabled"],
-  _k = Nn({
+  gk = { class: "bbs-modal-head" },
+  bk = { class: "bbs-modal-field" },
+  pk = { class: "bbs-modal-field" },
+  vk = { class: "bbs-modal-field bbs-modal-check" },
+  yk = { key: 0, class: "bbs-modal-field" },
+  kk = { class: "bbs-modal-field" },
+  _k = { class: "bbs-modal-foot" },
+  xk = ["disabled"],
+  Tk = Pn({
     __name: "index",
     setup(t) {
       const n = st(""),
@@ -11573,7 +11611,7 @@ const Jy = Nn({
         if (!h || !h.name.trim()) return;
         const u = String(h.qty).trim(),
           d = u === "" ? void 0 : Number(u);
-        ($p(h.oldName, {
+        (Ip(h.oldName, {
           name: h.name,
           qty: d !== void 0 && Number.isFinite(d) ? d : void 0,
           desc: h.desc,
@@ -11584,7 +11622,7 @@ const Jy = Nn({
       }
       return (h, u) => (
         f(),
-        g("section", Qy, [
+        g("section", zy, [
           u[13] ||
             (u[13] = a(
               "h2",
@@ -11592,7 +11630,7 @@ const Jy = Nn({
               "Vật phẩm",
               -1,
             )),
-          a("div", Yy, [
+          a("div", Xy, [
             et(
               a(
                 "input",
@@ -11608,7 +11646,7 @@ const Jy = Nn({
                 },
                 null,
                 40,
-                zy,
+                Zy,
               ),
               [[ut, n.value]],
             ),
@@ -11622,13 +11660,13 @@ const Jy = Nn({
               },
               "Thêm",
               8,
-              Xy,
+              tk,
             ),
           ]),
           u[14] || (u[14] = a("hr", { class: "bbs-rule" }, null, -1)),
           E(U).items.length
             ? (f(),
-              g("div", Zy, [
+              g("div", nk, [
                 (f(!0),
                 g(
                   dt,
@@ -11638,32 +11676,32 @@ const Jy = Nn({
                     (d) => (
                       f(),
                       g("div", { key: d.id, class: "bbs-item" }, [
-                        a("div", tk, [
-                          a("div", nk, [
-                            a("span", ek, A(d.name), 1),
+                        a("div", ek, [
+                          a("div", ik, [
+                            a("span", sk, A(d.name), 1),
                             typeof d.qty == "number"
-                              ? (f(), g("span", ik, "×" + A(d.qty), 1))
+                              ? (f(), g("span", ok, "×" + A(d.qty), 1))
                               : H("", !0),
                             d.carried === !1 && d.location
                               ? (f(),
-                                g("span", sk, [
+                                g("span", rk, [
                                   N(X, { name: "scenes" }),
-                                  a("span", ok, A(d.location), 1),
+                                  a("span", ak, A(d.location), 1),
                                 ]))
                               : H("", !0),
                           ]),
-                          a("span", rk, [
+                          a("span", lk, [
                             a(
                               "button",
                               {
                                 class: "bbs-item-act",
                                 type: "button",
                                 title: "Chỉnh sửa",
-                                onClick: (p) => r(d.id),
+                                onClick: (v) => r(d.id),
                               },
                               [N(X, { name: "edit" })],
                               8,
-                              ak,
+                              ck,
                             ),
                             a(
                               "button",
@@ -11671,15 +11709,15 @@ const Jy = Nn({
                                 class: "bbs-item-act bbs-item-del",
                                 type: "button",
                                 title: "Xóa",
-                                onClick: (p) => s(d.id),
+                                onClick: (v) => s(d.id),
                               },
                               [N(X, { name: "close" })],
                               8,
-                              lk,
+                              uk,
                             ),
                           ]),
                         ]),
-                        d.desc ? (f(), g("span", ck, A(d.desc), 1)) : H("", !0),
+                        d.desc ? (f(), g("span", hk, A(d.desc), 1)) : H("", !0),
                       ])
                     ),
                   ),
@@ -11687,8 +11725,8 @@ const Jy = Nn({
                 )),
               ]))
             : (f(),
-              g("div", uk, [
-                a("span", hk, [N(X, { name: "items" })]),
+              g("div", dk, [
+                a("span", mk, [N(X, { name: "items" })]),
                 u[6] ||
                   (u[6] = a(
                     "p",
@@ -11704,8 +11742,8 @@ const Jy = Nn({
               default: $t(() => [
                 o.value
                   ? (f(),
-                    g("div", dk, [
-                      a("header", mk, [
+                    g("div", fk, [
+                      a("header", gk, [
                         u[7] ||
                           (u[7] = a(
                             "span",
@@ -11724,7 +11762,7 @@ const Jy = Nn({
                           [N(X, { name: "close" })],
                         ),
                       ]),
-                      a("label", fk, [
+                      a("label", bk, [
                         u[8] ||
                           (u[8] = a(
                             "span",
@@ -11748,7 +11786,7 @@ const Jy = Nn({
                           [[ut, o.value.name]],
                         ),
                       ]),
-                      a("label", gk, [
+                      a("label", pk, [
                         u[9] ||
                           (u[9] = a(
                             "span",
@@ -11774,7 +11812,7 @@ const Jy = Nn({
                           [[ut, o.value.qty]],
                         ),
                       ]),
-                      a("label", bk, [
+                      a("label", vk, [
                         et(
                           a(
                             "input",
@@ -11786,7 +11824,7 @@ const Jy = Nn({
                             null,
                             512,
                           ),
-                          [[Ln, o.value.carried]],
+                          [[Sn, o.value.carried]],
                         ),
                         u[10] ||
                           (u[10] = a(
@@ -11799,7 +11837,7 @@ const Jy = Nn({
                       o.value.carried
                         ? H("", !0)
                         : (f(),
-                          g("label", pk, [
+                          g("label", yk, [
                             u[11] ||
                               (u[11] = a(
                                 "span",
@@ -11824,7 +11862,7 @@ const Jy = Nn({
                               [[ut, o.value.location]],
                             ),
                           ])),
-                      a("label", vk, [
+                      a("label", kk, [
                         u[12] ||
                           (u[12] = a(
                             "span",
@@ -11848,7 +11886,7 @@ const Jy = Nn({
                           [[ut, o.value.desc]],
                         ),
                       ]),
-                      a("footer", yk, [
+                      a("footer", _k, [
                         a(
                           "button",
                           { class: "bbs-btn", type: "button", onClick: l },
@@ -11864,7 +11902,7 @@ const Jy = Nn({
                           },
                           "Lưu",
                           8,
-                          kk,
+                          xk,
                         ),
                       ]),
                     ]))
@@ -11879,14 +11917,14 @@ const Jy = Nn({
       );
     },
   }),
-  xk = Pn(_k, [["__scopeId", "data-v-536182ff"]]),
-  Tk = ["aria-label"],
-  wk = { class: "bbs-modal-head" },
-  Sk = { class: "bbs-modal-title" },
-  Ck = { class: "bbs-confirm-text" },
-  $k = { class: "bbs-modal-foot" },
-  Ek = ["disabled"],
-  Ik = Nn({
+  wk = Rn(Tk, [["__scopeId", "data-v-536182ff"]]),
+  Sk = ["aria-label"],
+  Ck = { class: "bbs-modal-head" },
+  $k = { class: "bbs-modal-title" },
+  Ek = { class: "bbs-confirm-text" },
+  Ik = { class: "bbs-modal-foot" },
+  Ak = ["disabled"],
+  Mk = Pn({
     __name: "ConfirmDialog",
     props: {
       open: { type: Boolean },
@@ -11941,11 +11979,11 @@ const Jy = Nn({
                               "aria-label": t.title,
                             },
                             [
-                              a("header", wk, [a("span", Sk, A(t.title), 1)]),
-                              a("p", Ck, [
+                              a("header", Ck, [a("span", $k, A(t.title), 1)]),
+                              a("p", Ek, [
                                 Ta(o.$slots, "default", {}, void 0, !0),
                               ]),
-                              a("footer", $k, [
+                              a("footer", Ik, [
                                 r[0] ||
                                   (r[0] = a(
                                     "span",
@@ -11987,7 +12025,7 @@ const Jy = Nn({
                                           ["name"],
                                         ))
                                       : H("", !0),
-                                    yt(
+                                    gt(
                                       " " +
                                         A(
                                           t.busy && t.busyText
@@ -11998,12 +12036,12 @@ const Jy = Nn({
                                     ),
                                   ],
                                   10,
-                                  Ek,
+                                  Ak,
                                 ),
                               ]),
                             ],
                             8,
-                            Tk,
+                            Sk,
                           ),
                         ],
                         34,
@@ -12020,114 +12058,114 @@ const Jy = Nn({
       );
     },
   }),
-  Fe = Pn(Ik, [["__scopeId", "data-v-4fac9054"]]),
-  Ak = { class: "bbs-page" },
-  Mk = { class: "bbs-section-head" },
-  Nk = ["disabled", "title"],
-  Pk = { key: 0, class: "bbs-npc-groups" },
-  Rk = { key: 0, class: "bbs-npc-group" },
-  Ok = { class: "bbs-npc-grouphead" },
-  Lk = { class: "bbs-npc-grouptag is-main" },
-  Bk = { class: "bbs-npc-list" },
-  qk = { class: "bbs-npc-body" },
-  Vk = { class: "bbs-npc-head" },
-  Dk = { class: "bbs-npc-name" },
-  jk = { key: 0, class: "bbs-npc-flag" },
-  Kk = { class: "bbs-npc-acts" },
-  Hk = ["onClick"],
-  Fk = ["onClick"],
+  Fe = Rn(Mk, [["__scopeId", "data-v-4fac9054"]]),
+  Nk = { class: "bbs-page" },
+  Pk = { class: "bbs-section-head" },
+  Rk = ["disabled", "title"],
+  Ok = { key: 0, class: "bbs-npc-groups" },
+  Lk = { key: 0, class: "bbs-npc-group" },
+  Bk = { class: "bbs-npc-grouphead" },
+  qk = { class: "bbs-npc-grouptag is-main" },
+  Vk = { class: "bbs-npc-list" },
+  Dk = { class: "bbs-npc-body" },
+  jk = { class: "bbs-npc-head" },
+  Kk = { class: "bbs-npc-name" },
+  Hk = { key: 0, class: "bbs-npc-flag" },
+  Fk = { class: "bbs-npc-acts" },
   Uk = ["onClick"],
-  Wk = { key: 0, class: "bbs-npc-fields" },
-  Gk = { key: 0, class: "bbs-npc-field f-outfit" },
-  Jk = { key: 1, class: "bbs-npc-field f-cond" },
-  Qk = { key: 2, class: "bbs-npc-field f-loc" },
-  Yk = { key: 1, class: "bbs-npc-mainhint" },
-  zk = { key: 1, class: "bbs-npc-group" },
-  Xk = { class: "bbs-npc-list" },
-  Zk = { class: "bbs-npc-body" },
-  t1 = { class: "bbs-npc-head" },
-  n1 = { class: "bbs-npc-name" },
-  e1 = { key: 0, class: "bbs-npc-flag is-follow" },
-  i1 = { key: 1, class: "bbs-npc-flag" },
-  s1 = { class: "bbs-npc-acts" },
-  o1 = ["onClick"],
-  r1 = ["title", "onClick"],
+  Wk = ["onClick"],
+  Gk = ["onClick"],
+  Jk = { key: 0, class: "bbs-npc-fields" },
+  Qk = { key: 0, class: "bbs-npc-field f-outfit" },
+  Yk = { key: 1, class: "bbs-npc-field f-cond" },
+  zk = { key: 2, class: "bbs-npc-field f-loc" },
+  Xk = { key: 1, class: "bbs-npc-mainhint" },
+  Zk = { key: 1, class: "bbs-npc-group" },
+  t1 = { class: "bbs-npc-list" },
+  n1 = { class: "bbs-npc-body" },
+  e1 = { class: "bbs-npc-head" },
+  i1 = { class: "bbs-npc-name" },
+  s1 = { key: 0, class: "bbs-npc-flag is-follow" },
+  o1 = { key: 1, class: "bbs-npc-flag" },
+  r1 = { class: "bbs-npc-acts" },
   a1 = ["onClick"],
-  l1 = ["onClick"],
-  c1 = { key: 0, class: "bbs-npc-fields" },
-  u1 = { key: 0, class: "bbs-npc-field f-title" },
-  h1 = { key: 1, class: "bbs-npc-field f-outfit" },
-  d1 = { key: 2, class: "bbs-npc-field f-cond" },
-  m1 = { key: 3, class: "bbs-npc-field f-trait" },
-  f1 = { key: 4, class: "bbs-npc-field f-desc" },
-  g1 = { key: 2, class: "bbs-npc-group" },
-  b1 = { class: "bbs-npc-list" },
-  p1 = { class: "bbs-npc-body" },
-  v1 = { class: "bbs-npc-head" },
-  y1 = { class: "bbs-npc-name" },
-  k1 = { key: 0, class: "bbs-npc-flag" },
-  _1 = { class: "bbs-npc-acts" },
-  x1 = ["onClick"],
-  T1 = ["onClick"],
+  l1 = ["title", "onClick"],
+  c1 = ["onClick"],
+  u1 = ["onClick"],
+  h1 = { key: 0, class: "bbs-npc-fields" },
+  d1 = { key: 0, class: "bbs-npc-field f-title" },
+  m1 = { key: 1, class: "bbs-npc-field f-outfit" },
+  f1 = { key: 2, class: "bbs-npc-field f-cond" },
+  g1 = { key: 3, class: "bbs-npc-field f-trait" },
+  b1 = { key: 4, class: "bbs-npc-field f-desc" },
+  p1 = { key: 2, class: "bbs-npc-group" },
+  v1 = { class: "bbs-npc-list" },
+  y1 = { class: "bbs-npc-body" },
+  k1 = { class: "bbs-npc-head" },
+  _1 = { class: "bbs-npc-name" },
+  x1 = { key: 0, class: "bbs-npc-flag" },
+  T1 = { class: "bbs-npc-acts" },
   w1 = ["onClick"],
   S1 = ["onClick"],
-  C1 = { key: 0, class: "bbs-npc-fields" },
-  $1 = { key: 0, class: "bbs-npc-field f-title" },
-  E1 = { key: 1, class: "bbs-npc-field f-trait" },
-  I1 = { key: 3, class: "bbs-npc-group" },
-  A1 = { class: "bbs-npc-list" },
-  M1 = { class: "bbs-npc-body" },
-  N1 = { class: "bbs-npc-head" },
-  P1 = { class: "bbs-npc-name" },
-  R1 = { key: 0, class: "bbs-npc-flag" },
-  O1 = { key: 1, class: "bbs-npc-flag is-nowhere" },
-  L1 = { class: "bbs-npc-acts" },
-  B1 = ["onClick"],
-  q1 = ["onClick"],
+  C1 = ["onClick"],
+  $1 = ["onClick"],
+  E1 = { key: 0, class: "bbs-npc-fields" },
+  I1 = { key: 0, class: "bbs-npc-field f-title" },
+  A1 = { key: 1, class: "bbs-npc-field f-trait" },
+  M1 = { key: 3, class: "bbs-npc-group" },
+  N1 = { class: "bbs-npc-list" },
+  P1 = { class: "bbs-npc-body" },
+  R1 = { class: "bbs-npc-head" },
+  O1 = { class: "bbs-npc-name" },
+  L1 = { key: 0, class: "bbs-npc-flag" },
+  B1 = { key: 1, class: "bbs-npc-flag is-nowhere" },
+  q1 = { class: "bbs-npc-acts" },
   V1 = ["onClick"],
   D1 = ["onClick"],
-  j1 = { key: 0, class: "bbs-npc-fields" },
-  K1 = { class: "bbs-npc-field f-title" },
-  H1 = { key: 1, class: "bbs-empty" },
-  F1 = { class: "bbs-empty-icon" },
-  U1 = {
+  j1 = ["onClick"],
+  K1 = ["onClick"],
+  H1 = { key: 0, class: "bbs-npc-fields" },
+  F1 = { class: "bbs-npc-field f-title" },
+  U1 = { key: 1, class: "bbs-empty" },
+  W1 = { class: "bbs-empty-icon" },
+  G1 = {
     class: "bbs-modal",
     role: "dialog",
     "aria-modal": "true",
     "aria-label": "Thêm nhân vật",
   },
-  W1 = { class: "bbs-modal-head" },
-  G1 = { class: "bbs-modal-field" },
-  J1 = { class: "bbs-modal-field" },
+  J1 = { class: "bbs-modal-head" },
   Q1 = { class: "bbs-modal-field" },
   Y1 = { class: "bbs-modal-field" },
   z1 = { class: "bbs-modal-field" },
   X1 = { class: "bbs-modal-field" },
-  Z1 = { class: "bbs-modal-field bbs-modal-check" },
-  t0 = { class: "bbs-modal-field bbs-modal-check" },
-  n0 = { key: 0, class: "bbs-modal-field" },
-  e0 = { class: "bbs-modal-foot" },
-  i0 = ["disabled"],
-  s0 = {
+  Z1 = { class: "bbs-modal-field" },
+  t0 = { class: "bbs-modal-field" },
+  n0 = { class: "bbs-modal-field bbs-modal-check" },
+  e0 = { class: "bbs-modal-field bbs-modal-check" },
+  i0 = { key: 0, class: "bbs-modal-field" },
+  s0 = { class: "bbs-modal-foot" },
+  o0 = ["disabled"],
+  r0 = {
     key: 0,
     class: "bbs-modal",
     role: "dialog",
     "aria-modal": "true",
     "aria-label": "Chỉnh sửa nhân vật",
   },
-  o0 = { class: "bbs-modal-head" },
-  r0 = { class: "bbs-modal-field" },
-  a0 = { class: "bbs-modal-field" },
+  a0 = { class: "bbs-modal-head" },
   l0 = { class: "bbs-modal-field" },
   c0 = { class: "bbs-modal-field" },
   u0 = { class: "bbs-modal-field" },
   h0 = { class: "bbs-modal-field" },
-  d0 = { class: "bbs-modal-field bbs-modal-check" },
-  m0 = { class: "bbs-modal-field bbs-modal-check" },
-  f0 = { key: 0, class: "bbs-modal-field" },
-  g0 = { class: "bbs-modal-foot" },
-  b0 = ["disabled"],
-  p0 = Nn({
+  d0 = { class: "bbs-modal-field" },
+  m0 = { class: "bbs-modal-field" },
+  f0 = { class: "bbs-modal-field bbs-modal-check" },
+  g0 = { class: "bbs-modal-field bbs-modal-check" },
+  b0 = { key: 0, class: "bbs-modal-field" },
+  p0 = { class: "bbs-modal-foot" },
+  v0 = ["disabled"],
+  y0 = Pn({
     __name: "index",
     setup(t) {
       const n = lt(() => en.hasLeaf),
@@ -12161,12 +12199,12 @@ const Jy = Nn({
           : oc(D.name, !0);
       }
       function u(D) {
-        Ap(D.name, !D.important);
+        Np(D.name, !D.important);
       }
       function d(D) {
         O.value = D;
       }
-      const p = st(!1),
+      const v = st(!1),
         S = st(null);
       function w() {
         return {
@@ -12184,15 +12222,15 @@ const Jy = Nn({
       const M = st(w());
       function nt() {
         n.value &&
-          ((M.value = w()), (p.value = !0), e || Ge(() => S.value?.focus()));
+          ((M.value = w()), (v.value = !0), e || Ge(() => S.value?.focus()));
       }
       function R() {
-        p.value = !1;
+        v.value = !1;
       }
       function L() {
         const D = M.value;
         !D.name.trim() ||
-          !Ep({
+          !Ap({
             name: D.name,
             title: D.title,
             personality: D.personality,
@@ -12203,7 +12241,7 @@ const Jy = Nn({
             follow: D.follow,
             location: D.follow ? "" : D.location,
           }) ||
-          (p.value = !1);
+          (v.value = !1);
       }
       const W = st(null);
       function j(D) {
@@ -12220,14 +12258,14 @@ const Jy = Nn({
           location: D.location ?? "",
         };
       }
-      function pt() {
+      function vt() {
         W.value = null;
       }
       function ct() {
         const D = W.value;
         !D ||
           !D.name.trim() ||
-          (Ip(D.oldName, {
+          (Mp(D.oldName, {
             name: D.name,
             title: D.title,
             personality: D.personality,
@@ -12242,14 +12280,14 @@ const Jy = Nn({
       }
       const O = st(null);
       function ot() {
-        (O.value && Mp(O.value.name), (O.value = null));
+        (O.value && Pp(O.value.name), (O.value = null));
       }
       return (D, x) => {
-        const z = mf("autosize");
+        const z = gf("autosize");
         return (
           f(),
-          g("section", Ak, [
-            a("div", Mk, [
+          g("section", Nk, [
+            a("div", Pk, [
               x[20] ||
                 (x[20] = a(
                   "h2",
@@ -12270,20 +12308,20 @@ const Jy = Nn({
                 },
                 [N(X, { name: "plus" })],
                 8,
-                Nk,
+                Rk,
               ),
             ]),
             x[59] || (x[59] = a("hr", { class: "bbs-rule" }, null, -1)),
             E(U).npcs.length
               ? (f(),
-                g("div", Pk, [
+                g("div", Ok, [
                   o.value.length
                     ? (f(),
-                      g("div", Rk, [
-                        a("div", Ok, [
-                          a("span", Lk, [
+                      g("div", Lk, [
+                        a("div", Bk, [
+                          a("span", qk, [
                             N(X, { name: "star" }),
-                            x[21] || (x[21] = yt("Nhân vật chính", -1)),
+                            x[21] || (x[21] = gt("Nhân vật chính", -1)),
                           ]),
                           x[22] ||
                             (x[22] = a(
@@ -12293,7 +12331,7 @@ const Jy = Nn({
                               -1,
                             )),
                         ]),
-                        a("div", Bk, [
+                        a("div", Vk, [
                           (f(!0),
                           g(
                             dt,
@@ -12309,13 +12347,13 @@ const Jy = Nn({
                                     class: "bbs-npc is-present is-main",
                                   },
                                   [
-                                    a("div", qk, [
-                                      a("div", Vk, [
-                                        a("span", Dk, A(b.name), 1),
+                                    a("div", Dk, [
+                                      a("div", jk, [
+                                        a("span", Kk, A(b.name), 1),
                                         b.title
-                                          ? (f(), g("span", jk, A(b.title), 1))
+                                          ? (f(), g("span", Hk, A(b.title), 1))
                                           : H("", !0),
-                                        a("span", Kk, [
+                                        a("span", Fk, [
                                           a(
                                             "button",
                                             {
@@ -12328,7 +12366,7 @@ const Jy = Nn({
                                             },
                                             [N(X, { name: "star" })],
                                             8,
-                                            Hk,
+                                            Uk,
                                           ),
                                           a(
                                             "button",
@@ -12340,7 +12378,7 @@ const Jy = Nn({
                                             },
                                             [N(X, { name: "edit" })],
                                             8,
-                                            Fk,
+                                            Wk,
                                           ),
                                           a(
                                             "button",
@@ -12353,7 +12391,7 @@ const Jy = Nn({
                                             },
                                             [N(X, { name: "trash" })],
                                             8,
-                                            Uk,
+                                            Gk,
                                           ),
                                         ]),
                                       ]),
@@ -12362,10 +12400,10 @@ const Jy = Nn({
                                       b.follow ||
                                       b.location
                                         ? (f(),
-                                          g("dl", Wk, [
+                                          g("dl", Jk, [
                                             b.outfit
                                               ? (f(),
-                                                g("div", Gk, [
+                                                g("div", Qk, [
                                                   x[23] ||
                                                     (x[23] = a(
                                                       "dt",
@@ -12378,7 +12416,7 @@ const Jy = Nn({
                                               : H("", !0),
                                             b.condition
                                               ? (f(),
-                                                g("div", Jk, [
+                                                g("div", Yk, [
                                                   x[24] ||
                                                     (x[24] = a(
                                                       "dt",
@@ -12396,7 +12434,7 @@ const Jy = Nn({
                                               : H("", !0),
                                             b.follow || b.location
                                               ? (f(),
-                                                g("div", Qk, [
+                                                g("div", zk, [
                                                   x[25] ||
                                                     (x[25] = a(
                                                       "dt",
@@ -12420,7 +12458,7 @@ const Jy = Nn({
                                         : (f(),
                                           g(
                                             "p",
-                                            Yk,
+                                            Xk,
                                             "Chưa có ghi chép trạng thái —— Chỉnh sửa để bổ sung trang phục / trạng thái / nơi ở hiện tại.",
                                           )),
                                     ]),
@@ -12435,7 +12473,7 @@ const Jy = Nn({
                     : H("", !0),
                   r.value.length
                     ? (f(),
-                      g("div", zk, [
+                      g("div", Zk, [
                         x[32] ||
                           (x[32] = a(
                             "div",
@@ -12454,7 +12492,7 @@ const Jy = Nn({
                             ],
                             -1,
                           )),
-                        a("div", Xk, [
+                        a("div", t1, [
                           (f(!0),
                           g(
                             dt,
@@ -12473,24 +12511,24 @@ const Jy = Nn({
                                     ]),
                                   },
                                   [
-                                    a("div", Zk, [
-                                      a("div", t1, [
-                                        a("span", n1, A(b.name), 1),
+                                    a("div", n1, [
+                                      a("div", e1, [
+                                        a("span", i1, A(b.name), 1),
                                         b.follow
                                           ? (f(),
-                                            g("span", e1, [
+                                            g("span", s1, [
                                               N(X, { name: "pin" }),
                                               x[26] ||
-                                                (x[26] = yt("Đồng hành", -1)),
+                                                (x[26] = gt("Đồng hành", -1)),
                                             ]))
                                           : b.location
                                             ? (f(),
-                                              g("span", i1, [
+                                              g("span", o1, [
                                                 N(X, { name: "scenes" }),
-                                                yt(A(b.location), 1),
+                                                gt(A(b.location), 1),
                                               ]))
                                             : H("", !0),
-                                        a("span", s1, [
+                                        a("span", r1, [
                                           a(
                                             "button",
                                             {
@@ -12503,7 +12541,7 @@ const Jy = Nn({
                                             },
                                             [N(X, { name: "star" })],
                                             8,
-                                            o1,
+                                            a1,
                                           ),
                                           a(
                                             "button",
@@ -12520,7 +12558,7 @@ const Jy = Nn({
                                             },
                                             [N(X, { name: "pin" })],
                                             10,
-                                            r1,
+                                            l1,
                                           ),
                                           a(
                                             "button",
@@ -12532,7 +12570,7 @@ const Jy = Nn({
                                             },
                                             [N(X, { name: "edit" })],
                                             8,
-                                            a1,
+                                            c1,
                                           ),
                                           a(
                                             "button",
@@ -12545,7 +12583,7 @@ const Jy = Nn({
                                             },
                                             [N(X, { name: "trash" })],
                                             8,
-                                            l1,
+                                            u1,
                                           ),
                                         ]),
                                       ]),
@@ -12555,10 +12593,10 @@ const Jy = Nn({
                                       b.outfit ||
                                       b.condition
                                         ? (f(),
-                                          g("dl", c1, [
+                                          g("dl", h1, [
                                             b.title
                                               ? (f(),
-                                                g("div", u1, [
+                                                g("div", d1, [
                                                   x[27] ||
                                                     (x[27] = a(
                                                       "dt",
@@ -12571,7 +12609,7 @@ const Jy = Nn({
                                               : H("", !0),
                                             b.outfit
                                               ? (f(),
-                                                g("div", h1, [
+                                                g("div", m1, [
                                                   x[28] ||
                                                     (x[28] = a(
                                                       "dt",
@@ -12584,7 +12622,7 @@ const Jy = Nn({
                                               : H("", !0),
                                             b.condition
                                               ? (f(),
-                                                g("div", d1, [
+                                                g("div", f1, [
                                                   x[29] ||
                                                     (x[29] = a(
                                                       "dt",
@@ -12602,7 +12640,7 @@ const Jy = Nn({
                                               : H("", !0),
                                             b.personality
                                               ? (f(),
-                                                g("div", m1, [
+                                                g("div", g1, [
                                                   x[30] ||
                                                     (x[30] = a(
                                                       "dt",
@@ -12620,7 +12658,7 @@ const Jy = Nn({
                                               : H("", !0),
                                             b.desc
                                               ? (f(),
-                                                g("div", f1, [
+                                                g("div", b1, [
                                                   x[31] ||
                                                     (x[31] = a(
                                                       "dt",
@@ -12646,7 +12684,7 @@ const Jy = Nn({
                     : H("", !0),
                   l.value.length
                     ? (f(),
-                      g("div", g1, [
+                      g("div", p1, [
                         x[35] ||
                           (x[35] = a(
                             "div",
@@ -12665,7 +12703,7 @@ const Jy = Nn({
                             ],
                             -1,
                           )),
-                        a("div", b1, [
+                        a("div", v1, [
                           (f(!0),
                           g(
                             dt,
@@ -12678,17 +12716,17 @@ const Jy = Nn({
                                   "article",
                                   { key: b.id, class: "bbs-npc is-nearby" },
                                   [
-                                    a("div", p1, [
-                                      a("div", v1, [
-                                        a("span", y1, A(b.name), 1),
+                                    a("div", y1, [
+                                      a("div", k1, [
+                                        a("span", _1, A(b.name), 1),
                                         b.location
                                           ? (f(),
-                                            g("span", k1, [
+                                            g("span", x1, [
                                               N(X, { name: "scenes" }),
-                                              yt(A(b.location), 1),
+                                              gt(A(b.location), 1),
                                             ]))
                                           : H("", !0),
-                                        a("span", _1, [
+                                        a("span", T1, [
                                           a(
                                             "button",
                                             {
@@ -12701,7 +12739,7 @@ const Jy = Nn({
                                             },
                                             [N(X, { name: "star" })],
                                             8,
-                                            x1,
+                                            w1,
                                           ),
                                           a(
                                             "button",
@@ -12714,7 +12752,7 @@ const Jy = Nn({
                                             },
                                             [N(X, { name: "pin" })],
                                             8,
-                                            T1,
+                                            S1,
                                           ),
                                           a(
                                             "button",
@@ -12726,7 +12764,7 @@ const Jy = Nn({
                                             },
                                             [N(X, { name: "edit" })],
                                             8,
-                                            w1,
+                                            C1,
                                           ),
                                           a(
                                             "button",
@@ -12739,16 +12777,16 @@ const Jy = Nn({
                                             },
                                             [N(X, { name: "trash" })],
                                             8,
-                                            S1,
+                                            $1,
                                           ),
                                         ]),
                                       ]),
                                       b.title || b.personality
                                         ? (f(),
-                                          g("dl", C1, [
+                                          g("dl", E1, [
                                             b.title
                                               ? (f(),
-                                                g("div", $1, [
+                                                g("div", I1, [
                                                   x[33] ||
                                                     (x[33] = a(
                                                       "dt",
@@ -12761,7 +12799,7 @@ const Jy = Nn({
                                               : H("", !0),
                                             b.personality
                                               ? (f(),
-                                                g("div", E1, [
+                                                g("div", A1, [
                                                   x[34] ||
                                                     (x[34] = a(
                                                       "dt",
@@ -12791,7 +12829,7 @@ const Jy = Nn({
                     : H("", !0),
                   c.value.length
                     ? (f(),
-                      g("div", I1, [
+                      g("div", M1, [
                         x[37] ||
                           (x[37] = a(
                             "div",
@@ -12810,7 +12848,7 @@ const Jy = Nn({
                             ],
                             -1,
                           )),
-                        a("div", A1, [
+                        a("div", N1, [
                           (f(!0),
                           g(
                             dt,
@@ -12823,18 +12861,18 @@ const Jy = Nn({
                                   "article",
                                   { key: b.id, class: "bbs-npc is-absent" },
                                   [
-                                    a("div", M1, [
-                                      a("div", N1, [
-                                        a("span", P1, A(b.name), 1),
+                                    a("div", P1, [
+                                      a("div", R1, [
+                                        a("span", O1, A(b.name), 1),
                                         b.location
                                           ? (f(),
-                                            g("span", R1, [
+                                            g("span", L1, [
                                               N(X, { name: "scenes" }),
-                                              yt(A(b.location), 1),
+                                              gt(A(b.location), 1),
                                             ]))
                                           : (f(),
-                                            g("span", O1, "Không rõ vị trí")),
-                                        a("span", L1, [
+                                            g("span", B1, "Không rõ vị trí")),
+                                        a("span", q1, [
                                           a(
                                             "button",
                                             {
@@ -12847,7 +12885,7 @@ const Jy = Nn({
                                             },
                                             [N(X, { name: "star" })],
                                             8,
-                                            B1,
+                                            V1,
                                           ),
                                           a(
                                             "button",
@@ -12860,7 +12898,7 @@ const Jy = Nn({
                                             },
                                             [N(X, { name: "pin" })],
                                             8,
-                                            q1,
+                                            D1,
                                           ),
                                           a(
                                             "button",
@@ -12872,7 +12910,7 @@ const Jy = Nn({
                                             },
                                             [N(X, { name: "edit" })],
                                             8,
-                                            V1,
+                                            j1,
                                           ),
                                           a(
                                             "button",
@@ -12885,14 +12923,14 @@ const Jy = Nn({
                                             },
                                             [N(X, { name: "trash" })],
                                             8,
-                                            D1,
+                                            K1,
                                           ),
                                         ]),
                                       ]),
                                       b.title
                                         ? (f(),
-                                          g("dl", j1, [
-                                            a("div", K1, [
+                                          g("dl", H1, [
+                                            a("div", F1, [
                                               x[36] ||
                                                 (x[36] = a(
                                                   "dt",
@@ -12916,8 +12954,8 @@ const Jy = Nn({
                     : H("", !0),
                 ]))
               : (f(),
-                g("div", H1, [
-                  a("span", F1, [N(X, { name: "npcs" })]),
+                g("div", U1, [
+                  a("span", W1, [N(X, { name: "npcs" })]),
                   x[38] ||
                     (x[38] = a(
                       "p",
@@ -12928,11 +12966,11 @@ const Jy = Nn({
                 ])),
             N(
               qn,
-              { open: p.value, onClose: R },
+              { open: v.value, onClose: R },
               {
                 default: $t(() => [
-                  a("div", U1, [
-                    a("header", W1, [
+                  a("div", G1, [
+                    a("header", J1, [
                       x[39] ||
                         (x[39] = a(
                           "span",
@@ -12951,7 +12989,7 @@ const Jy = Nn({
                         [N(X, { name: "close" })],
                       ),
                     ]),
-                    a("label", G1, [
+                    a("label", Q1, [
                       x[40] ||
                         (x[40] = a(
                           "span",
@@ -12978,7 +13016,7 @@ const Jy = Nn({
                         [[ut, M.value.name]],
                       ),
                     ]),
-                    a("label", J1, [
+                    a("label", Y1, [
                       x[41] ||
                         (x[41] = a(
                           "span",
@@ -13004,7 +13042,7 @@ const Jy = Nn({
                         [[ut, M.value.title], [z]],
                       ),
                     ]),
-                    a("label", Q1, [
+                    a("label", z1, [
                       x[42] ||
                         (x[42] = a(
                           "span",
@@ -13029,7 +13067,7 @@ const Jy = Nn({
                         [[ut, M.value.personality], [z]],
                       ),
                     ]),
-                    a("label", Y1, [
+                    a("label", X1, [
                       x[43] ||
                         (x[43] = a(
                           "span",
@@ -13053,7 +13091,7 @@ const Jy = Nn({
                         [[ut, M.value.desc]],
                       ),
                     ]),
-                    a("label", z1, [
+                    a("label", Z1, [
                       x[44] ||
                         (x[44] = a(
                           "span",
@@ -13078,7 +13116,7 @@ const Jy = Nn({
                         [[ut, M.value.outfit], [z]],
                       ),
                     ]),
-                    a("label", X1, [
+                    a("label", t0, [
                       x[45] ||
                         (x[45] = a(
                           "span",
@@ -13103,7 +13141,7 @@ const Jy = Nn({
                         [[ut, M.value.condition], [z]],
                       ),
                     ]),
-                    a("label", Z1, [
+                    a("label", n0, [
                       et(
                         a(
                           "input",
@@ -13116,7 +13154,7 @@ const Jy = Nn({
                           null,
                           512,
                         ),
-                        [[Ln, M.value.important]],
+                        [[Sn, M.value.important]],
                       ),
                       x[46] ||
                         (x[46] = a(
@@ -13126,7 +13164,7 @@ const Jy = Nn({
                           -1,
                         )),
                     ]),
-                    a("label", t0, [
+                    a("label", e0, [
                       et(
                         a(
                           "input",
@@ -13139,7 +13177,7 @@ const Jy = Nn({
                           null,
                           512,
                         ),
-                        [[Ln, M.value.follow]],
+                        [[Sn, M.value.follow]],
                       ),
                       x[47] ||
                         (x[47] = a(
@@ -13152,7 +13190,7 @@ const Jy = Nn({
                     M.value.follow
                       ? H("", !0)
                       : (f(),
-                        g("label", n0, [
+                        g("label", i0, [
                           x[48] ||
                             (x[48] = a(
                               "span",
@@ -13179,7 +13217,7 @@ const Jy = Nn({
                             [[ut, M.value.location], [z]],
                           ),
                         ])),
-                    a("footer", e0, [
+                    a("footer", s0, [
                       a(
                         "button",
                         { class: "bbs-btn", type: "button", onClick: R },
@@ -13195,7 +13233,7 @@ const Jy = Nn({
                         },
                         "Thêm",
                         8,
-                        i0,
+                        o0,
                       ),
                     ]),
                   ]),
@@ -13207,13 +13245,13 @@ const Jy = Nn({
             ),
             N(
               qn,
-              { open: !!W.value, onClose: pt },
+              { open: !!W.value, onClose: vt },
               {
                 default: $t(() => [
                   W.value
                     ? (f(),
-                      g("div", s0, [
-                        a("header", o0, [
+                      g("div", r0, [
+                        a("header", a0, [
                           x[49] ||
                             (x[49] = a(
                               "span",
@@ -13227,12 +13265,12 @@ const Jy = Nn({
                               class: "bbs-item-act",
                               type: "button",
                               title: "Đóng",
-                              onClick: pt,
+                              onClick: vt,
                             },
                             [N(X, { name: "close" })],
                           ),
                         ]),
-                        a("label", r0, [
+                        a("label", l0, [
                           x[50] ||
                             (x[50] = a(
                               "span",
@@ -13256,7 +13294,7 @@ const Jy = Nn({
                             [[ut, W.value.name]],
                           ),
                         ]),
-                        a("label", a0, [
+                        a("label", c0, [
                           x[51] ||
                             (x[51] = a(
                               "span",
@@ -13282,7 +13320,7 @@ const Jy = Nn({
                             [[ut, W.value.title], [z]],
                           ),
                         ]),
-                        a("label", l0, [
+                        a("label", u0, [
                           x[52] ||
                             (x[52] = a(
                               "span",
@@ -13308,7 +13346,7 @@ const Jy = Nn({
                             [[ut, W.value.personality], [z]],
                           ),
                         ]),
-                        a("label", c0, [
+                        a("label", h0, [
                           x[53] ||
                             (x[53] = a(
                               "span",
@@ -13332,7 +13370,7 @@ const Jy = Nn({
                             [[ut, W.value.desc]],
                           ),
                         ]),
-                        a("label", u0, [
+                        a("label", d0, [
                           x[54] ||
                             (x[54] = a(
                               "span",
@@ -13359,7 +13397,7 @@ const Jy = Nn({
                             [[ut, W.value.outfit], [z]],
                           ),
                         ]),
-                        a("label", h0, [
+                        a("label", m0, [
                           x[55] ||
                             (x[55] = a(
                               "span",
@@ -13385,7 +13423,7 @@ const Jy = Nn({
                             [[ut, W.value.condition], [z]],
                           ),
                         ]),
-                        a("label", d0, [
+                        a("label", f0, [
                           et(
                             a(
                               "input",
@@ -13399,7 +13437,7 @@ const Jy = Nn({
                               null,
                               512,
                             ),
-                            [[Ln, W.value.important]],
+                            [[Sn, W.value.important]],
                           ),
                           x[56] ||
                             (x[56] = a(
@@ -13409,7 +13447,7 @@ const Jy = Nn({
                               -1,
                             )),
                         ]),
-                        a("label", m0, [
+                        a("label", g0, [
                           et(
                             a(
                               "input",
@@ -13423,7 +13461,7 @@ const Jy = Nn({
                               null,
                               512,
                             ),
-                            [[Ln, W.value.follow]],
+                            [[Sn, W.value.follow]],
                           ),
                           x[57] ||
                             (x[57] = a(
@@ -13436,7 +13474,7 @@ const Jy = Nn({
                         W.value.follow
                           ? H("", !0)
                           : (f(),
-                            g("label", f0, [
+                            g("label", b0, [
                               x[58] ||
                                 (x[58] = a(
                                   "span",
@@ -13463,10 +13501,10 @@ const Jy = Nn({
                                 [[ut, W.value.location], [z]],
                               ),
                             ])),
-                        a("footer", g0, [
+                        a("footer", p0, [
                           a(
                             "button",
-                            { class: "bbs-btn", type: "button", onClick: pt },
+                            { class: "bbs-btn", type: "button", onClick: vt },
                             "Hủy",
                           ),
                           a(
@@ -13479,7 +13517,7 @@ const Jy = Nn({
                             },
                             "Lưu",
                             8,
-                            b0,
+                            v0,
                           ),
                         ]),
                       ]))
@@ -13508,7 +13546,7 @@ const Jy = Nn({
               },
               {
                 default: $t(() => [
-                  yt(
+                  gt(
                     ' Xóa "' +
                       A(O.value?.name) +
                       '". Thao tác này ghi vào tóm tắt mới nhất, xóa tầng có thể hoàn tác. ',
@@ -13525,54 +13563,54 @@ const Jy = Nn({
       };
     },
   }),
-  v0 = Pn(p0, [["__scopeId", "data-v-8c93f791"]]),
-  y0 = { class: "bbs-page" },
-  k0 = { class: "bbs-section-head" },
-  _0 = ["disabled", "title"],
-  x0 = ["onClick"],
-  T0 = { class: "bbs-scene-head" },
-  w0 = ["title"],
-  S0 = { class: "bbs-scene-name" },
-  C0 = { key: 1, class: "bbs-scene-here" },
-  $0 = { key: 2, class: "bbs-scene-count" },
-  E0 = { class: "bbs-scene-acts" },
-  I0 = ["onClick"],
-  A0 = ["onClick"],
-  M0 = { key: 0, class: "bbs-scene-desc" },
-  N0 = { key: 1, class: "bbs-scene-items" },
-  P0 = { key: 0 },
-  R0 = { key: 1, class: "bbs-empty" },
-  O0 = { class: "bbs-empty-icon" },
-  L0 = {
+  k0 = Rn(y0, [["__scopeId", "data-v-8c93f791"]]),
+  _0 = { class: "bbs-page" },
+  x0 = { class: "bbs-section-head" },
+  T0 = ["disabled", "title"],
+  w0 = ["onClick"],
+  S0 = { class: "bbs-scene-head" },
+  C0 = ["title"],
+  $0 = { class: "bbs-scene-name" },
+  E0 = { key: 1, class: "bbs-scene-here" },
+  I0 = { key: 2, class: "bbs-scene-count" },
+  A0 = { class: "bbs-scene-acts" },
+  M0 = ["onClick"],
+  N0 = ["onClick"],
+  P0 = { key: 0, class: "bbs-scene-desc" },
+  R0 = { key: 1, class: "bbs-scene-items" },
+  O0 = { key: 0 },
+  L0 = { key: 1, class: "bbs-empty" },
+  B0 = { class: "bbs-empty-icon" },
+  q0 = {
     class: "bbs-modal",
     role: "dialog",
     "aria-modal": "true",
     "aria-label": "Thêm địa điểm",
   },
-  B0 = { class: "bbs-modal-head" },
-  q0 = { class: "bbs-modal-field" },
-  V0 = ["value"],
+  V0 = { class: "bbs-modal-head" },
   D0 = { class: "bbs-modal-field" },
-  j0 = { class: "bbs-modal-field" },
-  K0 = { class: "bbs-modal-foot" },
-  H0 = ["disabled"],
-  F0 = {
+  j0 = ["value"],
+  K0 = { class: "bbs-modal-field" },
+  H0 = { class: "bbs-modal-field" },
+  F0 = { class: "bbs-modal-foot" },
+  U0 = ["disabled"],
+  W0 = {
     key: 0,
     class: "bbs-modal",
     role: "dialog",
     "aria-modal": "true",
     "aria-label": "Chỉnh sửa địa điểm",
   },
-  U0 = { class: "bbs-modal-head" },
-  W0 = { class: "bbs-scene-crumb" },
-  G0 = { class: "bbs-modal-field" },
-  J0 = { class: "bbs-modal-field" },
-  Q0 = ["value"],
+  G0 = { class: "bbs-modal-head" },
+  J0 = { class: "bbs-scene-crumb" },
+  Q0 = { class: "bbs-modal-field" },
   Y0 = { class: "bbs-modal-field" },
-  z0 = { class: "bbs-modal-foot" },
-  X0 = ["disabled"],
+  z0 = ["value"],
+  X0 = { class: "bbs-modal-field" },
+  Z0 = { class: "bbs-modal-foot" },
+  t_ = ["disabled"],
   Ir = "bbs.scenes.collapsed.v1",
-  Z0 = Nn({
+  n_ = Pn({
     __name: "index",
     setup(t) {
       const n = lt(() => en.hasLeaf),
@@ -13607,9 +13645,9 @@ const Jy = Nn({
           const at = new Set(),
             F = new Map(U.scenes.map((Ct) => [Ct.id, Ct]));
           let J = F.get(c.value);
-          const bt = new Set();
-          for (; J && !bt.has(J.id);)
-            (bt.add(J.id),
+          const pt = new Set();
+          for (; J && !pt.has(J.id);)
+            (pt.add(J.id),
               at.add(J.id),
               (J = J.parentId ? F.get(J.parentId) : void 0));
           return at;
@@ -13625,42 +13663,42 @@ const Jy = Nn({
       );
       function u(at, F) {
         const J = at.trim(),
-          bt = F.trim();
-        return !J || !bt ? !1 : J.includes(bt) || bt.includes(J);
+          pt = F.trim();
+        return !J || !pt ? !1 : J.includes(pt) || pt.includes(J);
       }
       const d = lt(() => {
         const at = new Map();
-        for (const bt of U.scenes) {
-          const Ct = at.get(bt.parentId) ?? [];
-          (Ct.push(bt), at.set(bt.parentId, Ct));
+        for (const pt of U.scenes) {
+          const Ct = at.get(pt.parentId) ?? [];
+          (Ct.push(pt), at.set(pt.parentId, Ct));
         }
-        for (const bt of at.values())
-          bt.sort(
+        for (const pt of at.values())
+          pt.sort(
             (Ct, Ut) =>
               Ct.createdAt - Ut.createdAt || Ct.name.localeCompare(Ut.name),
           );
         const F = [],
-          J = (bt, Ct) => {
-            const Ut = at.get(bt) ?? [];
-            Ut.forEach((vt, Q) => {
-              const xt = at.get(vt.id) ?? [],
-                Bt = h.value.has(vt.id),
-                Jt = xt.length > 0 && o.value.has(vt.id);
+          J = (pt, Ct) => {
+            const Ut = at.get(pt) ?? [];
+            Ut.forEach((yt, Q) => {
+              const xt = at.get(yt.id) ?? [],
+                Bt = h.value.has(yt.id),
+                Jt = xt.length > 0 && o.value.has(yt.id);
               (F.push({
-                node: vt,
+                node: yt,
                 depth: Ct,
                 onCurrentPath: Bt,
-                isCurrent: vt.id === c.value,
+                isCurrent: yt.id === c.value,
                 lastChild: Q === Ut.length - 1,
                 hasChildren: xt.length > 0,
                 isCollapsed: Jt,
               }),
-                Jt || J(vt.id, Ct + 1));
+                Jt || J(yt.id, Ct + 1));
             });
           };
         return (J("", 0), F);
       });
-      function p(at) {
+      function v(at) {
         return U.items.filter((F) =>
           F.carried !== !1 || !F.location
             ? !1
@@ -13669,7 +13707,7 @@ const Jy = Nn({
       }
       function S(at) {
         const F = `${at.id}/`,
-          J = U.scenes.filter((bt) => bt.id.startsWith(F)).length;
+          J = U.scenes.filter((pt) => pt.id.startsWith(F)).length;
         return J ? `+${J}` : "";
       }
       const w = lt(() =>
@@ -13694,15 +13732,15 @@ const Jy = Nn({
           (M.value = !0),
           e || Ge(() => W.value?.focus()));
       }
-      function pt() {
+      function vt() {
         M.value = !1;
       }
       function ct() {
         const at = R.value.trim();
         if (!at || !L.value.trim()) return;
-        const F = U.scenes.find((bt) => bt.id === nt.value),
+        const F = U.scenes.find((pt) => pt.id === nt.value),
           J = F ? [...F.path, at] : [at];
-        Np(J, L.value) && (M.value = !1);
+        Rp(J, L.value) && (M.value = !1);
       }
       const O = st(null);
       function ot(at) {
@@ -13728,10 +13766,10 @@ const Jy = Nn({
           F = at?.name.trim();
         if (!at || !F || !at.desc.trim()) return;
         const J = U.scenes.find((Ut) => Ut.id === at.parentId),
-          bt = J ? [...J.path, F] : [F];
-        (bt.join("/") !== at.path.join("/")
-          ? Rp(at.path, bt, { [F]: at.desc.trim() })
-          : Pp(at.path, at.desc),
+          pt = J ? [...J.path, F] : [F];
+        (pt.join("/") !== at.path.join("/")
+          ? Lp(at.path, pt, { [F]: at.desc.trim() })
+          : Op(at.path, at.desc),
           (O.value = null));
       }
       const b = st(null);
@@ -13739,7 +13777,7 @@ const Jy = Nn({
         b.value = at;
       }
       function At() {
-        (b.value && Op(b.value.path), (b.value = null));
+        (b.value && Bp(b.value.path), (b.value = null));
       }
       const Lt = lt(() => {
         const at = b.value;
@@ -13749,8 +13787,8 @@ const Jy = Nn({
       });
       return (at, F) => (
         f(),
-        g("section", y0, [
-          a("div", k0, [
+        g("section", _0, [
+          a("div", x0, [
             F[8] ||
               (F[8] = a(
                 "h2",
@@ -13771,14 +13809,14 @@ const Jy = Nn({
               },
               [N(X, { name: "plus" })],
               8,
-              _0,
+              T0,
             ),
           ]),
           F[22] || (F[22] = a("hr", { class: "bbs-rule" }, null, -1)),
           d.value.length
             ? (f(),
               fn(
-                Cg,
+                Eg,
                 { key: 0, tag: "div", name: "scene", class: "bbs-scene-tree" },
                 {
                   default: $t(() => [
@@ -13810,17 +13848,17 @@ const Jy = Nn({
                                 null,
                                 Et(
                                   J.depth,
-                                  (bt) => (
+                                  (pt) => (
                                     f(),
                                     g(
                                       "span",
                                       {
-                                        key: bt,
+                                        key: pt,
                                         class: Tt([
                                           "bbs-scene-rail",
                                           {
                                             active:
-                                              J.onCurrentPath && bt <= J.depth,
+                                              J.onCurrentPath && pt <= J.depth,
                                           },
                                         ]),
                                       },
@@ -13838,11 +13876,11 @@ const Jy = Nn({
                                     "bbs-scene-card",
                                     { clickable: J.hasChildren },
                                   ]),
-                                  onClick: (bt) =>
+                                  onClick: (pt) =>
                                     J.hasChildren && l(J.node.id),
                                 },
                                 [
-                                  a("div", T0, [
+                                  a("div", S0, [
                                     J.hasChildren
                                       ? (f(),
                                         g(
@@ -13859,20 +13897,20 @@ const Jy = Nn({
                                           },
                                           [N(X, { name: "chevron" })],
                                           10,
-                                          w0,
+                                          C0,
                                         ))
                                       : H("", !0),
-                                    a("span", S0, A(J.node.name), 1),
+                                    a("span", $0, A(J.node.name), 1),
                                     J.isCurrent
                                       ? (f(),
-                                        g("span", C0, [
+                                        g("span", E0, [
                                           N(X, { name: "scenes" }),
-                                          F[9] || (F[9] = yt("Hiện tại", -1)),
+                                          F[9] || (F[9] = gt("Hiện tại", -1)),
                                         ]))
                                       : J.isCollapsed
-                                        ? (f(), g("span", $0, A(S(J.node)), 1))
+                                        ? (f(), g("span", I0, A(S(J.node)), 1))
                                         : H("", !0),
-                                    a("span", E0, [
+                                    a("span", A0, [
                                       a(
                                         "button",
                                         {
@@ -13880,13 +13918,13 @@ const Jy = Nn({
                                           type: "button",
                                           title: "Chỉnh sửa",
                                           onClick: pe(
-                                            (bt) => ot(J.node),
+                                            (pt) => ot(J.node),
                                             ["stop"],
                                           ),
                                         },
                                         [N(X, { name: "edit" })],
                                         8,
-                                        I0,
+                                        M0,
                                       ),
                                       a(
                                         "button",
@@ -13895,45 +13933,45 @@ const Jy = Nn({
                                           type: "button",
                                           title: "Xóa",
                                           onClick: pe(
-                                            (bt) => _t(J.node),
+                                            (pt) => _t(J.node),
                                             ["stop"],
                                           ),
                                         },
                                         [N(X, { name: "trash" })],
                                         8,
-                                        A0,
+                                        N0,
                                       ),
                                     ]),
                                   ]),
                                   J.node.desc
-                                    ? (f(), g("p", M0, A(J.node.desc), 1))
+                                    ? (f(), g("p", P0, A(J.node.desc), 1))
                                     : H("", !0),
-                                  p(J.node).length
+                                  v(J.node).length
                                     ? (f(),
-                                      g("div", N0, [
+                                      g("div", R0, [
                                         (f(!0),
                                         g(
                                           dt,
                                           null,
                                           Et(
-                                            p(J.node),
-                                            (bt) => (
+                                            v(J.node),
+                                            (pt) => (
                                               f(),
                                               g(
                                                 "span",
                                                 {
-                                                  key: bt.id,
+                                                  key: pt.id,
                                                   class: "bbs-scene-chip",
                                                 },
                                                 [
                                                   N(X, { name: "items" }),
-                                                  yt(A(bt.name), 1),
-                                                  typeof bt.qty == "number"
+                                                  gt(A(pt.name), 1),
+                                                  typeof pt.qty == "number"
                                                     ? (f(),
                                                       g(
                                                         "i",
-                                                        P0,
-                                                        "×" + A(bt.qty),
+                                                        O0,
+                                                        "×" + A(pt.qty),
                                                         1,
                                                       ))
                                                     : H("", !0),
@@ -13947,7 +13985,7 @@ const Jy = Nn({
                                     : H("", !0),
                                 ],
                                 10,
-                                x0,
+                                w0,
                               ),
                             ],
                             6,
@@ -13961,8 +13999,8 @@ const Jy = Nn({
                 },
               ))
             : (f(),
-              g("div", R0, [
-                a("span", O0, [N(X, { name: "scenes" })]),
+              g("div", L0, [
+                a("span", B0, [N(X, { name: "scenes" })]),
                 F[10] ||
                   (F[10] = a(
                     "p",
@@ -13973,11 +14011,11 @@ const Jy = Nn({
               ])),
           N(
             qn,
-            { open: M.value, onClose: pt },
+            { open: M.value, onClose: vt },
             {
               default: $t(() => [
-                a("div", L0, [
-                  a("header", B0, [
+                a("div", q0, [
+                  a("header", V0, [
                     F[11] ||
                       (F[11] = a(
                         "span",
@@ -13991,12 +14029,12 @@ const Jy = Nn({
                         class: "bbs-item-act",
                         type: "button",
                         title: "Đóng",
-                        onClick: pt,
+                        onClick: vt,
                       },
                       [N(X, { name: "close" })],
                     ),
                   ]),
-                  a("label", q0, [
+                  a("label", D0, [
                     F[13] ||
                       (F[13] = a(
                         "span",
@@ -14033,7 +14071,7 @@ const Jy = Nn({
                                   { key: J.id, value: J.id },
                                   A("　".repeat(J.depth)) + A(J.name),
                                   9,
-                                  V0,
+                                  j0,
                                 )
                               ),
                             ),
@@ -14045,7 +14083,7 @@ const Jy = Nn({
                       [[Ni, nt.value]],
                     ),
                   ]),
-                  a("label", D0, [
+                  a("label", K0, [
                     F[14] ||
                       (F[14] = a(
                         "span",
@@ -14072,7 +14110,7 @@ const Jy = Nn({
                       [[ut, R.value]],
                     ),
                   ]),
-                  a("label", j0, [
+                  a("label", H0, [
                     F[15] ||
                       (F[15] = a(
                         "span",
@@ -14096,10 +14134,10 @@ const Jy = Nn({
                       [[ut, L.value]],
                     ),
                   ]),
-                  a("footer", K0, [
+                  a("footer", F0, [
                     a(
                       "button",
-                      { class: "bbs-btn", type: "button", onClick: pt },
+                      { class: "bbs-btn", type: "button", onClick: vt },
                       "Hủy",
                     ),
                     a(
@@ -14112,7 +14150,7 @@ const Jy = Nn({
                       },
                       "Thêm",
                       8,
-                      H0,
+                      U0,
                     ),
                   ]),
                 ]),
@@ -14129,8 +14167,8 @@ const Jy = Nn({
               default: $t(() => [
                 O.value
                   ? (f(),
-                    g("div", F0, [
-                      a("header", U0, [
+                    g("div", W0, [
+                      a("header", G0, [
                         F[16] ||
                           (F[16] = a(
                             "span",
@@ -14149,8 +14187,8 @@ const Jy = Nn({
                           [N(X, { name: "close" })],
                         ),
                       ]),
-                      a("p", W0, A(O.value.path.join(" › ")), 1),
-                      a("label", G0, [
+                      a("p", J0, A(O.value.path.join(" › ")), 1),
+                      a("label", Q0, [
                         F[17] ||
                           (F[17] = a(
                             "span",
@@ -14174,7 +14212,7 @@ const Jy = Nn({
                           [[ut, O.value.name]],
                         ),
                       ]),
-                      a("label", J0, [
+                      a("label", Y0, [
                         F[19] ||
                           (F[19] = a(
                             "span",
@@ -14211,7 +14249,7 @@ const Jy = Nn({
                                       { key: J.id, value: J.id },
                                       A("　".repeat(J.depth)) + A(J.name),
                                       9,
-                                      Q0,
+                                      z0,
                                     )
                                   ),
                                 ),
@@ -14223,7 +14261,7 @@ const Jy = Nn({
                           [[Ni, O.value.parentId]],
                         ),
                       ]),
-                      a("label", Y0, [
+                      a("label", X0, [
                         F[20] ||
                           (F[20] = a(
                             "span",
@@ -14247,7 +14285,7 @@ const Jy = Nn({
                           [[ut, O.value.desc]],
                         ),
                       ]),
-                      a("footer", z0, [
+                      a("footer", Z0, [
                         a(
                           "button",
                           { class: "bbs-btn", type: "button", onClick: D },
@@ -14264,7 +14302,7 @@ const Jy = Nn({
                           },
                           "Lưu",
                           8,
-                          X0,
+                          t_,
                         ),
                       ]),
                     ]))
@@ -14293,14 +14331,14 @@ const Jy = Nn({
             },
             {
               default: $t(() => [
-                yt(" Xóa「" + A(b.value?.name) + "」", 1),
+                gt(" Xóa「" + A(b.value?.name) + "」", 1),
                 Lt.value
                   ? (f(),
                     g(
                       dt,
                       { key: 0 },
                       [
-                        yt(
+                        gt(
                           ", và " + A(Lt.value) + " địa điểm phụ bên trong",
                           1,
                         ),
@@ -14309,7 +14347,7 @@ const Jy = Nn({
                     ))
                   : H("", !0),
                 F[21] ||
-                  (F[21] = yt(
+                  (F[21] = gt(
                     "。Thao tác này ghi vào tóm tắt mới nhất, xóa tầng có thể hoàn tác. ",
                     -1,
                   )),
@@ -14323,13 +14361,13 @@ const Jy = Nn({
       );
     },
   }),
-  t_ = Pn(Z0, [["__scopeId", "data-v-2a3c1f9e"]]),
-  n_ = ["aria-expanded"],
-  e_ = { class: "bbs-collapsible-title" },
-  i_ = { class: "bbs-collapsible-outer" },
-  s_ = { class: "bbs-collapsible-inner" },
-  o_ = { class: "bbs-collapsible-body" },
-  r_ = Nn({
+  e_ = Rn(n_, [["__scopeId", "data-v-2a3c1f9e"]]),
+  i_ = ["aria-expanded"],
+  s_ = { class: "bbs-collapsible-title" },
+  o_ = { class: "bbs-collapsible-outer" },
+  r_ = { class: "bbs-collapsible-inner" },
+  a_ = { class: "bbs-collapsible-body" },
+  l_ = Pn({
     __name: "Collapsible",
     props: { title: {}, open: { type: Boolean, default: !0 } },
     setup(t) {
@@ -14349,15 +14387,15 @@ const Jy = Nn({
                 onClick: s[0] || (s[0] = (o) => (e.value = !e.value)),
               },
               [
-                a("span", e_, A(t.title), 1),
+                a("span", s_, A(t.title), 1),
                 N(X, { name: "chevron", class: "bbs-collapsible-chevron" }),
               ],
               8,
-              n_,
+              i_,
             ),
-            a("div", i_, [
-              a("div", s_, [
-                a("div", o_, [Ta(i.$slots, "default", {}, void 0)]),
+            a("div", o_, [
+              a("div", r_, [
+                a("div", a_, [Ta(i.$slots, "default", {}, void 0)]),
               ]),
             ]),
           ],
@@ -14366,8 +14404,8 @@ const Jy = Nn({
       );
     },
   }),
-  pn = Pn(r_, [["__scopeId", "data-v-6919f995"]]);
-function a_(t) {
+  pn = Rn(l_, [["__scopeId", "data-v-6919f995"]]);
+function c_(t) {
   return JSON.parse(JSON.stringify(t));
 }
 function xo(t) {
@@ -14382,10 +14420,10 @@ function xo(t) {
   }
   return t;
 }
-function l_(t, n) {
+function u_(t, n) {
   return JSON.stringify(xo(t)) === JSON.stringify(xo(n));
 }
-function Md(t) {
+function Nd(t) {
   return !!(
     t.time ||
     t.location ||
@@ -14407,7 +14445,7 @@ function Md(t) {
     t.varOps?.length
   );
 }
-function Nd(t) {
+function Pd(t) {
   const n = {};
   (t.state.time && (n.time = t.state.time),
     t.state.location &&
@@ -14460,11 +14498,11 @@ function Nd(t) {
     });
   const i = xe(null).vars;
   return (
-    l_(t.vars, i) || (n.varOps = [{ op: "set", path: "", value: a_(t.vars) }]),
+    u_(t.vars, i) || (n.varOps = [{ op: "set", path: "", value: c_(t.vars) }]),
     n
   );
 }
-function c_(t) {
+function h_(t) {
   const n = JSON.parse(JSON.stringify(t));
   if (((n.is_system = !1), n.extra && "bbs_hidden" in n.extra)) {
     const { bbs_hidden: e, ...i } = n.extra;
@@ -14472,7 +14510,7 @@ function c_(t) {
   }
   return n;
 }
-function u_() {
+function d_() {
   const n = ft()?.chat ?? [],
     e = vi(n);
   let i = 0,
@@ -14482,16 +14520,16 @@ function u_() {
     c && ((c.is_system && c.extra?.type) || (i++, c.is_user || s++));
   }
   const o = Bs(Ls(U.summaries, n, e)),
-    r = Nd(xe(n, e));
+    r = Pd(xe(n, e));
   return {
     carryStart: e,
     carryCount: i,
     aiCount: s,
     recapLen: o.length,
-    hasData: n.length > 0 && (i > 0 || o.length > 0 || Md(r)),
+    hasData: n.length > 0 && (i > 0 || o.length > 0 || Nd(r)),
   };
 }
-async function h_() {
+async function m_() {
   const t = ft();
   if (!t) return (zt("Ngữ cảnh SillyTavern không khả dụng", "error"), !1);
   if (t.groupId)
@@ -14508,7 +14546,7 @@ async function h_() {
       zt("Cuộc trò chuyện hiện tại không có dữ liệu để mang theo", "warning"),
       !1
     );
-  const e = await em();
+  const e = await im();
   if (!e)
     return (
       zt("Không thể tạo đối thoại mới (Giao diện ST không khả dụng)", "error"),
@@ -14518,25 +14556,25 @@ async function h_() {
     s = t.getCurrentChatId?.() ?? null,
     o = ja(),
     r = xe(n, i),
-    l = Nd(r),
+    l = Pd(r),
     c = Bs(Ls(U.summaries, n, i)),
     h = r.state.time || Uo(n) || "",
     u = [];
   for (let S = i; S < n.length; S++) {
     const w = n[S];
-    w && ((w.is_system && w.extra?.type) || u.push(c_(w)));
+    w && ((w.is_system && w.extra?.type) || u.push(h_(w)));
   }
-  if (!c && !u.length && !Md(l))
+  if (!c && !u.length && !Nd(l))
     return (
       zt("Cuộc trò chuyện hiện tại không có dữ liệu để mang theo", "warning"),
       !1
     );
   let d = null;
-  const p = pi();
-  if (C.vector.enabled && p && s)
+  const v = pi();
+  if (C.vector.enabled && v && s)
     try {
       if (await td()) {
-        const { hash: S } = await hv(p, s);
+        const { hash: S } = await mv(v, s);
         d = S;
       }
     } catch (S) {
@@ -14603,7 +14641,7 @@ async function h_() {
     for (const R of u) w.push(R);
     if (d || o.length) {
       const R = S.chatMetadata;
-      d ? Bv(R, o, d) : (R[Da] = [...o]);
+      d ? Vv(R, o, d) : (R[Da] = [...o]);
     }
     return (
       wn(),
@@ -14632,12 +14670,12 @@ async function h_() {
 function Ae(t) {
   return t?.horae_meta;
 }
-function Pd(t) {
+function Rd(t) {
   const n = (t?.story_date ?? "").trim(),
     e = (t?.story_time ?? "").trim();
   return [n, e].filter(Boolean).join(" ").trim();
 }
-function Rd(t) {
+function Od(t) {
   return t
     ? (t.events ?? (t.event ? [t.event] : []))
         .filter((e) => e && !e.isSummary && e.level !== "Tóm tắt")
@@ -14651,24 +14689,24 @@ function Rd(t) {
         .trim()
     : "";
 }
-const d_ = "cái chiếc lượng con bức thanh viên bộ quyển cuốn tấm vỉ",
+const f_ = "cái chiếc lượng con bức thanh viên bộ quyển cuốn tấm vỉ",
   wc = /[(（]\s*(\d+(?:\.\d+)?)\s*[a-zA-Z一-鿿]*\s*[)）]\s*$/,
-  m_ = new RegExp(`[(（][${d_}][)）]\\s*$`),
-  f_ =
+  g_ = new RegExp(`[(（][${f_}][)）]\\s*$`),
+  b_ =
     /[(（](已消耗|已用完|已销毁|已銷毀|消耗殆尽|消耗殆盡|消耗|用尽|用盡|consumed|used\s*up|destroyed|depleted|đã\s*tiêu\s*hao|đã\s*dùng\s*hết|đã\s*phá\s*hủy|đã\s*tiêu\s*hết|tiêu\s*hao|dùng\s*hết|cạn\s*kiệt)[)）]/i,
-  g_ = /[(（]\s*0\s*[a-zA-Z一-鿿]*\s*[)）]\s*$/;
+  p_ = /[(（]\s*0\s*[a-zA-Z一-鿿]*\s*[)）]\s*$/;
 function Sc(t) {
   let n = String(t ?? "").trim();
-  if (g_.test(n) || f_.test(n)) return { name: n, consumed: !0 };
+  if (p_.test(n) || b_.test(n)) return { name: n, consumed: !0 };
   let e;
   const i = n.match(wc);
   if (i) {
     const s = Number(i[1]);
     (Number.isFinite(s) && (e = s), (n = n.replace(wc, "").trim()));
   }
-  return ((n = n.replace(m_, "").trim()), { name: n, qty: e, consumed: !1 });
+  return ((n = n.replace(g_, "").trim()), { name: n, qty: e, consumed: !1 });
 }
-function Od(t) {
+function Ld(t) {
   const n = new Map(),
     e = (i) => i.trim().toLowerCase();
   for (let i = 0; i < t.length; i++) {
@@ -14684,11 +14722,11 @@ function Od(t) {
             continue;
           }
           const d = (r?.location ?? "").trim(),
-            p = (r?.description ?? "").trim(),
+            v = (r?.description ?? "").trim(),
             S = n.get(u) ?? { name: l };
           ((S.name = l),
             c !== void 0 && (S.qty = c),
-            p && (S.desc = p),
+            v && (S.desc = v),
             d && ((S.location = d), (S.carried = !1)),
             n.set(u, S));
         }
@@ -14700,7 +14738,7 @@ function Od(t) {
   }
   return [...n.values()];
 }
-function Ld(t) {
+function Bd(t) {
   const n = new Set(),
     e = (o) => String(o ?? "").trim();
   for (const o of t) {
@@ -14725,7 +14763,7 @@ function Ld(t) {
   }
   return s.length ? { add: s } : void 0;
 }
-function Bd(t) {
+function qd(t) {
   const n = [],
     e = (i, s) => {
       if (i?.id) {
@@ -14736,28 +14774,28 @@ function Bd(t) {
   for (const i of t) e(i, null);
   return n;
 }
-function qd() {
+function Vd() {
   const t = ft(),
     n = t?.getCurrentChatId?.() ? (t?.chat ?? []) : [];
   let e = 0;
-  for (let c = 0; c < n.length; c++) Tn(n[c]) && Rd(Ae(n[c])) && e++;
+  for (let c = 0; c < n.length; c++) Tn(n[c]) && Od(Ae(n[c])) && e++;
   const i = (n[0] && Ae(n[0])?.autoSummaries) || [],
-    s = Bd(i).length,
-    o = Od(n),
-    r = Ld(n);
+    s = qd(i).length,
+    o = Ld(n),
+    r = Bd(n);
   return {
     hasData: e > 0 || s > 0 || o.length > 0 || !!r?.add?.length,
     leafFloors: e,
     summaryCount: s,
     itemCount: o.length,
     planCount: r?.add?.length ?? 0,
-    willOverwrite: U.summaries.length > 0 || b_(n),
+    willOverwrite: U.summaries.length > 0 || v_(n),
   };
 }
-function b_(t) {
+function v_(t) {
   return t.some((n) => !!n?.extra?.bbs_leaf);
 }
-async function p_() {
+async function y_() {
   const t = ft();
   if (!t) return (zt("Ngữ cảnh SillyTavern không khả dụng", "error"), !1);
   if (!t.getCurrentChatId?.())
@@ -14774,7 +14812,7 @@ async function p_() {
       ),
       !1
     );
-  if (!qd().hasData)
+  if (!Vd().hasData)
     return (
       zt(
         "Không phát hiện dữ liệu cũ Horae trong cuộc trò chuyện hiện tại",
@@ -14788,7 +14826,7 @@ async function p_() {
     const s = new Map();
     let o = "";
     for (const R of i) {
-      const L = Pd(Ae(n[R])?.timestamp);
+      const L = Rd(Ae(n[R])?.timestamp);
       (L && (o = L), s.set(R, o));
     }
     const r = new Map();
@@ -14796,15 +14834,15 @@ async function p_() {
       c = -1;
     for (let R = 0; R < i.length; R++) {
       const L = i[R],
-        W = Rd(Ae(n[L])),
+        W = Od(Ae(n[L])),
         j = s.get(L) || "",
-        pt = l || j;
+        vt = l || j;
       if (W) {
         const ct = {
           id: ko(),
           text: W,
           delta: {},
-          timeStart: pt || void 0,
+          timeStart: vt || void 0,
           timeEnd: j || void 0,
           createdAt: Date.now() + R,
           swipe: typeof n[L].swipe_id == "number" ? n[L].swipe_id : 0,
@@ -14816,9 +14854,9 @@ async function p_() {
       }
       j && (l = j);
     }
-    const h = Od(n),
-      u = Ld(n),
-      d = k_(n);
+    const h = Ld(n),
+      u = Bd(n),
+      d = x_(n);
     if (c < 0 && i.length) {
       const R = i[i.length - 1],
         L = {
@@ -14843,8 +14881,8 @@ async function p_() {
         d.time && (L.time = d.time),
         d.location && (L.location = d.location));
     }
-    const p = (n[0] && Ae(n[0])?.autoSummaries) || [],
-      S = Bd(p),
+    const v = (n[0] && Ae(n[0])?.autoSummaries) || [],
+      S = qd(v),
       w = new Map();
     for (const { entry: R, parentId: L } of S)
       if (L) {
@@ -14855,18 +14893,18 @@ async function p_() {
     let nt = 0;
     for (const { entry: R } of S) {
       const L = String(R.id),
-        W = v_(R.depth),
+        W = k_(R.depth),
         j = w.get(L) ?? [],
-        pt = j.map((x) => x.range).filter(Boolean),
+        vt = j.map((x) => x.range).filter(Boolean),
         ct = j.map((x) => String(x.id)),
         O = R.range;
       if (O)
         for (let x = O[0]; x <= O[1]; x++) {
           const z = r.get(x);
-          z && (pt.some(([b, _t]) => x >= b && x <= _t) || ct.push(z));
+          z && (vt.some(([b, _t]) => x >= b && x <= _t) || ct.push(z));
         }
       if (!ct.length) continue;
-      const { start: ot, end: D } = y_(O, s, r);
+      const { start: ot, end: D } = __(O, s, r);
       M.push({
         id: L,
         text: (R.summaryText ?? "").trim(),
@@ -14884,7 +14922,7 @@ async function p_() {
       Ze(),
       Go(),
       typeof t.saveMetadata == "function" && (await t.saveMetadata()),
-      await vd(),
+      await yd(),
       zt(
         `Di chuyển hoàn tất: ${r.size} lá / ${M.length} tóm tắt / ${h.length} vật phẩm / ${u?.add?.length ?? 0} kế hoạch`,
         "success",
@@ -14902,11 +14940,11 @@ async function p_() {
     );
   }
 }
-function v_(t) {
+function k_(t) {
   const n = typeof t == "number" ? t : parseInt(String(t ?? ""), 10);
   return Number.isFinite(n) && n >= 1 ? n : 1;
 }
-function y_(t, n, e) {
+function __(t, n, e) {
   if (!t) return { start: "", end: "" };
   let i = "",
     s = "";
@@ -14917,23 +14955,23 @@ function y_(t, n, e) {
   }
   return { start: i, end: s };
 }
-function k_(t) {
+function x_(t) {
   let n = "",
     e = "";
   for (const i of t) {
     const s = Ae(i);
     if (!s || s._skipHorae) continue;
-    const o = Pd(s.timestamp);
+    const o = Rd(s.timestamp);
     o && (n = o);
     const r = (s.scene?.location ?? "").trim();
     r && (e = r);
   }
   return { time: n, location: e };
 }
-const __ = 256,
-  x_ = 0.85,
+const T_ = 256,
+  w_ = 0.85,
   Cc = 2 * 1024 * 1024;
-function Vd(t) {
+function Dd(t) {
   return new Promise((n, e) => {
     const i = new FileReader();
     ((i.onload = () => n(String(i.result))),
@@ -14941,13 +14979,13 @@ function Vd(t) {
       i.readAsDataURL(t));
   });
 }
-function Dd(t) {
+function jd(t) {
   return t.split(",")[1] ?? "";
 }
-function T_(t) {
+function S_(t) {
   return t.type === "image/gif" || /\.gif$/i.test(t.name);
 }
-function w_(t) {
+function C_(t) {
   return new Promise((n, e) => {
     const i = new Image();
     ((i.onload = () => n(i)),
@@ -14955,10 +14993,10 @@ function w_(t) {
       (i.src = t));
   });
 }
-async function S_(t) {
-  const n = await Vd(t),
-    e = await w_(n),
-    i = Math.min(1, __ / Math.max(e.width, e.height)),
+async function $_(t) {
+  const n = await Dd(t),
+    e = await C_(n),
+    i = Math.min(1, T_ / Math.max(e.width, e.height)),
     s = Math.max(1, Math.round(e.width * i)),
     o = Math.max(1, Math.round(e.height * i)),
     r = document.createElement("canvas");
@@ -14966,21 +15004,21 @@ async function S_(t) {
   const l = r.getContext("2d");
   if (!l) throw new Error("canvas không khả dụng");
   l.drawImage(e, 0, 0, s, o);
-  const c = r.toDataURL("image/webp", x_);
-  return Dd(c);
+  const c = r.toDataURL("image/webp", w_);
+  return jd(c);
 }
-let C_ = 0;
-async function $_(t) {
+let E_ = 0;
+async function I_(t) {
   if (!t.type.startsWith("image/"))
     throw new Error("Vui lòng chọn tập tin hình ảnh");
   let n, e;
-  if (T_(t)) {
+  if (S_(t)) {
     if (t.size > Cc)
       throw new Error(
         `GIF không được vượt quá ${Math.round(Cc / 1024 / 1024)}MB`,
       );
-    ((n = Dd(await Vd(t))), (e = "gif"));
-  } else ((n = await S_(t)), (e = "webp"));
+    ((n = jd(await Dd(t))), (e = "gif"));
+  } else ((n = await $_(t)), (e = "webp"));
   if (!n) throw new Error("Xử lý hình ảnh thất bại");
   const s = ft()?.getRequestHeaders?.();
   if (!s) throw new Error("SillyTavern chưa sẵn sàng, vui lòng thử lại sau");
@@ -14991,7 +15029,7 @@ async function $_(t) {
       image: n,
       format: e,
       ch_name: "baibai_book",
-      filename: `orb_${++C_}`,
+      filename: `orb_${++E_}`,
     }),
   });
   if (!o.ok) {
@@ -15005,229 +15043,230 @@ async function $_(t) {
   if (!r.path) throw new Error("Máy chủ không trả về đường dẫn hình ảnh");
   return r.path;
 }
-const E_ = { class: "bbs-page" },
-  I_ = { class: "bbs-page-head" },
-  A_ = { class: "bbs-ver-row" },
-  M_ = ["disabled", "title"],
-  N_ = ["disabled", "title"],
-  P_ = ["aria-checked", "title"],
-  R_ = { class: "bbs-sections" },
-  O_ = { class: "bbs-field" },
-  L_ = { class: "bbs-segmented bbs-segmented-wrap" },
-  B_ = ["onClick"],
-  q_ = { class: "bbs-field" },
-  V_ = { class: "bbs-segmented" },
-  D_ = ["onClick"],
-  j_ = { class: "bbs-switch-row" },
-  K_ = { class: "bbs-switch-row" },
+const A_ = { class: "bbs-page" },
+  M_ = { class: "bbs-page-head" },
+  N_ = { class: "bbs-ver-row" },
+  P_ = ["disabled", "title"],
+  R_ = ["disabled", "title"],
+  O_ = ["aria-checked", "title"],
+  L_ = { class: "bbs-sections" },
+  B_ = { class: "bbs-field" },
+  q_ = { class: "bbs-segmented bbs-segmented-wrap" },
+  V_ = ["onClick"],
+  D_ = { class: "bbs-field" },
+  j_ = { class: "bbs-segmented" },
+  K_ = ["onClick"],
   H_ = { class: "bbs-switch-row" },
   F_ = { class: "bbs-switch-row" },
   U_ = { class: "bbs-switch-row" },
-  W_ = { key: 0, class: "bbs-field" },
-  G_ = { class: "bbs-segmented" },
-  J_ = ["onClick"],
-  Q_ = { key: 1, class: "bbs-field" },
-  Y_ = { class: "bbs-field-head" },
-  z_ = { class: "bbs-field-value" },
-  X_ = { key: 2, class: "bbs-field" },
-  Z_ = { class: "bbs-field-head" },
-  tx = { class: "bbs-field-value" },
-  nx = { key: 3, class: "bbs-orb-config" },
-  ex = ["src"],
-  ix = { class: "bbs-orb-config-actions" },
-  sx = ["disabled"],
-  ox = { key: 4, class: "bbs-field-hint" },
-  rx = { class: "bbs-field bbs-assign" },
-  ax = { class: "bbs-assign-row" },
-  lx = ["value"],
+  W_ = { class: "bbs-switch-row" },
+  G_ = { class: "bbs-switch-row" },
+  J_ = { key: 0, class: "bbs-field" },
+  Q_ = { class: "bbs-segmented" },
+  Y_ = ["onClick"],
+  z_ = { key: 1, class: "bbs-field" },
+  X_ = { class: "bbs-field-head" },
+  Z_ = { class: "bbs-field-value" },
+  tx = { key: 2, class: "bbs-field" },
+  nx = { class: "bbs-field-head" },
+  ex = { class: "bbs-field-value" },
+  ix = { key: 3, class: "bbs-orb-config" },
+  sx = ["src"],
+  ox = { class: "bbs-orb-config-actions" },
+  rx = ["disabled"],
+  ax = { key: 4, class: "bbs-field-hint" },
+  lx = { class: "bbs-field bbs-assign" },
   cx = { class: "bbs-assign-row" },
   ux = ["value"],
-  hx = { class: "bbs-channel-bar" },
-  dx = { key: 0, class: "bbs-channel-list" },
-  mx = ["onClick"],
-  fx = { class: "bbs-channel-item-name" },
-  gx = { class: "bbs-channel-item-model" },
-  bx = { key: 1, class: "bbs-field-hint" },
-  px = { class: "bbs-switch-row" },
-  vx = { class: "bbs-num-row" },
-  yx = { class: "bbs-num-row" },
+  hx = { class: "bbs-assign-row" },
+  dx = ["value"],
+  mx = { class: "bbs-channel-bar" },
+  fx = { key: 0, class: "bbs-channel-list" },
+  gx = ["onClick"],
+  bx = { class: "bbs-channel-item-name" },
+  px = { class: "bbs-channel-item-model" },
+  vx = { key: 1, class: "bbs-field-hint" },
+  yx = { class: "bbs-switch-row" },
   kx = { class: "bbs-num-row" },
   _x = { class: "bbs-num-row" },
   xx = { class: "bbs-num-row" },
   Tx = { class: "bbs-num-row" },
   wx = { class: "bbs-num-row" },
   Sx = { class: "bbs-num-row" },
-  Cx = { class: "bbs-channel-bar" },
-  $x = { class: "bbs-field-label" },
-  Ex = { key: 0, class: "bbs-exclude-chips" },
-  Ix = { class: "bbs-exclude-chip-name" },
-  Ax = ["onClick"],
-  Mx = { key: 1, class: "bbs-field-hint" },
-  Nx = { class: "bbs-channel-bar" },
-  Px = { class: "bbs-field-label" },
-  Rx = { key: 0, class: "bbs-exclude-chips" },
-  Ox = { class: "bbs-exclude-chip-name" },
-  Lx = ["onClick"],
-  Bx = { key: 1, class: "bbs-field-hint" },
-  qx = { class: "bbs-striptag-bar" },
-  Vx = ["onKeydown"],
-  Dx = { key: 2, class: "bbs-exclude-chips" },
-  jx = { class: "bbs-exclude-chip-name" },
-  Kx = ["onClick"],
-  Hx = { key: 3, class: "bbs-field-hint" },
-  Fx = { class: "bbs-striptag-bar" },
-  Ux = ["onKeydown"],
-  Wx = { key: 0, class: "bbs-exclude-chips" },
-  Gx = { class: "bbs-exclude-chip-name" },
-  Jx = ["onClick"],
-  Qx = { key: 1, class: "bbs-field-hint" },
-  Yx = { class: "bbs-prompt-list" },
+  Cx = { class: "bbs-num-row" },
+  $x = { class: "bbs-num-row" },
+  Ex = { class: "bbs-channel-bar" },
+  Ix = { class: "bbs-field-label" },
+  Ax = { key: 0, class: "bbs-exclude-chips" },
+  Mx = { class: "bbs-exclude-chip-name" },
+  Nx = ["onClick"],
+  Px = { key: 1, class: "bbs-field-hint" },
+  Rx = { class: "bbs-switch-row" },
+  Ox = { class: "bbs-channel-bar" },
+  Lx = { class: "bbs-field-label" },
+  Bx = { key: 0, class: "bbs-exclude-chips" },
+  qx = { class: "bbs-exclude-chip-name" },
+  Vx = ["onClick"],
+  Dx = { key: 1, class: "bbs-field-hint" },
+  jx = { class: "bbs-striptag-bar" },
+  Kx = ["onKeydown"],
+  Hx = { key: 2, class: "bbs-exclude-chips" },
+  Fx = { class: "bbs-exclude-chip-name" },
+  Ux = ["onClick"],
+  Wx = { key: 3, class: "bbs-field-hint" },
+  Gx = { class: "bbs-striptag-bar" },
+  Jx = ["onKeydown"],
+  Qx = { key: 0, class: "bbs-exclude-chips" },
+  Yx = { class: "bbs-exclude-chip-name" },
   zx = ["onClick"],
-  Xx = { class: "bbs-prompt-name" },
-  Zx = { class: "bbs-switch-row bbs-vec-enable" },
-  tT = ["aria-expanded", "onClick"],
-  nT = { class: "bbs-field-label" },
-  eT = { class: "bbs-vec-ep-outer" },
-  iT = { class: "bbs-vec-ep-inner" },
-  sT = { class: "bbs-vec-ep-body" },
-  oT = { key: 0, class: "bbs-field-hint" },
-  rT = { class: "bbs-modal-field" },
-  aT = ["onUpdate:modelValue", "placeholder", "disabled"],
-  lT = { class: "bbs-modal-field" },
-  cT = { class: "bbs-model-row" },
-  uT = ["onUpdate:modelValue", "type", "placeholder", "disabled"],
-  hT = ["title", "onClick"],
-  dT = { class: "bbs-modal-field" },
-  mT = { class: "bbs-model-row" },
-  fT = { class: "bbs-combo" },
-  gT = ["onUpdate:modelValue", "placeholder", "disabled", "onFocus", "onInput"],
-  bT = { key: 1, class: "bbs-combo-menu" },
-  pT = { key: 0, class: "bbs-combo-empty" },
-  vT = ["onMousedown"],
-  yT = ["title", "disabled", "onClick"],
-  kT = { key: 1, class: "bbs-field-hint" },
-  _T = { class: "bbs-vec-io" },
-  xT = { class: "bbs-vec-io-item" },
-  TT = ["onUpdate:modelValue", "disabled"],
-  wT = { class: "bbs-vec-io-item" },
-  ST = ["onUpdate:modelValue", "disabled"],
-  CT = { class: "bbs-num-row" },
-  $T = ["disabled"],
-  ET = { class: "bbs-num-row" },
-  IT = ["disabled"],
-  AT = { class: "bbs-num-row" },
-  MT = ["disabled"],
-  NT = { class: "bbs-num-row" },
-  PT = ["disabled"],
-  RT = { class: "bbs-num-row" },
-  OT = ["disabled"],
-  LT = { class: "bbs-num-row" },
-  BT = ["disabled"],
-  qT = { class: "bbs-vec-head" },
-  VT = { key: 0, class: "bbs-field-hint" },
-  DT = { class: "bbs-vec-index-actions" },
-  jT = ["disabled"],
-  KT = ["disabled"],
-  HT = { key: 1, class: "bbs-field-hint" },
-  FT = { key: 0, class: "bbs-field-hint" },
-  UT = { key: 1, class: "bbs-dbg" },
-  WT = { class: "bbs-dbg-status-text" },
-  GT = { class: "bbs-dbg-time" },
-  JT = { key: 0, class: "bbs-dbg-intent" },
-  QT = { class: "bbs-dbg-intent-text" },
-  YT = { key: 1, class: "bbs-dbg-qlist" },
-  zT = { class: "bbs-dbg-qno" },
-  XT = { class: "bbs-dbg-qtext" },
-  ZT = { key: 2, class: "bbs-dbg-empty" },
-  tw = { key: 0, class: "bbs-dbg-cards" },
-  nw = { class: "bbs-dbg-card-top" },
-  ew = ["title"],
-  iw = { key: 0, class: "bbs-dbg-when" },
-  sw = { class: "bbs-dbg-num" },
-  ow = { class: "bbs-dbg-bar" },
-  rw = { class: "bbs-dbg-prev" },
-  aw = { key: 1, class: "bbs-dbg-empty" },
-  lw = { key: 0, class: "bbs-dbg-cards" },
-  cw = { class: "bbs-dbg-card-top" },
-  uw = { key: 0, class: "bbs-dbg-when" },
-  hw = { class: "bbs-dbg-num" },
-  dw = { class: "bbs-dbg-prev" },
-  mw = { key: 1, class: "bbs-dbg-empty" },
-  fw = { key: 0, class: "bbs-dbg-pre" },
-  gw = { key: 1, class: "bbs-dbg-empty" },
-  bw = { key: 0, class: "bbs-field-hint" },
-  pw = ["disabled"],
-  vw = { key: 1, class: "bbs-field-hint" },
+  Xx = { key: 1, class: "bbs-field-hint" },
+  Zx = { class: "bbs-prompt-list" },
+  tT = ["onClick"],
+  nT = { class: "bbs-prompt-name" },
+  eT = { class: "bbs-switch-row bbs-vec-enable" },
+  iT = ["aria-expanded", "onClick"],
+  sT = { class: "bbs-field-label" },
+  oT = { class: "bbs-vec-ep-outer" },
+  rT = { class: "bbs-vec-ep-inner" },
+  aT = { class: "bbs-vec-ep-body" },
+  lT = { key: 0, class: "bbs-field-hint" },
+  cT = { class: "bbs-modal-field" },
+  uT = ["onUpdate:modelValue", "placeholder", "disabled"],
+  hT = { class: "bbs-modal-field" },
+  dT = { class: "bbs-model-row" },
+  mT = ["onUpdate:modelValue", "type", "placeholder", "disabled"],
+  fT = ["title", "onClick"],
+  gT = { class: "bbs-modal-field" },
+  bT = { class: "bbs-model-row" },
+  pT = { class: "bbs-combo" },
+  vT = ["onUpdate:modelValue", "placeholder", "disabled", "onFocus", "onInput"],
+  yT = { key: 1, class: "bbs-combo-menu" },
+  kT = { key: 0, class: "bbs-combo-empty" },
+  _T = ["onMousedown"],
+  xT = ["title", "disabled", "onClick"],
+  TT = { key: 1, class: "bbs-field-hint" },
+  wT = { class: "bbs-vec-io" },
+  ST = { class: "bbs-vec-io-item" },
+  CT = ["onUpdate:modelValue", "disabled"],
+  $T = { class: "bbs-vec-io-item" },
+  ET = ["onUpdate:modelValue", "disabled"],
+  IT = { class: "bbs-num-row" },
+  AT = ["disabled"],
+  MT = { class: "bbs-num-row" },
+  NT = ["disabled"],
+  PT = { class: "bbs-num-row" },
+  RT = ["disabled"],
+  OT = { class: "bbs-num-row" },
+  LT = ["disabled"],
+  BT = { class: "bbs-num-row" },
+  qT = ["disabled"],
+  VT = { class: "bbs-num-row" },
+  DT = ["disabled"],
+  jT = { class: "bbs-vec-head" },
+  KT = { key: 0, class: "bbs-field-hint" },
+  HT = { class: "bbs-vec-index-actions" },
+  FT = ["disabled"],
+  UT = ["disabled"],
+  WT = { key: 1, class: "bbs-field-hint" },
+  GT = { key: 0, class: "bbs-field-hint" },
+  JT = { key: 1, class: "bbs-dbg" },
+  QT = { class: "bbs-dbg-status-text" },
+  YT = { class: "bbs-dbg-time" },
+  zT = { key: 0, class: "bbs-dbg-intent" },
+  XT = { class: "bbs-dbg-intent-text" },
+  ZT = { key: 1, class: "bbs-dbg-qlist" },
+  tw = { class: "bbs-dbg-qno" },
+  nw = { class: "bbs-dbg-qtext" },
+  ew = { key: 2, class: "bbs-dbg-empty" },
+  iw = { key: 0, class: "bbs-dbg-cards" },
+  sw = { class: "bbs-dbg-card-top" },
+  ow = ["title"],
+  rw = { key: 0, class: "bbs-dbg-when" },
+  aw = { class: "bbs-dbg-num" },
+  lw = { class: "bbs-dbg-bar" },
+  cw = { class: "bbs-dbg-prev" },
+  uw = { key: 1, class: "bbs-dbg-empty" },
+  hw = { key: 0, class: "bbs-dbg-cards" },
+  dw = { class: "bbs-dbg-card-top" },
+  mw = { key: 0, class: "bbs-dbg-when" },
+  fw = { class: "bbs-dbg-num" },
+  gw = { class: "bbs-dbg-prev" },
+  bw = { key: 1, class: "bbs-dbg-empty" },
+  pw = { key: 0, class: "bbs-dbg-pre" },
+  vw = { key: 1, class: "bbs-dbg-empty" },
   yw = { key: 0, class: "bbs-field-hint" },
-  kw = { key: 0 },
-  _w = ["disabled"],
-  xw = { key: 1, class: "bbs-field-hint" },
-  Tw = {
+  kw = ["disabled"],
+  _w = { key: 1, class: "bbs-field-hint" },
+  xw = { key: 0, class: "bbs-field-hint" },
+  Tw = { key: 0 },
+  ww = ["disabled"],
+  Sw = { key: 1, class: "bbs-field-hint" },
+  Cw = {
     key: 0,
     class: "bbs-modal",
     role: "dialog",
     "aria-modal": "true",
     "aria-label": "Chỉnh sửa kênh",
   },
-  ww = { class: "bbs-modal-head" },
-  Sw = { class: "bbs-modal-field" },
-  Cw = { class: "bbs-modal-field" },
-  $w = { class: "bbs-modal-field" },
-  Ew = { class: "bbs-model-row" },
-  Iw = ["type"],
-  Aw = ["title", "aria-pressed"],
-  Mw = { class: "bbs-modal-field" },
-  Nw = { class: "bbs-model-row" },
-  Pw = { class: "bbs-combo" },
-  Rw = ["placeholder"],
-  Ow = { key: 1, class: "bbs-combo-menu" },
-  Lw = { key: 0, class: "bbs-combo-empty" },
-  Bw = ["onMousedown"],
-  qw = ["title", "disabled"],
-  Vw = { class: "bbs-channel-row" },
-  Dw = { class: "bbs-mini-field" },
-  jw = { class: "bbs-mini-field" },
-  Kw = { class: "bbs-switch-row" },
-  Hw = { class: "bbs-switch-row" },
-  Fw = { class: "bbs-modal-field" },
-  Uw = { key: 0, class: "bbs-channel-test" },
-  Ww = { class: "bbs-modal-foot" },
-  Gw = ["aria-label"],
-  Jw = { class: "bbs-modal-head" },
-  Qw = { class: "bbs-modal-title" },
-  Yw = { class: "bbs-modal-label" },
-  zw = { class: "bbs-macro-bar" },
-  Xw = ["title", "onClick"],
-  Zw = { class: "bbs-modal-foot" },
-  tS = {
+  $w = { class: "bbs-modal-head" },
+  Ew = { class: "bbs-modal-field" },
+  Iw = { class: "bbs-modal-field" },
+  Aw = { class: "bbs-modal-field" },
+  Mw = { class: "bbs-model-row" },
+  Nw = ["type"],
+  Pw = ["title", "aria-pressed"],
+  Rw = { class: "bbs-modal-field" },
+  Ow = { class: "bbs-model-row" },
+  Lw = { class: "bbs-combo" },
+  Bw = ["placeholder"],
+  qw = { key: 1, class: "bbs-combo-menu" },
+  Vw = { key: 0, class: "bbs-combo-empty" },
+  Dw = ["onMousedown"],
+  jw = ["title", "disabled"],
+  Kw = { class: "bbs-channel-row" },
+  Hw = { class: "bbs-mini-field" },
+  Fw = { class: "bbs-mini-field" },
+  Uw = { class: "bbs-switch-row" },
+  Ww = { class: "bbs-switch-row" },
+  Gw = { class: "bbs-modal-field" },
+  Jw = { key: 0, class: "bbs-channel-test" },
+  Qw = { class: "bbs-modal-foot" },
+  Yw = ["aria-label"],
+  zw = { class: "bbs-modal-head" },
+  Xw = { class: "bbs-modal-title" },
+  Zw = { class: "bbs-modal-label" },
+  tS = { class: "bbs-macro-bar" },
+  nS = ["title", "onClick"],
+  eS = { class: "bbs-modal-foot" },
+  iS = {
     class: "bbs-modal",
     role: "dialog",
     "aria-modal": "true",
     "aria-label": "Chỉnh sửa danh sách loại trừ",
   },
-  nS = { class: "bbs-modal-head" },
-  eS = { class: "bbs-exclude-list" },
-  iS = ["checked", "onChange"],
-  sS = { class: "bbs-exclude-row-name" },
-  oS = { key: 0, class: "bbs-field-hint" },
-  rS = { key: 1, class: "bbs-field-hint" },
-  aS = { class: "bbs-modal-foot" },
-  lS = { class: "bbs-exclude-count" },
-  cS = {
+  sS = { class: "bbs-modal-head" },
+  oS = { class: "bbs-exclude-list" },
+  rS = ["checked", "onChange"],
+  aS = { class: "bbs-exclude-row-name" },
+  lS = { key: 0, class: "bbs-field-hint" },
+  cS = { key: 1, class: "bbs-field-hint" },
+  uS = { class: "bbs-modal-foot" },
+  hS = { class: "bbs-exclude-count" },
+  dS = {
     class: "bbs-modal",
     role: "dialog",
     "aria-modal": "true",
     "aria-label": "Chỉnh sửa danh sách loại trừ thế giới thư",
   },
-  uS = { class: "bbs-modal-head" },
-  hS = { class: "bbs-exclude-list" },
-  dS = ["checked", "onChange"],
-  mS = { class: "bbs-exclude-row-name" },
-  fS = { key: 0, class: "bbs-field-hint" },
-  gS = { key: 1, class: "bbs-field-hint" },
-  bS = { class: "bbs-modal-foot" },
-  pS = { class: "bbs-exclude-count" },
-  vS = Nn({
+  mS = { class: "bbs-modal-head" },
+  fS = { class: "bbs-exclude-list" },
+  gS = ["checked", "onChange"],
+  bS = { class: "bbs-exclude-row-name" },
+  pS = { key: 0, class: "bbs-field-hint" },
+  vS = { key: 1, class: "bbs-field-hint" },
+  yS = { class: "bbs-modal-foot" },
+  kS = { class: "bbs-exclude-count" },
+  _S = Pn({
     __name: "index",
     setup(t) {
       const n = [
@@ -15242,11 +15281,11 @@ const E_ = { class: "bbs-page" },
       }
       async function o(q) {
         const m = q.target,
-          v = m.files?.[0];
-        if (((m.value = ""), !!v)) {
+          p = m.files?.[0];
+        if (((m.value = ""), !!p)) {
           i.value = !0;
           try {
-            ((rt.orbImage = await $_(v)),
+            ((rt.orbImage = await I_(p)),
               zt("Đã cập nhật biểu tượng quả cầu lơ lửng", "success"));
           } catch (kt) {
             zt(kt instanceof Error ? kt.message : "Tải lên thất bại", "error");
@@ -15267,7 +15306,7 @@ const E_ = { class: "bbs-page" },
       function d(q) {
         return JSON.parse(JSON.stringify(q));
       }
-      const p = st(!1),
+      const v = st(!1),
         S = lt({
           get: () => u.value?.excludeParams.join(", ") ?? "",
           set: (q) => {
@@ -15275,30 +15314,30 @@ const E_ = { class: "bbs-page" },
             m &&
               (m.excludeParams = q
                 .split(",")
-                .map((v) => v.trim())
+                .map((p) => p.trim())
                 .filter(Boolean));
           },
         });
       function w(q = "api") {
-        ((p.value = !1), (c.value = q), (l.value = null), (u.value = Wg()));
+        ((v.value = !1), (c.value = q), (l.value = null), (u.value = Jg()));
       }
       function M(q, m = "api") {
-        const v = h().find((kt) => kt.id === q);
-        v && ((p.value = !1), (c.value = m), (l.value = q), (u.value = d(v)));
+        const p = h().find((kt) => kt.id === q);
+        p && ((v.value = !1), (c.value = m), (l.value = q), (u.value = d(p)));
       }
       function nt() {
-        ((p.value = !1), (l.value = null), (u.value = null));
+        ((v.value = !1), (l.value = null), (u.value = null));
       }
       function R() {
         const q = u.value;
         if (q) {
           const m = h(c.value);
           if (l.value) {
-            const v = m.findIndex((kt) => kt.id === l.value);
-            v >= 0 ? (m[v] = q) : m.push(q);
+            const p = m.findIndex((kt) => kt.id === l.value);
+            p >= 0 ? (m[p] = q) : m.push(q);
           } else m.push(q);
         }
-        ((p.value = !1), (l.value = null), (u.value = null));
+        ((v.value = !1), (l.value = null), (u.value = null));
       }
       const L = st(!1);
       function W() {
@@ -15306,15 +15345,15 @@ const E_ = { class: "bbs-page" },
       }
       function j() {
         ((L.value = !1),
-          l.value && pt(l.value),
+          l.value && vt(l.value),
           (l.value = null),
           (u.value = null));
       }
-      function pt(q) {
+      function vt(q) {
         const m = c.value,
-          v = h(),
-          kt = v.findIndex((zn) => zn.id === q);
-        (kt >= 0 && v.splice(kt, 1),
+          p = h(),
+          kt = p.findIndex((zn) => zn.id === q);
+        (kt >= 0 && p.splice(kt, 1),
           m === "api" &&
             (C.assignments.summary === q && (C.assignments.summary = ""),
             C.assignments.resummary === q && (C.assignments.resummary = "")));
@@ -15322,7 +15361,7 @@ const E_ = { class: "bbs-page" },
       const ct = st({});
       async function O(q) {
         ct.value[q.id] = "Đang kiểm tra...";
-        const m = await nb(q);
+        const m = await ib(q);
         ct.value[q.id] = m.message;
       }
       const ot = st({}),
@@ -15371,21 +15410,21 @@ const E_ = { class: "bbs-page" },
             label: "Lời nhắc tóm tắt",
             hint: "Sắp xếp hội thoại từng tầng thành ký ức cấu trúc (nội dung tóm tắt + thời gian/địa điểm/vật phẩm/kế hoạch).",
             builtin: fh,
-            macros: ib,
+            macros: ob,
           },
           {
             key: "resummary",
             label: "Lời nhắc tổng kết",
             hint: "Nén nhiều tóm tắt tầng thành một tổng kết L1 (tổng kết thông thường, cố định 300-500 chữ).",
             builtin: gh,
-            macros: sb,
+            macros: rb,
           },
           {
             key: "resummary2",
             label: "Lời nhắc tổng kết cấp hai",
             hint: "Nén nhiều tổng kết lên thêm một tầng (L1+ → tầng cao hơn). Số chữ mục tiêu nới lỏng linh hoạt theo quy mô đầu vào ({{target}}), giảm thiểu mất mát thông tin.",
             builtin: bh,
-            macros: ob,
+            macros: ab,
           },
           {
             key: "jailbreak",
@@ -15402,26 +15441,26 @@ const E_ = { class: "bbs-page" },
             macros: [],
           },
         ],
-        bt = st(null),
+        pt = st(null),
         Ct = st(""),
         Ut = st(null);
-      function vt(q) {
+      function yt(q) {
         return C.prompts[q].trim().length > 0;
       }
       function Q(q) {
-        ((bt.value = q), (Ct.value = C.prompts[q.key].trim() || q.builtin));
+        ((pt.value = q), (Ct.value = C.prompts[q.key].trim() || q.builtin));
       }
       function xt() {
-        ((bt.value = null), (Ct.value = ""));
+        ((pt.value = null), (Ct.value = ""));
       }
       function Bt() {
-        const q = bt.value;
+        const q = pt.value;
         if (!q) return;
         const m = Ct.value.trim();
         ((C.prompts[q.key] = m === q.builtin.trim() ? "" : Ct.value), xt());
       }
       function Jt() {
-        bt.value && (Ct.value = bt.value.builtin);
+        pt.value && (Ct.value = pt.value.builtin);
       }
       const sn = [
           { key: "embedding", label: "Embedding (Vectơ hóa, bắt buộc)" },
@@ -15446,20 +15485,20 @@ const E_ = { class: "bbs-page" },
         }
         ((qt.value[q] = !0), (y.value[q] = ""));
         try {
-          const v = await Ql({ url: m.url, key: m.key });
-          ((jt.value[q] = v),
-            v.length && !C.vector[q].model && (C.vector[q].model = v[0]),
-            v.length || (y.value[q] = "Không trả về mô hình nào"));
-        } catch (v) {
-          y.value[q] = v instanceof Error ? v.message : String(v);
+          const p = await Ql({ url: m.url, key: m.key });
+          ((jt.value[q] = p),
+            p.length && !C.vector[q].model && (C.vector[q].model = p[0]),
+            p.length || (y.value[q] = "Không trả về mô hình nào"));
+        } catch (p) {
+          y.value[q] = p instanceof Error ? p.message : String(p);
         } finally {
           qt.value[q] = !1;
         }
       }
       function tt(q) {
         const m = K.value.trim().toLowerCase(),
-          v = jt.value[q] ?? [];
-        return (m ? v.filter((zn) => zn.toLowerCase().includes(m)) : v).slice(
+          p = jt.value[q] ?? [];
+        return (m ? p.filter((zn) => zn.toLowerCase().includes(m)) : p).slice(
           0,
           200,
         );
@@ -15478,7 +15517,7 @@ const E_ = { class: "bbs-page" },
       const k = st("unknown");
       async function _() {
         try {
-          k.value = await Nv();
+          k.value = await Rv();
         } catch {
           k.value = "unknown";
         }
@@ -15495,7 +15534,7 @@ const E_ = { class: "bbs-page" },
         B.value = !1;
         const q = globalThis.toastr;
         try {
-          (await Hy(),
+          (await Uy(),
             q?.success?.(
               "Cập nhật thành công, đang làm mới trang...",
               "Bách Bảo Thư",
@@ -15507,11 +15546,11 @@ const E_ = { class: "bbs-page" },
           );
         }
       }
-      const gt = st(!1),
+      const bt = st(!1),
         St = st("");
       async function Pt() {
-        if (!gt.value) {
-          ((gt.value = !0), (St.value = ""), id());
+        if (!bt.value) {
+          ((bt.value = !0), (St.value = ""), id());
           try {
             const q = await ld();
             St.value =
@@ -15521,7 +15560,7 @@ const E_ = { class: "bbs-page" },
           } catch (q) {
             St.value = `Tạo chỉ mục thất bại:${q instanceof Error ? q.message : String(q)}`;
           } finally {
-            ((gt.value = !1), _());
+            ((bt.value = !1), _());
           }
         }
       }
@@ -15535,7 +15574,7 @@ const E_ = { class: "bbs-page" },
           }
           ((Kt.value = !1), (Nt.value = !0), (St.value = ""));
           try {
-            const q = await Kv();
+            const q = await Fv();
             St.value = `Đã xóa trống chỉ mục vectơ trò chuyện hiện tại (xóa ${q} mục). Có thể nhấn 'Tái tạo' để làm lại từ đầu.`;
           } catch (q) {
             St.value = `Xóa trống thất bại:${q instanceof Error ? q.message : String(q)}`;
@@ -15547,11 +15586,11 @@ const E_ = { class: "bbs-page" },
       const rn = st(!1),
         an = st(""),
         Gn = st(!1),
-        Kn = lt(() => u_());
+        Kn = lt(() => d_());
       async function hn() {
         ((Gn.value = !1), (rn.value = !0), (an.value = ""));
         try {
-          const q = await h_();
+          const q = await m_();
           an.value = q
             ? "Đã tạo cuộc trò chuyện mới."
             : "Tạo mới chưa hoàn tất (xem chi tiết trong thông báo).";
@@ -15564,7 +15603,7 @@ const E_ = { class: "bbs-page" },
       const mn = st(!1),
         Ht = st(""),
         le = st(!1),
-        Jn = lt(() => qd()),
+        Jn = lt(() => Vd()),
         er = lt(() =>
           Jn.value.willOverwrite
             ? "Cuộc trò chuyện hiện tại đã có dữ liệu Bách Bảo Thư, di chuyển sẽ ghi đè tóm tắt hiện có và ghi dữ liệu vào các tầng. Tiếp tục không?"
@@ -15573,7 +15612,7 @@ const E_ = { class: "bbs-page" },
       async function V() {
         ((le.value = !1), (mn.value = !0), (Ht.value = ""));
         try {
-          const q = await p_();
+          const q = await y_();
           Ht.value = q
             ? "Di chuyển hoàn tất."
             : "Di chuyển chưa hoàn tất (xem chi tiết trong thông báo).";
@@ -15589,11 +15628,11 @@ const E_ = { class: "bbs-page" },
           if (!P.value) return [];
           const q = ft()?.characters ?? [],
             m = new Set();
-          for (const v of q) {
-            const kt = v?.name?.trim();
+          for (const p of q) {
+            const kt = p?.name?.trim();
             kt && m.add(kt);
           }
-          return [...m].sort((v, kt) => v.localeCompare(kt, "zh"));
+          return [...m].sort((p, kt) => p.localeCompare(kt, "zh"));
         }),
         Zt = lt(() => {
           const q = G.value.trim().toLowerCase();
@@ -15612,28 +15651,28 @@ const E_ = { class: "bbs-page" },
       }
       function Te(q) {
         const m = C.excludedChars,
-          v = m.indexOf(q);
-        v >= 0 ? m.splice(v, 1) : m.push(q);
+          p = m.indexOf(q);
+        p >= 0 ? m.splice(p, 1) : m.push(q);
       }
       const yi = st(!1),
         Be = st("");
-      function Gd() {
+      function Jd() {
         const q = document.querySelectorAll("#world_editor_select option"),
           m = [];
-        for (const v of q)
-          v.value !== "" && v.textContent && m.push(v.textContent);
+        for (const p of q)
+          p.value !== "" && p.textContent && m.push(p.textContent);
         return m;
       }
       const Ds = lt(() => {
           if (!yi.value) return [];
           const q = ft()?.getWorldInfoNames,
-            m = q ? q() : Gd(),
-            v = new Set();
+            m = q ? q() : Jd(),
+            p = new Set();
           for (const kt of m) {
             const zn = kt?.trim();
-            zn && v.add(zn);
+            zn && p.add(zn);
           }
-          return [...v].sort((kt, zn) => kt.localeCompare(zn, "zh"));
+          return [...p].sort((kt, zn) => kt.localeCompare(zn, "zh"));
         }),
         Ya = lt(() => {
           const q = Be.value.trim().toLowerCase();
@@ -15641,19 +15680,19 @@ const E_ = { class: "bbs-page" },
             ? Ds.value.filter((m) => m.toLowerCase().includes(q))
             : Ds.value;
         });
-      function Jd() {
+      function Qd() {
         ((Be.value = ""), (yi.value = !0));
       }
       function ir() {
         yi.value = !1;
       }
-      function Qd(q) {
+      function Yd(q) {
         return C.excludedWorldNames.includes(q);
       }
       function za(q) {
         const m = C.excludedWorldNames,
-          v = m.indexOf(q);
-        v >= 0 ? m.splice(v, 1) : m.push(q);
+          p = m.indexOf(q);
+        p >= 0 ? m.splice(p, 1) : m.push(q);
       }
       const Ji = st("");
       function Xa() {
@@ -15666,7 +15705,7 @@ const E_ = { class: "bbs-page" },
           C.excludedWorldInfoPatterns.push(q),
           (Ji.value = ""));
       }
-      function Yd(q) {
+      function zd(q) {
         const m = C.excludedWorldInfoPatterns.indexOf(q);
         m >= 0 && C.excludedWorldInfoPatterns.splice(m, 1);
       }
@@ -15680,36 +15719,36 @@ const E_ = { class: "bbs-page" },
         (C.customStripTags.includes(q) || C.customStripTags.push(q),
           (Qi.value = ""));
       }
-      function zd(q) {
+      function Xd(q) {
         const m = C.customStripTags.indexOf(q);
         m >= 0 && C.customStripTags.splice(m, 1);
       }
-      function Xd(q) {
+      function Zd(q) {
         const m = Ut.value;
         if (!m) {
           Ct.value += q;
           return;
         }
-        const v = m.selectionStart ?? Ct.value.length,
-          kt = m.selectionEnd ?? v;
-        ((Ct.value = Ct.value.slice(0, v) + q + Ct.value.slice(kt)),
+        const p = m.selectionStart ?? Ct.value.length,
+          kt = m.selectionEnd ?? p;
+        ((Ct.value = Ct.value.slice(0, p) + q + Ct.value.slice(kt)),
           Ge(() => {
             m.focus();
-            const zn = v + q.length;
+            const zn = p + q.length;
             m.setSelectionRange(zn, zn);
           }));
       }
-      function Zd(q) {
+      function tm(q) {
         if (!q) return "";
         const m = new Date(q),
-          v = (kt) => String(kt).padStart(2, "0");
-        return `${v(m.getHours())}:${v(m.getMinutes())}:${v(m.getSeconds())}`;
+          p = (kt) => String(kt).padStart(2, "0");
+        return `${p(m.getHours())}:${p(m.getMinutes())}:${p(m.getSeconds())}`;
       }
       function tl(q) {
         return q >= 0 ? `Q${q + 1}` : "—";
       }
-      const tm = { full: "Toàn văn", brief: "Tóm tắt", drop: "Loại bỏ" },
-        nm = lt(() => {
+      const nm = { full: "Toàn văn", brief: "Tóm tắt", drop: "Loại bỏ" },
+        em = lt(() => {
           const q = Ft.status;
           return q.includes("Thất bại")
             ? "fail"
@@ -15724,16 +15763,16 @@ const E_ = { class: "bbs-page" },
       }
       return (q, m) => (
         f(),
-        g("section", E_, [
-          a("div", I_, [
-            m[53] ||
-              (m[53] = a(
+        g("section", A_, [
+          a("div", M_, [
+            m[54] ||
+              (m[54] = a(
                 "h2",
                 { class: "bbs-title bbs-title-sub" },
                 "Cài đặt",
                 -1,
               )),
-            a("div", A_, [
+            a("div", N_, [
               a(
                 "button",
                 {
@@ -15743,11 +15782,11 @@ const E_ = { class: "bbs-page" },
                   title: E(ln).checking
                     ? "Đang kiểm tra cập nhật"
                     : "Nhấn để kiểm tra cập nhật",
-                  onClick: m[0] || (m[0] = (v) => E(oa)(!0)),
+                  onClick: m[0] || (m[0] = (p) => E(oa)(!0)),
                 },
                 " v" + A(E(ln).current || "—"),
                 9,
-                M_,
+                P_,
               ),
               E(ln).available
                 ? (f(),
@@ -15763,25 +15802,25 @@ const E_ = { class: "bbs-page" },
                     },
                     A(E(ln).updating ? "Đang cập nhật..." : "Cập nhật"),
                     9,
-                    N_,
+                    R_,
                   ))
                 : H("", !0),
             ]),
           ]),
-          m[167] || (m[167] = a("hr", { class: "bbs-rule" }, null, -1)),
+          m[170] || (m[170] = a("hr", { class: "bbs-rule" }, null, -1)),
           a(
             "div",
             { class: Tt(["bbs-master", { "is-off": !E(C).enabled }]) },
             [
-              m[55] ||
-                (m[55] = a(
+              m[56] ||
+                (m[56] = a(
                   "span",
                   { class: "bbs-master-spine", "aria-hidden": "true" },
                   null,
                   -1,
                 )),
-              m[56] ||
-                (m[56] = a(
+              m[57] ||
+                (m[57] = a(
                   "div",
                   { class: "bbs-master-text" },
                   [
@@ -15802,60 +15841,60 @@ const E_ = { class: "bbs-page" },
                   "aria-checked": E(C).enabled,
                   title: E(C).enabled ? "Nhấn để tắt" : "Nhấn để bật",
                   onClick:
-                    m[1] || (m[1] = (v) => (E(C).enabled = !E(C).enabled)),
+                    m[1] || (m[1] = (p) => (E(C).enabled = !E(C).enabled)),
                 },
                 [
-                  ...(m[54] ||
-                    (m[54] = [
+                  ...(m[55] ||
+                    (m[55] = [
                       a("span", { class: "bbs-toggle-knob" }, null, -1),
                     ])),
                 ],
                 10,
-                P_,
+                O_,
               ),
             ],
             2,
           ),
-          a("div", R_, [
+          a("div", L_, [
             N(
               pn,
               { title: "Cài đặt cơ bản", open: !1 },
               {
                 default: $t(() => [
-                  a("div", O_, [
-                    m[57] ||
-                      (m[57] = a(
+                  a("div", B_, [
+                    m[58] ||
+                      (m[58] = a(
                         "div",
                         { class: "bbs-field-head" },
                         [a("span", { class: "bbs-field-label" }, "Chủ đề")],
                         -1,
                       )),
-                    a("div", L_, [
+                    a("div", q_, [
                       (f(!0),
                       g(
                         dt,
                         null,
                         Et(
                           E(Ue),
-                          (v) => (
+                          (p) => (
                             f(),
                             g(
                               "button",
                               {
-                                key: v.value,
+                                key: p.value,
                                 type: "button",
                                 class: Tt([
                                   "bbs-seg",
-                                  { "is-on": E(rt).theme === v.value },
+                                  { "is-on": E(rt).theme === p.value },
                                 ]),
-                                onClick: (kt) => (E(rt).theme = v.value),
+                                onClick: (kt) => (E(rt).theme = p.value),
                               },
                               [
-                                N(X, { name: v.icon }, null, 8, ["name"]),
-                                yt(" " + A(v.label), 1),
+                                N(X, { name: p.icon }, null, 8, ["name"]),
+                                gt(" " + A(p.label), 1),
                               ],
                               10,
-                              B_,
+                              V_,
                             )
                           ),
                         ),
@@ -15863,9 +15902,9 @@ const E_ = { class: "bbs-page" },
                       )),
                     ]),
                   ]),
-                  a("div", q_, [
-                    m[58] ||
-                      (m[58] = a(
+                  a("div", D_, [
+                    m[59] ||
+                      (m[59] = a(
                         "div",
                         { class: "bbs-field-head" },
                         [
@@ -15877,35 +15916,35 @@ const E_ = { class: "bbs-page" },
                         ],
                         -1,
                       )),
-                    a("div", V_, [
+                    a("div", j_, [
                       (f(),
                       g(
                         dt,
                         null,
-                        Et(n, (v) =>
+                        Et(n, (p) =>
                           a(
                             "button",
                             {
-                              key: v.value,
+                              key: p.value,
                               type: "button",
                               class: Tt([
                                 "bbs-seg",
-                                { "is-on": E(rt).navPosition === v.value },
+                                { "is-on": E(rt).navPosition === p.value },
                               ]),
-                              onClick: (kt) => (E(rt).navPosition = v.value),
+                              onClick: (kt) => (E(rt).navPosition = p.value),
                             },
-                            A(v.label),
+                            A(p.label),
                             11,
-                            D_,
+                            K_,
                           ),
                         ),
                         64,
                       )),
                     ]),
                   ]),
-                  a("label", j_, [
-                    m[59] ||
-                      (m[59] = a(
+                  a("label", H_, [
+                    m[60] ||
+                      (m[60] = a(
                         "span",
                         { class: "bbs-field-label" },
                         "Thiết bị di động nhấn điều hướng đóng cửa sổ",
@@ -15916,26 +15955,26 @@ const E_ = { class: "bbs-page" },
                         "input",
                         {
                           "onUpdate:modelValue":
-                            m[2] || (m[2] = (v) => (E(rt).navTapClose = v)),
+                            m[2] || (m[2] = (p) => (E(rt).navTapClose = p)),
                           type: "checkbox",
                           class: "bbs-checkbox",
                         },
                         null,
                         512,
                       ),
-                      [[Ln, E(rt).navTapClose]],
+                      [[Sn, E(rt).navTapClose]],
                     ),
                   ]),
-                  m[69] ||
-                    (m[69] = a(
+                  m[70] ||
+                    (m[70] = a(
                       "p",
                       { class: "bbs-field-hint" },
                       "Trên thiết bị di động, nhấn thêm lần nữa vào nút điều hướng trang hiện tại sẽ đóng toàn bộ cửa sổ, không cần với lên nút × ở góc trên. Có thể tắt nếu sợ chạm nhầm.",
                       -1,
                     )),
-                  a("label", K_, [
-                    m[60] ||
-                      (m[60] = a(
+                  a("label", F_, [
+                    m[61] ||
+                      (m[61] = a(
                         "span",
                         { class: "bbs-field-label" },
                         "Hiển thị nút trên thanh đỉnh ST",
@@ -15946,26 +15985,26 @@ const E_ = { class: "bbs-page" },
                         "input",
                         {
                           "onUpdate:modelValue":
-                            m[3] || (m[3] = (v) => (E(rt).showTopBar = v)),
+                            m[3] || (m[3] = (p) => (E(rt).showTopBar = p)),
                           type: "checkbox",
                           class: "bbs-checkbox",
                         },
                         null,
                         512,
                       ),
-                      [[Ln, E(rt).showTopBar]],
+                      [[Sn, E(rt).showTopBar]],
                     ),
                   ]),
-                  m[70] ||
-                    (m[70] = a(
+                  m[71] ||
+                    (m[71] = a(
                       "p",
                       { class: "bbs-field-hint" },
                       "Thêm nút mở nhanh Bách Bảo Thư trên thanh điều hướng đỉnh quán trọ (bên trái quản lý thiết lập user), không cần nhấn đũa phép góc dưới bên trái mỗi lần. Lối vào đũa phép vẫn được giữ nguyên.",
                       -1,
                     )),
-                  a("label", H_, [
-                    m[61] ||
-                      (m[61] = a(
+                  a("label", U_, [
+                    m[62] ||
+                      (m[62] = a(
                         "span",
                         { class: "bbs-field-label" },
                         "Hiển thị nút phía trên khung trò chuyện",
@@ -15976,26 +16015,26 @@ const E_ = { class: "bbs-page" },
                         "input",
                         {
                           "onUpdate:modelValue":
-                            m[4] || (m[4] = (v) => (E(rt).showQuickReply = v)),
+                            m[4] || (m[4] = (p) => (E(rt).showQuickReply = p)),
                           type: "checkbox",
                           class: "bbs-checkbox",
                         },
                         null,
                         512,
                       ),
-                      [[Ln, E(rt).showQuickReply]],
+                      [[Sn, E(rt).showQuickReply]],
                     ),
                   ]),
-                  m[71] ||
-                    (m[71] = a(
+                  m[72] ||
+                    (m[72] = a(
                       "p",
                       { class: "bbs-field-hint" },
                       "Thêm nút 'Bách Bảo Thư' phía trên khung nhập liệu (cùng vị trí trả lời nhanh), đổi kiểu theo chủ đề quán trọ.",
                       -1,
                     )),
-                  a("label", F_, [
-                    m[62] ||
-                      (m[62] = a(
+                  a("label", W_, [
+                    m[63] ||
+                      (m[63] = a(
                         "span",
                         { class: "bbs-field-label" },
                         "Bật giao diện tầng",
@@ -16006,18 +16045,18 @@ const E_ = { class: "bbs-page" },
                         "input",
                         {
                           "onUpdate:modelValue":
-                            m[5] || (m[5] = (v) => (E(rt).showFloorPanel = v)),
+                            m[5] || (m[5] = (p) => (E(rt).showFloorPanel = p)),
                           type: "checkbox",
                           class: "bbs-checkbox",
                         },
                         null,
                         512,
                       ),
-                      [[Ln, E(rt).showFloorPanel]],
+                      [[Sn, E(rt).showFloorPanel]],
                     ),
                   ]),
-                  m[72] ||
-                    (m[72] = a(
+                  m[73] ||
+                    (m[73] = a(
                       "p",
                       { class: "bbs-field-hint" },
                       "Thêm giao diện dưới mỗi tầng AI: Xem tóm tắt và thay đổi dữ liệu của tầng đó, đánh dấu nhanh 'Ngoại truyện'. Tầng ngoại truyện sẽ bị hệ thống ký ức bỏ qua hoàn toàn (không tóm tắt, tổng kết hay chèn vào ngữ cảnh), thích hợp cho tiểu kịch trường/ngoại truyện; hủy đánh dấu để khôi phục.",
@@ -16028,9 +16067,9 @@ const E_ = { class: "bbs-page" },
                     { title: "Quả cầu lơ lửng màn hình", open: !1 },
                     {
                       default: $t(() => [
-                        a("label", U_, [
-                          m[63] ||
-                            (m[63] = a(
+                        a("label", G_, [
+                          m[64] ||
+                            (m[64] = a(
                               "span",
                               { class: "bbs-field-label" },
                               "Hiển thị quả cầu lơ lửng trên màn hình",
@@ -16041,18 +16080,18 @@ const E_ = { class: "bbs-page" },
                               "input",
                               {
                                 "onUpdate:modelValue":
-                                  m[6] || (m[6] = (v) => (E(rt).showOrb = v)),
+                                  m[6] || (m[6] = (p) => (E(rt).showOrb = p)),
                                 type: "checkbox",
                                 class: "bbs-checkbox",
                               },
                               null,
                               512,
                             ),
-                            [[Ln, E(rt).showOrb]],
+                            [[Sn, E(rt).showOrb]],
                           ),
                         ]),
-                        m[68] ||
-                          (m[68] = a(
+                        m[69] ||
+                          (m[69] = a(
                             "p",
                             { class: "bbs-field-hint" },
                             "Hiển thị quả cầu lơ lửng có thể kéo thả ở rìa màn hình, nhấn vào là mở Bách Bảo Thư. Kéo ra giữa để lơ lửng, kéo về cạnh trái/phải sẽ tự động bám cạnh.",
@@ -16060,9 +16099,9 @@ const E_ = { class: "bbs-page" },
                           )),
                         E(rt).showOrb
                           ? (f(),
-                            g("div", W_, [
-                              m[64] ||
-                                (m[64] = a(
+                            g("div", J_, [
+                              m[65] ||
+                                (m[65] = a(
                                   "div",
                                   { class: "bbs-field-head" },
                                   [
@@ -16074,33 +16113,33 @@ const E_ = { class: "bbs-page" },
                                   ],
                                   -1,
                                 )),
-                              a("div", G_, [
+                              a("div", Q_, [
                                 (f(!0),
                                 g(
                                   dt,
                                   null,
                                   Et(
-                                    E(Wy),
-                                    (v) => (
+                                    E(Jy),
+                                    (p) => (
                                       f(),
                                       g(
                                         "button",
                                         {
-                                          key: v.value,
+                                          key: p.value,
                                           type: "button",
                                           class: Tt([
                                             "bbs-seg",
                                             {
                                               "is-on":
-                                                E(rt).orbShape === v.value,
+                                                E(rt).orbShape === p.value,
                                             },
                                           ]),
                                           onClick: (kt) =>
-                                            (E(rt).orbShape = v.value),
+                                            (E(rt).orbShape = p.value),
                                         },
-                                        A(v.label),
+                                        A(p.label),
                                         11,
-                                        J_,
+                                        Y_,
                                       )
                                     ),
                                   ),
@@ -16111,16 +16150,16 @@ const E_ = { class: "bbs-page" },
                           : H("", !0),
                         E(rt).showOrb
                           ? (f(),
-                            g("div", Q_, [
-                              a("div", Y_, [
-                                m[65] ||
-                                  (m[65] = a(
+                            g("div", z_, [
+                              a("div", X_, [
+                                m[66] ||
+                                  (m[66] = a(
                                     "span",
                                     { class: "bbs-field-label" },
                                     "Độ mờ khi đứng yên",
                                     -1,
                                   )),
-                                a("span", z_, A(E(rt).orbOpacity) + "%", 1),
+                                a("span", Z_, A(E(rt).orbOpacity) + "%", 1),
                               ]),
                               et(
                                 a(
@@ -16128,7 +16167,7 @@ const E_ = { class: "bbs-page" },
                                   {
                                     "onUpdate:modelValue":
                                       m[7] ||
-                                      (m[7] = (v) => (E(rt).orbOpacity = v)),
+                                      (m[7] = (p) => (E(rt).orbOpacity = p)),
                                     type: "range",
                                     min: "20",
                                     max: "100",
@@ -16147,8 +16186,8 @@ const E_ = { class: "bbs-page" },
                                   ],
                                 ],
                               ),
-                              m[66] ||
-                                (m[66] = a(
+                              m[67] ||
+                                (m[67] = a(
                                   "p",
                                   { class: "bbs-field-hint" },
                                   "Độ mờ khi quả cầu đứng yên; sẽ hiển thị rõ hoàn toàn khi di chuột hoặc kéo thả.",
@@ -16158,16 +16197,16 @@ const E_ = { class: "bbs-page" },
                           : H("", !0),
                         E(rt).showOrb
                           ? (f(),
-                            g("div", X_, [
-                              a("div", Z_, [
-                                m[67] ||
-                                  (m[67] = a(
+                            g("div", tx, [
+                              a("div", nx, [
+                                m[68] ||
+                                  (m[68] = a(
                                     "span",
                                     { class: "bbs-field-label" },
                                     "Kích thước",
                                     -1,
                                   )),
-                                a("span", tx, A(E(rt).orbSize) + "px", 1),
+                                a("span", ex, A(E(rt).orbSize) + "px", 1),
                               ]),
                               et(
                                 a(
@@ -16175,7 +16214,7 @@ const E_ = { class: "bbs-page" },
                                   {
                                     "onUpdate:modelValue":
                                       m[8] ||
-                                      (m[8] = (v) => (E(rt).orbSize = v)),
+                                      (m[8] = (p) => (E(rt).orbSize = p)),
                                     type: "range",
                                     min: "32",
                                     max: "80",
@@ -16191,7 +16230,7 @@ const E_ = { class: "bbs-page" },
                           : H("", !0),
                         E(rt).showOrb
                           ? (f(),
-                            g("div", nx, [
+                            g("div", ix, [
                               a(
                                 "div",
                                 {
@@ -16215,14 +16254,14 @@ const E_ = { class: "bbs-page" },
                                         },
                                         null,
                                         8,
-                                        ex,
+                                        sx,
                                       ))
                                     : (f(),
                                       fn(X, { key: 1, name: "bookmark" })),
                                 ],
                                 2,
                               ),
-                              a("div", ix, [
+                              a("div", ox, [
                                 a(
                                   "button",
                                   {
@@ -16239,7 +16278,7 @@ const E_ = { class: "bbs-page" },
                                         : "Tải biểu tượng",
                                   ),
                                   9,
-                                  sx,
+                                  rx,
                                 ),
                                 E(rt).orbImage
                                   ? (f(),
@@ -16274,7 +16313,7 @@ const E_ = { class: "bbs-page" },
                           ? (f(),
                             g(
                               "p",
-                              ox,
+                              ax,
                               "Hỗ trợ ảnh tĩnh và ảnh động GIF (GIF giữ nguyên hoạt ảnh, ≤2MB). Biểu tượng được tải lên máy chủ quán trọ, đồng bộ qua các thiết bị; để trống sẽ dùng biểu tượng thẻ sách mặc định.",
                             ))
                           : H("", !0),
@@ -16291,10 +16330,10 @@ const E_ = { class: "bbs-page" },
               { title: "API phụ", open: !1 },
               {
                 default: $t(() => [
-                  a("div", rx, [
-                    a("label", ax, [
-                      m[74] ||
-                        (m[74] = a(
+                  a("div", lx, [
+                    a("label", cx, [
+                      m[75] ||
+                        (m[75] = a(
                           "span",
                           { class: "bbs-field-label" },
                           "Sử dụng cho tóm tắt",
@@ -16306,12 +16345,12 @@ const E_ = { class: "bbs-page" },
                           {
                             "onUpdate:modelValue":
                               m[9] ||
-                              (m[9] = (v) => (E(C).assignments.summary = v)),
+                              (m[9] = (p) => (E(C).assignments.summary = p)),
                             class: "bbs-input bbs-select",
                           },
                           [
-                            m[73] ||
-                              (m[73] = a(
+                            m[74] ||
+                              (m[74] = a(
                                 "option",
                                 { value: "" },
                                 "Đi theo API chính",
@@ -16323,14 +16362,14 @@ const E_ = { class: "bbs-page" },
                               null,
                               Et(
                                 E(C).channels,
-                                (v) => (
+                                (p) => (
                                   f(),
                                   g(
                                     "option",
-                                    { key: v.id, value: v.id },
-                                    A(v.name),
+                                    { key: p.id, value: p.id },
+                                    A(p.name),
                                     9,
-                                    lx,
+                                    ux,
                                   )
                                 ),
                               ),
@@ -16342,9 +16381,9 @@ const E_ = { class: "bbs-page" },
                         [[Ni, E(C).assignments.summary]],
                       ),
                     ]),
-                    a("label", cx, [
-                      m[76] ||
-                        (m[76] = a(
+                    a("label", hx, [
+                      m[77] ||
+                        (m[77] = a(
                           "span",
                           { class: "bbs-field-label" },
                           "Sử dụng cho tổng kết",
@@ -16356,12 +16395,12 @@ const E_ = { class: "bbs-page" },
                           {
                             "onUpdate:modelValue":
                               m[10] ||
-                              (m[10] = (v) => (E(C).assignments.resummary = v)),
+                              (m[10] = (p) => (E(C).assignments.resummary = p)),
                             class: "bbs-input bbs-select",
                           },
                           [
-                            m[75] ||
-                              (m[75] = a(
+                            m[76] ||
+                              (m[76] = a(
                                 "option",
                                 { value: "" },
                                 "Đi theo API chính",
@@ -16373,14 +16412,14 @@ const E_ = { class: "bbs-page" },
                               null,
                               Et(
                                 E(C).channels,
-                                (v) => (
+                                (p) => (
                                   f(),
                                   g(
                                     "option",
-                                    { key: v.id, value: v.id },
-                                    A(v.name),
+                                    { key: p.id, value: p.id },
+                                    A(p.name),
                                     9,
-                                    ux,
+                                    dx,
                                   )
                                 ),
                               ),
@@ -16393,17 +16432,17 @@ const E_ = { class: "bbs-page" },
                       ),
                     ]),
                   ]),
-                  m[79] ||
-                    (m[79] = a(
+                  m[80] ||
+                    (m[80] = a(
                       "p",
                       { class: "bbs-field-hint" },
                       "Khi không chỉ định kênh sẽ đi theo API chính: trực tiếp dùng API đang sử dụng trên giao diện chính (Hoàn thiện trò chuyện / Hoàn thiện văn bản) để tóm tắt, không cần cấu hình thêm. Nếu muốn dùng mô hình khác, hãy tạo kênh phụ bên dưới để chỉ định.",
                       -1,
                     )),
-                  m[80] || (m[80] = a("hr", { class: "bbs-rule" }, null, -1)),
-                  a("div", hx, [
-                    m[78] ||
-                      (m[78] = a(
+                  m[81] || (m[81] = a("hr", { class: "bbs-rule" }, null, -1)),
+                  a("div", mx, [
+                    m[79] ||
+                      (m[79] = a(
                         "span",
                         { class: "bbs-field-label" },
                         "Kênh",
@@ -16414,52 +16453,52 @@ const E_ = { class: "bbs-page" },
                       {
                         class: "bbs-btn bbs-btn-primary bbs-btn-sm",
                         type: "button",
-                        onClick: m[11] || (m[11] = (v) => w("api")),
+                        onClick: m[11] || (m[11] = (p) => w("api")),
                       },
                       [
                         N(X, { name: "plus" }),
-                        m[77] || (m[77] = yt(" ThêmKênh ", -1)),
+                        m[78] || (m[78] = gt(" ThêmKênh ", -1)),
                       ],
                     ),
                   ]),
                   E(C).channels.length
                     ? (f(),
-                      g("ul", dx, [
+                      g("ul", fx, [
                         (f(!0),
                         g(
                           dt,
                           null,
                           Et(
                             E(C).channels,
-                            (v) => (
+                            (p) => (
                               f(),
                               g(
                                 "li",
-                                { key: v.id, class: "bbs-channel-item" },
+                                { key: p.id, class: "bbs-channel-item" },
                                 [
                                   a(
                                     "button",
                                     {
                                       class: "bbs-channel-open",
                                       type: "button",
-                                      onClick: (kt) => M(v.id),
+                                      onClick: (kt) => M(p.id),
                                     },
                                     [
                                       a(
                                         "span",
-                                        fx,
-                                        A(v.name || "Kênh chưa đặt tên"),
+                                        bx,
+                                        A(p.name || "Kênh chưa đặt tên"),
                                         1,
                                       ),
                                       a(
                                         "span",
-                                        gx,
-                                        A(v.model || "Chưa đặt mô hình"),
+                                        px,
+                                        A(p.model || "Chưa đặt mô hình"),
                                         1,
                                       ),
                                     ],
                                     8,
-                                    mx,
+                                    gx,
                                   ),
                                 ],
                               )
@@ -16471,7 +16510,7 @@ const E_ = { class: "bbs-page" },
                     : (f(),
                       g(
                         "p",
-                        bx,
+                        vx,
                         "Chưa có kênh nào. Nhấn 'Thêm kênh' để cấu hình API dùng cho tóm tắt/tổng kết.",
                       )),
                 ]),
@@ -16483,9 +16522,9 @@ const E_ = { class: "bbs-page" },
               { title: "Cài đặt tóm tắt", open: !1 },
               {
                 default: $t(() => [
-                  a("label", px, [
-                    m[81] ||
-                      (m[81] = a(
+                  a("label", yx, [
+                    m[82] ||
+                      (m[82] = a(
                         "span",
                         { class: "bbs-field-label" },
                         "Bật tự động tóm tắt",
@@ -16497,26 +16536,26 @@ const E_ = { class: "bbs-page" },
                         {
                           "onUpdate:modelValue":
                             m[12] ||
-                            (m[12] = (v) => (E(C).autoSummaryEnabled = v)),
+                            (m[12] = (p) => (E(C).autoSummaryEnabled = p)),
                           type: "checkbox",
                           class: "bbs-checkbox",
                         },
                         null,
                         512,
                       ),
-                      [[Ln, E(C).autoSummaryEnabled]],
+                      [[Sn, E(C).autoSummaryEnabled]],
                     ),
                   ]),
-                  m[91] ||
-                    (m[91] = a(
+                  m[92] ||
+                    (m[92] = a(
                       "p",
                       { class: "bbs-field-hint" },
                       "Bật để tự động tóm tắt và ẩn tầng cũ, đồng thời bật nhãn thời gian cốt truyện (mốc thời gian) và chặn tồn đọng (chặn gửi và nhắc bổ sung khi sót tóm tắt).",
                       -1,
                     )),
-                  a("label", vx, [
-                    m[83] ||
-                      (m[83] = a(
+                  a("label", kx, [
+                    m[84] ||
+                      (m[84] = a(
                         "span",
                         { class: "bbs-field-label" },
                         "Khung số chữ",
@@ -16527,12 +16566,12 @@ const E_ = { class: "bbs-page" },
                         "select",
                         {
                           "onUpdate:modelValue":
-                            m[13] || (m[13] = (v) => (E(C).verbosity = v)),
+                            m[13] || (m[13] = (p) => (E(C).verbosity = p)),
                           class: "bbs-input bbs-select bbs-select-narrow",
                         },
                         [
-                          ...(m[82] ||
-                            (m[82] = [
+                          ...(m[83] ||
+                            (m[83] = [
                               a(
                                 "option",
                                 { value: "detailed" },
@@ -16547,16 +16586,16 @@ const E_ = { class: "bbs-page" },
                       [[Ni, E(C).verbosity]],
                     ),
                   ]),
-                  m[92] ||
-                    (m[92] = a(
+                  m[93] ||
+                    (m[93] = a(
                       "p",
                       { class: "bbs-field-hint" },
                       "Điều chỉnh nhanh số chữ mục tiêu cho Tóm tắt/Tổng kết/Tổng kết cấp hai. Chi tiết = Đầy đủ thông tin (Tóm tắt 150-300, Tổng kết 300-500 chữ); Tinh gọn = Tiết kiệm token (Tóm tắt 80-150, Tổng kết 150-300 chữ). Chỉ ảnh hưởng lời nhắc tích hợp, không ảnh hưởng mẫu tùy chỉnh.",
                       -1,
                     )),
-                  a("label", yx, [
-                    m[84] ||
-                      (m[84] = a(
+                  a("label", _x, [
+                    m[85] ||
+                      (m[85] = a(
                         "span",
                         { class: "bbs-field-label" },
                         "Số tin nhắn AI gần đây giữ lại",
@@ -16567,7 +16606,7 @@ const E_ = { class: "bbs-page" },
                         "input",
                         {
                           "onUpdate:modelValue":
-                            m[14] || (m[14] = (v) => (E(C).keepRecent = v)),
+                            m[14] || (m[14] = (p) => (E(C).keepRecent = p)),
                           class: "bbs-input bbs-num",
                           type: "number",
                           min: "0",
@@ -16578,16 +16617,16 @@ const E_ = { class: "bbs-page" },
                       [[ut, E(C).keepRecent, void 0, { number: !0 }]],
                     ),
                   ]),
-                  m[93] ||
-                    (m[93] = a(
+                  m[94] ||
+                    (m[94] = a(
                       "p",
                       { class: "bbs-field-hint" },
                       "Giữ lại ngần này tin nhắn AI gửi toàn văn, phần vượt quá sẽ tự động ẩn và gửi tóm tắt.",
                       -1,
                     )),
-                  a("label", kx, [
-                    m[85] ||
-                      (m[85] = a(
+                  a("label", xx, [
+                    m[86] ||
+                      (m[86] = a(
                         "span",
                         { class: "bbs-field-label" },
                         "Số tin nhắn AI mỗi lần tổng kết",
@@ -16599,7 +16638,7 @@ const E_ = { class: "bbs-page" },
                         {
                           "onUpdate:modelValue":
                             m[15] ||
-                            (m[15] = (v) => (E(C).leafBatchThreshold = v)),
+                            (m[15] = (p) => (E(C).leafBatchThreshold = p)),
                           class: "bbs-input bbs-num",
                           type: "number",
                           min: "0",
@@ -16610,16 +16649,16 @@ const E_ = { class: "bbs-page" },
                       [[ut, E(C).leafBatchThreshold, void 0, { number: !0 }]],
                     ),
                   ]),
-                  m[94] ||
-                    (m[94] = a(
+                  m[95] ||
+                    (m[95] = a(
                       "p",
                       { class: "bbs-field-hint" },
                       "Mỗi lần tổng kết ngần này tóm tắt, không tính tầng user, 0 là tắt tự động tổng kết.",
                       -1,
                     )),
-                  a("label", _x, [
-                    m[86] ||
-                      (m[86] = a(
+                  a("label", Tx, [
+                    m[87] ||
+                      (m[87] = a(
                         "span",
                         { class: "bbs-field-label" },
                         "Tổng kết cấp hai",
@@ -16631,7 +16670,7 @@ const E_ = { class: "bbs-page" },
                         {
                           "onUpdate:modelValue":
                             m[16] ||
-                            (m[16] = (v) => (E(C).resummaryThreshold = v)),
+                            (m[16] = (p) => (E(C).resummaryThreshold = p)),
                           class: "bbs-input bbs-num",
                           type: "number",
                           min: "0",
@@ -16642,16 +16681,16 @@ const E_ = { class: "bbs-page" },
                       [[ut, E(C).resummaryThreshold, void 0, { number: !0 }]],
                     ),
                   ]),
-                  m[95] ||
-                    (m[95] = a(
+                  m[96] ||
+                    (m[96] = a(
                       "p",
                       { class: "bbs-field-hint" },
                       "Khi đạt ngần này tổng kết sẽ tiến hành tổng kết cấp hai, 0 là tắt tổng kết cấp hai.",
                       -1,
                     )),
-                  a("label", xx, [
-                    m[87] ||
-                      (m[87] = a(
+                  a("label", wx, [
+                    m[88] ||
+                      (m[88] = a(
                         "span",
                         { class: "bbs-field-label" },
                         "Đính kèm kế hoạch gần đây đã hoàn thành",
@@ -16663,8 +16702,8 @@ const E_ = { class: "bbs-page" },
                         {
                           "onUpdate:modelValue":
                             m[17] ||
-                            (m[17] = (v) =>
-                              (E(C).recentResolvedPlansCount = v)),
+                            (m[17] = (p) =>
+                              (E(C).recentResolvedPlansCount = p)),
                           class: "bbs-input bbs-num",
                           type: "number",
                           min: "0",
@@ -16682,16 +16721,16 @@ const E_ = { class: "bbs-page" },
                       ],
                     ),
                   ]),
-                  m[96] ||
-                    (m[96] = a(
+                  m[97] ||
+                    (m[97] = a(
                       "p",
                       { class: "bbs-field-hint" },
                       "Đính kèm 'Kế hoạch/Huyền niệm đã hoàn thành' vào bản sao lưu trạng thái, nhắc AI không thúc đẩy hay ghi lặp lại những việc vừa giải quyết; đính kèm đồng thời vào cả mô hình chính và API phụ tóm tắt. Lấy tối đa ngần này mục gần nhất cho kế hoạch và huyền niệm (ví dụ điền 5 = tối đa 5 kế hoạch + 5 huyền niệm). 0 là không đính kèm, mặc định là 5.",
                       -1,
                     )),
-                  a("label", Tx, [
-                    m[88] ||
-                      (m[88] = a(
+                  a("label", Sx, [
+                    m[89] ||
+                      (m[89] = a(
                         "span",
                         { class: "bbs-field-label" },
                         "Số lần thử lại khi thất bại",
@@ -16703,7 +16742,7 @@ const E_ = { class: "bbs-page" },
                         {
                           "onUpdate:modelValue":
                             m[18] ||
-                            (m[18] = (v) => (E(C).summaryMaxRetries = v)),
+                            (m[18] = (p) => (E(C).summaryMaxRetries = p)),
                           class: "bbs-input bbs-num",
                           type: "number",
                           min: "0",
@@ -16714,16 +16753,16 @@ const E_ = { class: "bbs-page" },
                       [[ut, E(C).summaryMaxRetries, void 0, { number: !0 }]],
                     ),
                   ]),
-                  m[97] ||
-                    (m[97] = a(
+                  m[98] ||
+                    (m[98] = a(
                       "p",
                       { class: "bbs-field-hint" },
                       "Số lần thử lại tối đa khi yêu cầu tóm tắt/tổng kết thất bại (báo lỗi hoặc không phân tích được nội dung), 0 là không thử lại. Mặc định 1.",
                       -1,
                     )),
-                  a("label", wx, [
-                    m[89] ||
-                      (m[89] = a(
+                  a("label", Cx, [
+                    m[90] ||
+                      (m[90] = a(
                         "span",
                         { class: "bbs-field-label" },
                         "Bổ sung hàng loạt · Số chữ mỗi lô",
@@ -16734,7 +16773,7 @@ const E_ = { class: "bbs-page" },
                         "input",
                         {
                           "onUpdate:modelValue":
-                            m[19] || (m[19] = (v) => (E(C).batchMaxChars = v)),
+                            m[19] || (m[19] = (p) => (E(C).batchMaxChars = p)),
                           class: "bbs-input bbs-num",
                           type: "number",
                           min: "500",
@@ -16746,16 +16785,16 @@ const E_ = { class: "bbs-page" },
                       [[ut, E(C).batchMaxChars, void 0, { number: !0 }]],
                     ),
                   ]),
-                  m[98] ||
-                    (m[98] = a(
+                  m[99] ||
+                    (m[99] = a(
                       "p",
                       { class: "bbs-field-hint" },
                       "Khi bổ sung tóm tắt hàng loạt, mỗi yêu cầu gom tối đa ngần này chữ (sau khi làm sạch) thì chia lô. Càng lớn càng tiết kiệm token/càng nhanh, nhưng quá lớn sẽ khiến AI phân tâm, giảm chất lượng. Mặc định 30000.",
                       -1,
                     )),
-                  a("label", Sx, [
-                    m[90] ||
-                      (m[90] = a(
+                  a("label", $x, [
+                    m[91] ||
+                      (m[91] = a(
                         "span",
                         { class: "bbs-field-label" },
                         "Bổ sung hàng loạt · Giới hạn số tầng mỗi lô",
@@ -16766,7 +16805,7 @@ const E_ = { class: "bbs-page" },
                         "input",
                         {
                           "onUpdate:modelValue":
-                            m[20] || (m[20] = (v) => (E(C).batchMaxFloors = v)),
+                            m[20] || (m[20] = (p) => (E(C).batchMaxFloors = p)),
                           class: "bbs-input bbs-num",
                           type: "number",
                           min: "1",
@@ -16777,8 +16816,8 @@ const E_ = { class: "bbs-page" },
                       [[ut, E(C).batchMaxFloors, void 0, { number: !0 }]],
                     ),
                   ]),
-                  m[99] ||
-                    (m[99] = a(
+                  m[100] ||
+                    (m[100] = a(
                       "p",
                       { class: "bbs-field-hint" },
                       "Khi số chữ chưa đạt giới hạn, đạt số tầng này cũng chia lô, làm phương án dự phòng. Mặc định 10.",
@@ -16793,17 +16832,17 @@ const E_ = { class: "bbs-page" },
               { title: "Loại trừ nhân vật", open: !1 },
               {
                 default: $t(() => [
-                  m[101] ||
-                    (m[101] = a(
+                  m[102] ||
+                    (m[102] = a(
                       "p",
                       { class: "bbs-field-hint" },
                       "Trong cuộc trò chuyện có tên nhân vật được chọn (bao gồm thẻ trùng tên), toàn bộ tính năng của Bách Bảo Thư sẽ không kích hoạt —— không tóm tắt, không ẩn, không chèn, không chặn. Thích hợp cho các thẻ công cụ, không cần ghi nhớ.",
                       -1,
                     )),
-                  a("div", Cx, [
+                  a("div", Ex, [
                     a(
                       "span",
-                      $x,
+                      Ix,
                       " Đã loại trừ " +
                         A(E(C).excludedChars.length) +
                         " nhân vật ",
@@ -16818,34 +16857,34 @@ const E_ = { class: "bbs-page" },
                       },
                       [
                         N(X, { name: "edit" }),
-                        m[100] || (m[100] = yt(" Chỉnh sửa danh sách ", -1)),
+                        m[101] || (m[101] = gt(" Chỉnh sửa danh sách ", -1)),
                       ],
                     ),
                   ]),
                   E(C).excludedChars.length
                     ? (f(),
-                      g("ul", Ex, [
+                      g("ul", Ax, [
                         (f(!0),
                         g(
                           dt,
                           null,
                           Et(
                             E(C).excludedChars,
-                            (v) => (
+                            (p) => (
                               f(),
-                              g("li", { key: v, class: "bbs-exclude-chip" }, [
-                                a("span", Ix, A(v), 1),
+                              g("li", { key: p, class: "bbs-exclude-chip" }, [
+                                a("span", Mx, A(p), 1),
                                 a(
                                   "button",
                                   {
                                     class: "bbs-exclude-chip-x",
                                     type: "button",
                                     title: "Xóa khỏi danh sách",
-                                    onClick: (kt) => Te(v),
+                                    onClick: (kt) => Te(p),
                                   },
                                   [N(X, { name: "close" })],
                                   8,
-                                  Ax,
+                                  Nx,
                                 ),
                               ])
                             ),
@@ -16856,7 +16895,7 @@ const E_ = { class: "bbs-page" },
                     : (f(),
                       g(
                         "p",
-                        Mx,
+                        Px,
                         "Danh sách trống, toàn bộ nhân vật đều kích hoạt hệ thống ký ức.",
                       )),
                 ]),
@@ -16868,17 +16907,79 @@ const E_ = { class: "bbs-page" },
               { title: "Loại trừ nội dung thế giới thư", open: !1 },
               {
                 default: $t(() => [
-                  m[104] ||
-                    (m[104] = a(
+                  m[106] ||
+                    (m[106] = a(
                       "p",
                       { class: "bbs-field-hint" },
                       " Khi tóm tắt/tổng kết sẽ kích hoạt Thế giới thư làm tài liệu tham khảo. Tại đây bạn có thể loại bỏ các mục không hữu ích cho ký ức cốt truyện —— chẳng hạn như Kiến thức bổ sung, giải thích quy tắc gắn toàn cục..., vừa tiết kiệm token vừa tránh nhiễu. Chỉ ảnh hưởng đến API phụ tóm tắt, không làm thay đổi Thế giới thư trong cuộc trò chuyện chính của bạn. ",
                       -1,
                     )),
-                  a("div", Nx, [
+                  a("label", Rx, [
+                    m[103] ||
+                      (m[103] = a(
+                        "span",
+                        { class: "bbs-field-label" },
+                        "Kết xuất mẫu Thế giới thư",
+                        -1,
+                      )),
+                    et(
+                      a(
+                        "input",
+                        {
+                          "onUpdate:modelValue":
+                            m[21] ||
+                            (m[21] = (p) =>
+                              (E(C).renderWorldInfoTemplates = p)),
+                          type: "checkbox",
+                          class: "bbs-checkbox",
+                        },
+                        null,
+                        512,
+                      ),
+                      [[Sn, E(C).renderWorldInfoTemplates]],
+                    ),
+                  ]),
+                  m[107] ||
+                    (m[107] = a(
+                      "p",
+                      { class: "bbs-field-hint" },
+                      [
+                        gt(
+                          " Khi bật, trước khi đọc bài Thế giới thư hệ thống sẽ mở rộng ",
+                        ),
+                        a("code", null, "{{macro}}"),
+                        gt(" và thực thi EJS ("),
+                        a("code", null, "<% %>"),
+                        gt(") của plugin "),
+                        a("strong", null, "ST-Prompt-Template"),
+                        gt(
+                          ", giúp các mục động (như tự đổi thái độ theo độ hảo cảm) nhận được ",
+                        ),
+                        a(
+                          "strong",
+                          null,
+                          "văn bản thành phẩm sau khi thực thi",
+                        ),
+                        gt(
+                          " thay vì nguyên văn code. Khi chưa cài plugin ST-Prompt-Template sẽ chỉ mở rộng macro. ",
+                        ),
+                        a("br"),
+                        gt(
+                          " ⚠️ Nếu lệnh EJS trong Thế giới thư có chứa thao tác ",
+                        ),
+                        a("strong", null, "ghi/thay đổi biến"),
+                        gt(" (như "),
+                        a("code", null, "setvar"),
+                        gt(
+                          "), mỗi lần tóm tắt sẽ chạy lệnh thêm một lần và có thể làm sai lệch biến số. Hãy tắt mục này nếu bộ sách của bạn gặp trường hợp đó. ",
+                        ),
+                      ],
+                      -1,
+                    )),
+                  a("div", Ox, [
                     a(
                       "span",
-                      Px,
+                      Lx,
                       "Loại trừ nguyên bộ · Đã chọn " +
                         A(E(C).excludedWorldNames.length) +
                         " bộ",
@@ -16889,38 +16990,38 @@ const E_ = { class: "bbs-page" },
                       {
                         class: "bbs-btn bbs-btn-primary bbs-btn-sm",
                         type: "button",
-                        onClick: Jd,
+                        onClick: Qd,
                       },
                       [
                         N(X, { name: "edit" }),
-                        m[102] || (m[102] = yt(" Chỉnh sửa danh sách ", -1)),
+                        m[104] || (m[104] = gt(" Chỉnh sửa danh sách ", -1)),
                       ],
                     ),
                   ]),
                   E(C).excludedWorldNames.length
                     ? (f(),
-                      g("ul", Rx, [
+                      g("ul", Bx, [
                         (f(!0),
                         g(
                           dt,
                           null,
                           Et(
                             E(C).excludedWorldNames,
-                            (v) => (
+                            (p) => (
                               f(),
-                              g("li", { key: v, class: "bbs-exclude-chip" }, [
-                                a("span", Ox, A(v), 1),
+                              g("li", { key: p, class: "bbs-exclude-chip" }, [
+                                a("span", qx, A(p), 1),
                                 a(
                                   "button",
                                   {
                                     class: "bbs-exclude-chip-x",
                                     type: "button",
                                     title: "Xóa khỏi danh sách",
-                                    onClick: (kt) => za(v),
+                                    onClick: (kt) => za(p),
                                   },
                                   [N(X, { name: "close" })],
                                   8,
-                                  Lx,
+                                  Vx,
                                 ),
                               ])
                             ),
@@ -16931,12 +17032,12 @@ const E_ = { class: "bbs-page" },
                     : (f(),
                       g(
                         "p",
-                        Bx,
+                        Dx,
                         "Chưa loại trừ thế giới thư nào, toàn bộ mục kích hoạt sẽ được đưa vào tham khảo tóm tắt.",
                       )),
-                  m[105] || (m[105] = a("hr", { class: "bbs-rule" }, null, -1)),
-                  m[106] ||
-                    (m[106] = a(
+                  m[108] || (m[108] = a("hr", { class: "bbs-rule" }, null, -1)),
+                  m[109] ||
+                    (m[109] = a(
                       "div",
                       { class: "bbs-field-head" },
                       [
@@ -16948,38 +17049,38 @@ const E_ = { class: "bbs-page" },
                       ],
                       -1,
                     )),
-                  m[107] ||
-                    (m[107] = a(
+                  m[110] ||
+                    (m[110] = a(
                       "p",
                       { class: "bbs-field-hint" },
                       [
-                        yt(
+                        gt(
                           " Điền tên ghi chú (comment) của mục sẽ khớp theo kiểu ",
                         ),
                         a("strong", null, "Chứa"),
-                        yt(" (không phân biệt hoa thường) —— ví dụ điền "),
+                        gt(" (không phân biệt hoa thường) —— ví dụ điền "),
                         a("code", null, "Bổ sung"),
-                        yt(
+                        gt(
                           ' sẽ khớp các mục như "Thiết lập Bổ sung". Cũng hỗ trợ biểu thức chính quy: ',
                         ),
                         a("code", null, "^Quy_tắc"),
-                        yt(
+                        gt(
                           ' nghĩa là bắt đầu bằng từ "Quy_tắc". Áp dụng cho các quyển Thế giới thư chưa bị loại trừ toàn bộ ở trên. Mặc định thiết lập sẵn một dòng ',
                         ),
                         a("code", null, "\\[mvu[\\s\\S]*?\\]"),
-                        yt(
+                        gt(
                           ", lọc các mục cơ chế của khung Biến số MVU; nếu không cần bạn có thể xóa trực tiếp. ",
                         ),
                       ],
                       -1,
                     )),
-                  a("div", qx, [
+                  a("div", jx, [
                     et(
                       a(
                         "input",
                         {
                           "onUpdate:modelValue":
-                            m[21] || (m[21] = (v) => (Ji.value = v)),
+                            m[22] || (m[22] = (p) => (Ji.value = p)),
                           class: "bbs-input",
                           type: "text",
                           placeholder:
@@ -16988,7 +17089,7 @@ const E_ = { class: "bbs-page" },
                         },
                         null,
                         40,
-                        Vx,
+                        Kx,
                       ),
                       [[ut, Ji.value]],
                     ),
@@ -17001,34 +17102,34 @@ const E_ = { class: "bbs-page" },
                       },
                       [
                         N(X, { name: "plus" }),
-                        m[103] || (m[103] = yt(" Thêm ", -1)),
+                        m[105] || (m[105] = gt(" Thêm ", -1)),
                       ],
                     ),
                   ]),
                   E(C).excludedWorldInfoPatterns.length
                     ? (f(),
-                      g("ul", Dx, [
+                      g("ul", Hx, [
                         (f(!0),
                         g(
                           dt,
                           null,
                           Et(
                             E(C).excludedWorldInfoPatterns,
-                            (v) => (
+                            (p) => (
                               f(),
-                              g("li", { key: v, class: "bbs-exclude-chip" }, [
-                                a("span", jx, A(v), 1),
+                              g("li", { key: p, class: "bbs-exclude-chip" }, [
+                                a("span", Fx, A(p), 1),
                                 a(
                                   "button",
                                   {
                                     class: "bbs-exclude-chip-x",
                                     type: "button",
                                     title: "Xóa bỏ",
-                                    onClick: (kt) => Yd(v),
+                                    onClick: (kt) => zd(p),
                                   },
                                   [N(X, { name: "close" })],
                                   8,
-                                  Kx,
+                                  Ux,
                                 ),
                               ])
                             ),
@@ -17036,7 +17137,7 @@ const E_ = { class: "bbs-page" },
                           128,
                         )),
                       ]))
-                    : (f(), g("p", Hx, "Chưa có quy tắc tên mục.")),
+                    : (f(), g("p", Wx, "Chưa có quy tắc tên mục.")),
                 ]),
                 _: 1,
               },
@@ -17046,30 +17147,30 @@ const E_ = { class: "bbs-page" },
               { title: "Nhãn làm sạch tùy chỉnh", open: !1 },
               {
                 default: $t(() => [
-                  m[109] ||
-                    (m[109] = a(
+                  m[112] ||
+                    (m[112] = a(
                       "p",
                       { class: "bbs-field-hint" },
                       [
-                        yt(
+                        gt(
                           " Nếu trong văn bản cốt truyện có lẫn các khối định dạng do plugin khác / thế giới thư viết (như thanh trạng thái ",
                         ),
                         a("code", null, "<snow>…</snow>"),
-                        yt("), bạn có thể điền tên thẻ vào đây (chỉ điền "),
+                        gt("), bạn có thể điền tên thẻ vào đây (chỉ điền "),
                         a("code", null, "snow"),
-                        yt(
+                        gt(
                           ", không kèm dấu ngoặc nhọn), khi tóm tắt, lập chỉ mục vector và triệu hồi sẽ xóa toàn bộ khối cùng nội dung bên trong. Sau khi điều chỉnh sẽ có hiệu lực ngay lập tức cho **triệu hồi** (kho vector lưu nguyên văn, khi triệu hồi mới làm sạch), không cần tái lập chỉ mục. ",
                         ),
                       ],
                       -1,
                     )),
-                  a("div", Fx, [
+                  a("div", Gx, [
                     et(
                       a(
                         "input",
                         {
                           "onUpdate:modelValue":
-                            m[22] || (m[22] = (v) => (Qi.value = v)),
+                            m[23] || (m[23] = (p) => (Qi.value = p)),
                           class: "bbs-input",
                           type: "text",
                           placeholder: "Tên nhãn, ví dụ snow",
@@ -17077,7 +17178,7 @@ const E_ = { class: "bbs-page" },
                         },
                         null,
                         40,
-                        Ux,
+                        Jx,
                       ),
                       [[ut, Qi.value]],
                     ),
@@ -17090,34 +17191,34 @@ const E_ = { class: "bbs-page" },
                       },
                       [
                         N(X, { name: "plus" }),
-                        m[108] || (m[108] = yt(" Thêm ", -1)),
+                        m[111] || (m[111] = gt(" Thêm ", -1)),
                       ],
                     ),
                   ]),
                   E(C).customStripTags.length
                     ? (f(),
-                      g("ul", Wx, [
+                      g("ul", Qx, [
                         (f(!0),
                         g(
                           dt,
                           null,
                           Et(
                             E(C).customStripTags,
-                            (v) => (
+                            (p) => (
                               f(),
-                              g("li", { key: v, class: "bbs-exclude-chip" }, [
-                                a("span", Gx, "<" + A(v) + ">", 1),
+                              g("li", { key: p, class: "bbs-exclude-chip" }, [
+                                a("span", Yx, "<" + A(p) + ">", 1),
                                 a(
                                   "button",
                                   {
                                     class: "bbs-exclude-chip-x",
                                     type: "button",
                                     title: "Xóa bỏ",
-                                    onClick: (kt) => zd(v),
+                                    onClick: (kt) => Xd(p),
                                   },
                                   [N(X, { name: "close" })],
                                   8,
-                                  Jx,
+                                  zx,
                                 ),
                               ])
                             ),
@@ -17128,7 +17229,7 @@ const E_ = { class: "bbs-page" },
                     : (f(),
                       g(
                         "p",
-                        Qx,
+                        Xx,
                         "Chưa có nhãn tùy chỉnh. Chỉ làm sạch tích hợp (chuỗi suy nghĩ, ghi chú, chú giải vật phẩm...) có hiệu lực.",
                       )),
                 ]),
@@ -17140,37 +17241,37 @@ const E_ = { class: "bbs-page" },
               { title: "Lời nhắc tùy chỉnh", open: !1 },
               {
                 default: $t(() => [
-                  a("ul", Yx, [
+                  a("ul", Zx, [
                     (f(),
                     g(
                       dt,
                       null,
-                      Et(J, (v) =>
-                        a("li", { key: v.key, class: "bbs-prompt-item" }, [
+                      Et(J, (p) =>
+                        a("li", { key: p.key, class: "bbs-prompt-item" }, [
                           a(
                             "button",
                             {
                               class: "bbs-prompt-open",
                               type: "button",
-                              onClick: (kt) => Q(v),
+                              onClick: (kt) => Q(p),
                             },
                             [
-                              a("span", Xx, A(v.label), 1),
+                              a("span", nT, A(p.label), 1),
                               a(
                                 "span",
                                 {
                                   class: Tt([
                                     "bbs-prompt-state",
-                                    { "is-custom": vt(v.key) },
+                                    { "is-custom": yt(p.key) },
                                   ]),
                                 },
-                                A(vt(v.key) ? "Đã tùy chỉnh" : "Mặc định"),
+                                A(yt(p.key) ? "Đã tùy chỉnh" : "Mặc định"),
                                 3,
                               ),
                               N(X, { name: "edit", class: "bbs-prompt-edit" }),
                             ],
                             8,
-                            zx,
+                            tT,
                           ),
                         ]),
                       ),
@@ -17186,9 +17287,9 @@ const E_ = { class: "bbs-page" },
               { title: "Ký ức vectơ", open: !1 },
               {
                 default: $t(() => [
-                  a("label", Zx, [
-                    m[110] ||
-                      (m[110] = a(
+                  a("label", eT, [
+                    m[113] ||
+                      (m[113] = a(
                         "span",
                         { class: "bbs-field-label" },
                         "Bật ký ức vectơ",
@@ -17199,18 +17300,18 @@ const E_ = { class: "bbs-page" },
                         "input",
                         {
                           "onUpdate:modelValue":
-                            m[23] || (m[23] = (v) => (E(C).vector.enabled = v)),
+                            m[24] || (m[24] = (p) => (E(C).vector.enabled = p)),
                           type: "checkbox",
                           class: "bbs-checkbox",
                         },
                         null,
                         512,
                       ),
-                      [[Ln, E(C).vector.enabled]],
+                      [[Sn, E(C).vector.enabled]],
                     ),
                   ]),
-                  m[134] ||
-                    (m[134] = a(
+                  m[137] ||
+                    (m[137] = a(
                       "hr",
                       { class: "bbs-rule bbs-vec-enable-rule" },
                       null,
@@ -17220,16 +17321,16 @@ const E_ = { class: "bbs-page" },
                   g(
                     dt,
                     null,
-                    Et(sn, (v) =>
+                    Et(sn, (p) =>
                       a(
                         "div",
                         {
-                          key: v.key,
+                          key: p.key,
                           class: Tt([
                             "bbs-vec-ep",
                             {
                               "is-disabled": !E(C).vector.enabled,
-                              "is-collapsed": !jn.value[v.key],
+                              "is-collapsed": !jn.value[p.key],
                             },
                           ]),
                         },
@@ -17239,34 +17340,34 @@ const E_ = { class: "bbs-page" },
                             {
                               type: "button",
                               class: "bbs-vec-head bbs-vec-toggle",
-                              "aria-expanded": jn.value[v.key],
+                              "aria-expanded": jn.value[p.key],
                               onClick: (kt) =>
-                                (jn.value[v.key] = !jn.value[v.key]),
+                                (jn.value[p.key] = !jn.value[p.key]),
                             },
                             [
-                              a("span", nT, A(v.label), 1),
+                              a("span", sT, A(p.label), 1),
                               N(X, {
                                 name: "chevron",
                                 class: "bbs-vec-chevron",
                               }),
                             ],
                             8,
-                            tT,
+                            iT,
                           ),
-                          a("div", eT, [
-                            a("div", iT, [
-                              a("div", sT, [
-                                v.key !== "embedding"
+                          a("div", oT, [
+                            a("div", rT, [
+                              a("div", aT, [
+                                p.key !== "embedding"
                                   ? (f(),
                                     g(
                                       "p",
-                                      oT,
+                                      lT,
                                       "Để trống địa chỉ / khóa sẽ dùng lại Embedding; mô hình vẫn cần điền riêng.",
                                     ))
                                   : H("", !0),
-                                a("label", rT, [
-                                  m[111] ||
-                                    (m[111] = a(
+                                a("label", cT, [
+                                  m[114] ||
+                                    (m[114] = a(
                                       "span",
                                       { class: "bbs-modal-label" },
                                       "Địa chỉ API",
@@ -17277,68 +17378,68 @@ const E_ = { class: "bbs-page" },
                                       "input",
                                       {
                                         "onUpdate:modelValue": (kt) =>
-                                          (E(C).vector[v.key].url = kt),
+                                          (E(C).vector[p.key].url = kt),
                                         class: "bbs-input",
                                         placeholder:
-                                          v.key === "embedding"
+                                          p.key === "embedding"
                                             ? "Ví dụ: https://api.openai.com/v1"
                                             : "Để trống = dùng lại địa chỉ Embedding",
                                         disabled: !E(C).vector.enabled,
                                       },
                                       null,
                                       8,
-                                      aT,
+                                      uT,
                                     ),
-                                    [[ut, E(C).vector[v.key].url]],
+                                    [[ut, E(C).vector[p.key].url]],
                                   ),
                                 ]),
-                                a("label", lT, [
-                                  m[112] ||
-                                    (m[112] = a(
+                                a("label", hT, [
+                                  m[115] ||
+                                    (m[115] = a(
                                       "span",
                                       { class: "bbs-modal-label" },
                                       "Khóa API",
                                       -1,
                                     )),
-                                  a("div", cT, [
+                                  a("div", dT, [
                                     et(
                                       a(
                                         "input",
                                         {
                                           "onUpdate:modelValue": (kt) =>
-                                            (E(C).vector[v.key].key = kt),
+                                            (E(C).vector[p.key].key = kt),
                                           class: "bbs-input",
-                                          type: on.value[v.key]
+                                          type: on.value[p.key]
                                             ? "text"
                                             : "password",
                                           placeholder:
-                                            v.key === "embedding"
+                                            p.key === "embedding"
                                               ? "Khóa API"
                                               : "Để trống = dùng lại khóa Embedding",
                                           disabled: !E(C).vector.enabled,
                                         },
                                         null,
                                         8,
-                                        uT,
+                                        mT,
                                       ),
-                                      [[Hl, E(C).vector[v.key].key]],
+                                      [[Hl, E(C).vector[p.key].key]],
                                     ),
                                     a(
                                       "button",
                                       {
                                         class: "bbs-icon-mini",
                                         type: "button",
-                                        title: on.value[v.key]
+                                        title: on.value[p.key]
                                           ? "Ẩn khóa"
                                           : "Hiện khóa",
                                         onClick: (kt) =>
-                                          (on.value[v.key] = !on.value[v.key]),
+                                          (on.value[p.key] = !on.value[p.key]),
                                       },
                                       [
                                         N(
                                           X,
                                           {
-                                            name: on.value[v.key]
+                                            name: on.value[p.key]
                                               ? "eye-off"
                                               : "eye",
                                           },
@@ -17348,46 +17449,46 @@ const E_ = { class: "bbs-page" },
                                         ),
                                       ],
                                       8,
-                                      hT,
+                                      fT,
                                     ),
                                   ]),
                                 ]),
-                                a("label", dT, [
-                                  m[113] ||
-                                    (m[113] = a(
+                                a("label", gT, [
+                                  m[116] ||
+                                    (m[116] = a(
                                       "span",
                                       { class: "bbs-modal-label" },
                                       "Mô hình",
                                       -1,
                                     )),
-                                  a("div", mT, [
-                                    a("div", fT, [
+                                  a("div", bT, [
+                                    a("div", pT, [
                                       et(
                                         a(
                                           "input",
                                           {
                                             "onUpdate:modelValue": (kt) =>
-                                              (E(C).vector[v.key].model = kt),
+                                              (E(C).vector[p.key].model = kt),
                                             class: "bbs-input",
-                                            placeholder: jt.value[v.key]?.length
+                                            placeholder: jt.value[p.key]?.length
                                               ? "Tìm kiếm hoặc nhập tên mô hình..."
                                               : "Tên mô hình, hoặc nhấn bên phải để tải",
                                             disabled: !E(C).vector.enabled,
-                                            onFocus: (kt) => Z(v.key),
+                                            onFocus: (kt) => Z(p.key),
                                             onInput: (kt) => {
                                               ((K.value =
-                                                E(C).vector[v.key].model),
-                                                (I.value = v.key));
+                                                E(C).vector[p.key].model),
+                                                (I.value = p.key));
                                             },
                                             onBlur: T,
                                           },
                                           null,
                                           40,
-                                          gT,
+                                          vT,
                                         ),
-                                        [[ut, E(C).vector[v.key].model]],
+                                        [[ut, E(C).vector[p.key].model]],
                                       ),
-                                      jt.value[v.key]?.length
+                                      jt.value[p.key]?.length
                                         ? (f(),
                                           g(
                                             "span",
@@ -17396,7 +17497,7 @@ const E_ = { class: "bbs-page" },
                                               class: Tt([
                                                 "bbs-combo-caret",
                                                 {
-                                                  "is-open": I.value === v.key,
+                                                  "is-open": I.value === p.key,
                                                 },
                                               ]),
                                               "aria-hidden": "true",
@@ -17405,16 +17506,16 @@ const E_ = { class: "bbs-page" },
                                             2,
                                           ))
                                         : H("", !0),
-                                      I.value === v.key &&
-                                      jt.value[v.key]?.length
+                                      I.value === p.key &&
+                                      jt.value[p.key]?.length
                                         ? (f(),
-                                          g("ul", bT, [
-                                            tt(v.key).length
+                                          g("ul", yT, [
+                                            tt(p.key).length
                                               ? H("", !0)
                                               : (f(),
                                                 g(
                                                   "li",
-                                                  pT,
+                                                  kT,
                                                   "Không có mô hình khớp",
                                                 )),
                                             (f(!0),
@@ -17422,7 +17523,7 @@ const E_ = { class: "bbs-page" },
                                               dt,
                                               null,
                                               Et(
-                                                tt(v.key),
+                                                tt(p.key),
                                                 (kt) => (
                                                   f(),
                                                   g(
@@ -17434,18 +17535,18 @@ const E_ = { class: "bbs-page" },
                                                         {
                                                           "is-active":
                                                             kt ===
-                                                            E(C).vector[v.key]
+                                                            E(C).vector[p.key]
                                                               .model,
                                                         },
                                                       ]),
                                                       onMousedown: pe(
-                                                        (zn) => ht(v.key, kt),
+                                                        (zn) => ht(p.key, kt),
                                                         ["prevent"],
                                                       ),
                                                     },
                                                     A(kt),
                                                     43,
-                                                    vT,
+                                                    _T,
                                                   )
                                                 ),
                                               ),
@@ -17459,27 +17560,27 @@ const E_ = { class: "bbs-page" },
                                       {
                                         class: "bbs-icon-mini",
                                         type: "button",
-                                        title: qt.value[v.key]
+                                        title: qt.value[p.key]
                                           ? "Đang tải..."
                                           : "Tải danh sách mô hình",
                                         disabled:
                                           !E(C).vector.enabled ||
-                                          qt.value[v.key],
-                                        onClick: (kt) => it(v.key),
+                                          qt.value[p.key],
+                                        onClick: (kt) => it(p.key),
                                       },
                                       [N(X, { name: "refresh" })],
                                       8,
-                                      yT,
+                                      xT,
                                     ),
                                   ]),
                                 ]),
-                                y.value[v.key]
-                                  ? (f(), g("p", kT, A(y.value[v.key]), 1))
+                                y.value[p.key]
+                                  ? (f(), g("p", TT, A(y.value[p.key]), 1))
                                   : H("", !0),
-                                a("div", _T, [
-                                  a("label", xT, [
-                                    m[114] ||
-                                      (m[114] = a(
+                                a("div", wT, [
+                                  a("label", ST, [
+                                    m[117] ||
+                                      (m[117] = a(
                                         "span",
                                         { class: "bbs-modal-label" },
                                         "Thời gian chờ (giây)",
@@ -17490,7 +17591,7 @@ const E_ = { class: "bbs-page" },
                                         "input",
                                         {
                                           "onUpdate:modelValue": (kt) =>
-                                            (E(C).vector[v.key].timeoutSec =
+                                            (E(C).vector[p.key].timeoutSec =
                                               kt),
                                           class: "bbs-input bbs-num-sm",
                                           type: "number",
@@ -17499,21 +17600,21 @@ const E_ = { class: "bbs-page" },
                                         },
                                         null,
                                         8,
-                                        TT,
+                                        CT,
                                       ),
                                       [
                                         [
                                           ut,
-                                          E(C).vector[v.key].timeoutSec,
+                                          E(C).vector[p.key].timeoutSec,
                                           void 0,
                                           { number: !0 },
                                         ],
                                       ],
                                     ),
                                   ]),
-                                  a("label", wT, [
-                                    m[115] ||
-                                      (m[115] = a(
+                                  a("label", $T, [
+                                    m[118] ||
+                                      (m[118] = a(
                                         "span",
                                         { class: "bbs-modal-label" },
                                         "Số lần thử lại khi thất bại",
@@ -17524,7 +17625,7 @@ const E_ = { class: "bbs-page" },
                                         "input",
                                         {
                                           "onUpdate:modelValue": (kt) =>
-                                            (E(C).vector[v.key].retries = kt),
+                                            (E(C).vector[p.key].retries = kt),
                                           class: "bbs-input bbs-num-sm",
                                           type: "number",
                                           min: "0",
@@ -17532,12 +17633,12 @@ const E_ = { class: "bbs-page" },
                                         },
                                         null,
                                         8,
-                                        ST,
+                                        ET,
                                       ),
                                       [
                                         [
                                           ut,
-                                          E(C).vector[v.key].retries,
+                                          E(C).vector[p.key].retries,
                                           void 0,
                                           { number: !0 },
                                         ],
@@ -17554,7 +17655,7 @@ const E_ = { class: "bbs-page" },
                     ),
                     64,
                   )),
-                  m[135] || (m[135] = a("hr", { class: "bbs-rule" }, null, -1)),
+                  m[138] || (m[138] = a("hr", { class: "bbs-rule" }, null, -1)),
                   N(
                     pn,
                     { title: "Tham số triệu hồi", open: !1 },
@@ -17569,19 +17670,19 @@ const E_ = { class: "bbs-page" },
                             ]),
                           },
                           [
-                            m[122] ||
-                              (m[122] = a(
+                            m[125] ||
+                              (m[125] = a(
                                 "p",
                                 { class: "bbs-field-hint" },
                                 ' Trước tiên tính độ tương đồng embedding cho toàn bộ chỉ mục vector, lấy số lượng mục có điểm cao nhất đưa vào xếp hạng lại (rerank); sau khi rerank chấm điểm sẽ chia hai mức: điểm cao sẽ gửi toàn bộ nguyên văn, điểm thấp hơn một chút nhưng vẫn vượt ngưỡng embedding sẽ gửi bản tóm tắt; tổng hai mức không vượt quá "Số mục triệu hồi tối đa". ',
                                 -1,
                               )),
-                            m[123] ||
-                              (m[123] = a(
+                            m[126] ||
+                              (m[126] = a(
                                 "p",
                                 { class: "bbs-field-hint" },
                                 [
-                                  yt(
+                                  gt(
                                     ' Trước khi tạo câu trả lời, dùng mô hình nhỏ (phần "Viết lại truy vấn" ở trên) viết lại tình tiết hiện tại thành nhiều truy vấn tìm kiếm, giúp triệu hồi đa luồng toàn diện hơn. ',
                                   ),
                                   a(
@@ -17589,15 +17690,15 @@ const E_ = { class: "bbs-page" },
                                     null,
                                     "Viết lại truy vấn là bước bắt buộc của triệu hồi, cần cấu hình mô hình 'Viết lại truy vấn'; nếu không cấu hình hoặc viết lại thất bại thì lượt này không triệu hồi.",
                                   ),
-                                  yt(
+                                  gt(
                                     " Mỗi hiệp sẽ thêm một lần gọi mô hình nhỏ (tăng nhẹ độ trễ). ",
                                   ),
                                 ],
                                 -1,
                               )),
-                            a("label", CT, [
-                              m[116] ||
-                                (m[116] = a(
+                            a("label", IT, [
+                              m[119] ||
+                                (m[119] = a(
                                   "span",
                                   { class: "bbs-field-label" },
                                   "Số ứng viên Rerank",
@@ -17608,10 +17709,10 @@ const E_ = { class: "bbs-page" },
                                   "input",
                                   {
                                     "onUpdate:modelValue":
-                                      m[24] ||
-                                      (m[24] = (v) =>
+                                      m[25] ||
+                                      (m[25] = (p) =>
                                         (E(C).vector.recall.rerankCandidates =
-                                          v)),
+                                          p)),
                                     class: "bbs-input bbs-num",
                                     type: "number",
                                     min: "1",
@@ -17619,7 +17720,7 @@ const E_ = { class: "bbs-page" },
                                   },
                                   null,
                                   8,
-                                  $T,
+                                  AT,
                                 ),
                                 [
                                   [
@@ -17631,16 +17732,16 @@ const E_ = { class: "bbs-page" },
                                 ],
                               ),
                             ]),
-                            m[124] ||
-                              (m[124] = a(
+                            m[127] ||
+                              (m[127] = a(
                                 "p",
                                 { class: "bbs-field-hint" },
                                 "Lấy N mục đầu tiên theo độ tương đồng embedding để đưa vào rerank tinh lọc (càng lớn càng chuẩn nhưng càng chậm).",
                                 -1,
                               )),
-                            a("label", ET, [
-                              m[117] ||
-                                (m[117] = a(
+                            a("label", MT, [
+                              m[120] ||
+                                (m[120] = a(
                                   "span",
                                   { class: "bbs-field-label" },
                                   "Ngưỡng Embedding",
@@ -17651,10 +17752,10 @@ const E_ = { class: "bbs-page" },
                                   "input",
                                   {
                                     "onUpdate:modelValue":
-                                      m[25] ||
-                                      (m[25] = (v) =>
+                                      m[26] ||
+                                      (m[26] = (p) =>
                                         (E(C).vector.recall.embeddingThreshold =
-                                          v)),
+                                          p)),
                                     class: "bbs-input bbs-num",
                                     type: "number",
                                     step: "0.01",
@@ -17664,7 +17765,7 @@ const E_ = { class: "bbs-page" },
                                   },
                                   null,
                                   8,
-                                  IT,
+                                  NT,
                                 ),
                                 [
                                   [
@@ -17676,16 +17777,16 @@ const E_ = { class: "bbs-page" },
                                 ],
                               ),
                             ]),
-                            m[125] ||
-                              (m[125] = a(
+                            m[128] ||
+                              (m[128] = a(
                                 "p",
                                 { class: "bbs-field-hint" },
                                 "Ngưỡng nhận tóm tắt: nội dung có độ tương đồng embedding thấp hơn ngưỡng này sẽ không được triệu hồi (0~1).",
                                 -1,
                               )),
-                            a("label", AT, [
-                              m[118] ||
-                                (m[118] = a(
+                            a("label", PT, [
+                              m[121] ||
+                                (m[121] = a(
                                   "span",
                                   { class: "bbs-field-label" },
                                   "Ngưỡng Rerank",
@@ -17696,10 +17797,10 @@ const E_ = { class: "bbs-page" },
                                   "input",
                                   {
                                     "onUpdate:modelValue":
-                                      m[26] ||
-                                      (m[26] = (v) =>
+                                      m[27] ||
+                                      (m[27] = (p) =>
                                         (E(C).vector.recall.rerankThreshold =
-                                          v)),
+                                          p)),
                                     class: "bbs-input bbs-num",
                                     type: "number",
                                     step: "0.01",
@@ -17709,7 +17810,7 @@ const E_ = { class: "bbs-page" },
                                   },
                                   null,
                                   8,
-                                  MT,
+                                  RT,
                                 ),
                                 [
                                   [
@@ -17721,16 +17822,16 @@ const E_ = { class: "bbs-page" },
                                 ],
                               ),
                             ]),
-                            m[126] ||
-                              (m[126] = a(
+                            m[129] ||
+                              (m[129] = a(
                                 "p",
                                 { class: "bbs-field-hint" },
                                 "Điểm rerank ≥ giá trị này sẽ gửi nguyên văn, thấp hơn ngưỡng này nhưng vượt ngưỡng embedding sẽ lùi về gửi tóm tắt (0~1).",
                                 -1,
                               )),
-                            a("label", NT, [
-                              m[119] ||
-                                (m[119] = a(
+                            a("label", OT, [
+                              m[122] ||
+                                (m[122] = a(
                                   "span",
                                   { class: "bbs-field-label" },
                                   "Số toàn văn triệu hồi",
@@ -17741,9 +17842,9 @@ const E_ = { class: "bbs-page" },
                                   "input",
                                   {
                                     "onUpdate:modelValue":
-                                      m[27] ||
-                                      (m[27] = (v) =>
-                                        (E(C).vector.recall.fullTextCount = v)),
+                                      m[28] ||
+                                      (m[28] = (p) =>
+                                        (E(C).vector.recall.fullTextCount = p)),
                                     class: "bbs-input bbs-num",
                                     type: "number",
                                     min: "0",
@@ -17751,7 +17852,7 @@ const E_ = { class: "bbs-page" },
                                   },
                                   null,
                                   8,
-                                  PT,
+                                  LT,
                                 ),
                                 [
                                   [
@@ -17763,16 +17864,16 @@ const E_ = { class: "bbs-page" },
                                 ],
                               ),
                             ]),
-                            m[127] ||
-                              (m[127] = a(
+                            m[130] ||
+                              (m[130] = a(
                                 "p",
                                 { class: "bbs-field-hint" },
                                 "Lấy tối đa ngần này mục toàn văn để gửi nguyên văn (phần còn lại dù vượt ngưỡng rerank cũng lùi về tóm tắt).",
                                 -1,
                               )),
-                            a("label", RT, [
-                              m[120] ||
-                                (m[120] = a(
+                            a("label", BT, [
+                              m[123] ||
+                                (m[123] = a(
                                   "span",
                                   { class: "bbs-field-label" },
                                   "Số mục triệu hồi cuối cùng",
@@ -17783,10 +17884,10 @@ const E_ = { class: "bbs-page" },
                                   "input",
                                   {
                                     "onUpdate:modelValue":
-                                      m[28] ||
-                                      (m[28] = (v) =>
+                                      m[29] ||
+                                      (m[29] = (p) =>
                                         (E(C).vector.recall.finalRecallCount =
-                                          v)),
+                                          p)),
                                     class: "bbs-input bbs-num",
                                     type: "number",
                                     min: "0",
@@ -17794,7 +17895,7 @@ const E_ = { class: "bbs-page" },
                                   },
                                   null,
                                   8,
-                                  OT,
+                                  qT,
                                 ),
                                 [
                                   [
@@ -17806,16 +17907,16 @@ const E_ = { class: "bbs-page" },
                                 ],
                               ),
                             ]),
-                            m[128] ||
-                              (m[128] = a(
+                            m[131] ||
+                              (m[131] = a(
                                 "p",
                                 { class: "bbs-field-hint" },
                                 "Giới hạn tổng số mục triệu hồi (tổng toàn văn + tóm tắt); toàn văn không đủ thì bù bằng tóm tắt, không đầy cũng không sao.",
                                 -1,
                               )),
-                            a("label", LT, [
-                              m[121] ||
-                                (m[121] = a(
+                            a("label", VT, [
+                              m[124] ||
+                                (m[124] = a(
                                   "span",
                                   { class: "bbs-field-label" },
                                   "Số tầng AI bắt đầu triệu hồi",
@@ -17826,9 +17927,9 @@ const E_ = { class: "bbs-page" },
                                   "input",
                                   {
                                     "onUpdate:modelValue":
-                                      m[29] ||
-                                      (m[29] = (v) =>
-                                        (E(C).vector.recall.minAiFloors = v)),
+                                      m[30] ||
+                                      (m[30] = (p) =>
+                                        (E(C).vector.recall.minAiFloors = p)),
                                     class: "bbs-input bbs-num",
                                     type: "number",
                                     min: "0",
@@ -17836,7 +17937,7 @@ const E_ = { class: "bbs-page" },
                                   },
                                   null,
                                   8,
-                                  BT,
+                                  DT,
                                 ),
                                 [
                                   [
@@ -17848,8 +17949,8 @@ const E_ = { class: "bbs-page" },
                                 ],
                               ),
                             ]),
-                            m[129] ||
-                              (m[129] = a(
+                            m[132] ||
+                              (m[132] = a(
                                 "p",
                                 { class: "bbs-field-hint" },
                                 ' Khi số tin nhắn AI trong cuộc trò chuyện hiện tại ít hơn giá trị này sẽ không kích hoạt triệu hồi (0 = không giới hạn). Ở giai đoạn đầu cốt truyện ký ức cũ còn ít, bỏ qua sẽ giúp tiết kiệm hạn mức/độ trễ. Ngoài ra: khi toàn bộ tin nhắn vẫn đang nằm trong cửa sổ gửi nguyên văn thì cũng tự động bỏ qua (vì không có lầu cũ ngoài cửa sổ để triệu hồi); bản lưu cũ từ "Tạo hội thoại mới kèm dữ liệu" không bị giới hạn này, luôn triệu hồi. ',
@@ -17862,7 +17963,7 @@ const E_ = { class: "bbs-page" },
                       _: 1,
                     },
                   ),
-                  m[136] || (m[136] = a("hr", { class: "bbs-rule" }, null, -1)),
+                  m[139] || (m[139] = a("hr", { class: "bbs-rule" }, null, -1)),
                   a(
                     "div",
                     {
@@ -17872,9 +17973,9 @@ const E_ = { class: "bbs-page" },
                       ]),
                     },
                     [
-                      a("div", qT, [
-                        m[130] ||
-                          (m[130] = a(
+                      a("div", jT, [
+                        m[133] ||
+                          (m[133] = a(
                             "span",
                             { class: "bbs-field-label" },
                             "Bảo trì chỉ mục",
@@ -17902,8 +18003,8 @@ const E_ = { class: "bbs-page" },
                             ))
                           : H("", !0),
                       ]),
-                      m[131] ||
-                        (m[131] = a(
+                      m[134] ||
+                        (m[134] = a(
                           "p",
                           { class: "bbs-field-hint" },
                           ' Trong trường hợp bình thường, tóm tắt nút lá sẽ tự động lập chỉ mục khi tạo câu trả lời; nếu giữa chừng mới bật Ký ức vector, bạn có thể thủ công lập chỉ mục bổ sung cho các bản tóm tắt hiện có trong cuộc trò chuyện vào kho vector. Việc xóa trắng chỉ xóa chỉ mục của cuộc trò chuyện hiện tại, không đụng chạm đến bản chụp dữ liệu cũ kế thừa từ "Tạo hội thoại mới kèm dữ liệu". ',
@@ -17913,27 +18014,27 @@ const E_ = { class: "bbs-page" },
                         ? (f(),
                           g(
                             "p",
-                            VT,
+                            KT,
                             " Chế độ cục bộ: chỉ mục lưu trong trình duyệt, chỉ triệu hồi cho cuộc trò chuyện hiện tại, không liên thông giữa các cuộc trò chuyện / không đồng bộ giữa các thiết bị. Sau khi cài đặt backend Bách Bảo Khố có thể khôi phục đầy đủ tính năng. ",
                           ))
                         : H("", !0),
-                      a("div", DT, [
+                      a("div", HT, [
                         a(
                           "button",
                           {
                             class: "bbs-btn bbs-btn-sm",
                             type: "button",
                             disabled:
-                              !E(C).vector.enabled || gt.value || Nt.value,
+                              !E(C).vector.enabled || bt.value || Nt.value,
                             onClick: Pt,
                           },
                           A(
-                            gt.value
+                            bt.value
                               ? "Đang tạo chỉ mục..."
                               : "Tái tạo chỉ mục vectơ cho trò chuyện hiện tại",
                           ),
                           9,
-                          jT,
+                          FT,
                         ),
                         a(
                           "button",
@@ -17941,13 +18042,13 @@ const E_ = { class: "bbs-page" },
                             class: "bbs-btn bbs-btn-sm bbs-btn-danger",
                             type: "button",
                             disabled:
-                              !E(C).vector.enabled || gt.value || Nt.value,
+                              !E(C).vector.enabled || bt.value || Nt.value,
                             onClick: Xt,
-                            onBlur: m[30] || (m[30] = (v) => (Kt.value = !1)),
+                            onBlur: m[31] || (m[31] = (p) => (Kt.value = !1)),
                           },
                           [
                             N(X, { name: "trash" }),
-                            yt(
+                            gt(
                               " " +
                                 A(
                                   Nt.value
@@ -17960,14 +18061,14 @@ const E_ = { class: "bbs-page" },
                             ),
                           ],
                           40,
-                          KT,
+                          UT,
                         ),
                       ]),
-                      St.value ? (f(), g("p", HT, A(St.value), 1)) : H("", !0),
+                      St.value ? (f(), g("p", WT, A(St.value), 1)) : H("", !0),
                     ],
                     2,
                   ),
-                  m[137] || (m[137] = a("hr", { class: "bbs-rule" }, null, -1)),
+                  m[140] || (m[140] = a("hr", { class: "bbs-rule" }, null, -1)),
                   N(
                     pn,
                     { title: "Chi tiết triệu hồi lần trước", open: !1 },
@@ -17975,18 +18076,18 @@ const E_ = { class: "bbs-page" },
                       default: $t(() => [
                         E(Ft).at
                           ? (f(),
-                            g("div", UT, [
+                            g("div", JT, [
                               a(
                                 "div",
                                 {
                                   class: Tt([
                                     "bbs-dbg-banner",
-                                    `is-${nm.value}`,
+                                    `is-${em.value}`,
                                   ]),
                                 },
                                 [
-                                  m[132] ||
-                                    (m[132] = a(
+                                  m[135] ||
+                                    (m[135] = a(
                                       "span",
                                       {
                                         class: "bbs-dbg-dot",
@@ -17995,8 +18096,8 @@ const E_ = { class: "bbs-page" },
                                       null,
                                       -1,
                                     )),
-                                  a("span", WT, A(E(Ft).status), 1),
-                                  a("span", GT, A(Zd(E(Ft).at)), 1),
+                                  a("span", QT, A(E(Ft).status), 1),
+                                  a("span", YT, A(tm(E(Ft).at)), 1),
                                 ],
                                 2,
                               ),
@@ -18010,27 +18111,27 @@ const E_ = { class: "bbs-page" },
                                   default: $t(() => [
                                     E(Ft).intent
                                       ? (f(),
-                                        g("p", JT, [
-                                          m[133] ||
-                                            (m[133] = a(
+                                        g("p", zT, [
+                                          m[136] ||
+                                            (m[136] = a(
                                               "span",
                                               { class: "bbs-dbg-tag" },
                                               "INTENT",
                                               -1,
                                             )),
-                                          a("span", QT, A(E(Ft).intent), 1),
+                                          a("span", XT, A(E(Ft).intent), 1),
                                         ]))
                                       : H("", !0),
                                     E(Ft).queries.length
                                       ? (f(),
-                                        g("ul", YT, [
+                                        g("ul", ZT, [
                                           (f(!0),
                                           g(
                                             dt,
                                             null,
                                             Et(
                                               E(Ft).queries,
-                                              (v, kt) => (
+                                              (p, kt) => (
                                                 f(),
                                                 g(
                                                   "li",
@@ -18041,11 +18142,11 @@ const E_ = { class: "bbs-page" },
                                                   [
                                                     a(
                                                       "span",
-                                                      zT,
+                                                      tw,
                                                       "Q" + A(kt + 1),
                                                       1,
                                                     ),
-                                                    a("span", XT, A(v), 1),
+                                                    a("span", nw, A(p), 1),
                                                   ],
                                                 )
                                               ),
@@ -18053,7 +18154,7 @@ const E_ = { class: "bbs-page" },
                                             128,
                                           )),
                                         ]))
-                                      : (f(), g("p", ZT, "Không có")),
+                                      : (f(), g("p", ew, "Không có")),
                                   ]),
                                   _: 1,
                                 },
@@ -18070,14 +18171,14 @@ const E_ = { class: "bbs-page" },
                                   default: $t(() => [
                                     E(Ft).embedding.length
                                       ? (f(),
-                                        g("ul", tw, [
+                                        g("ul", iw, [
                                           (f(!0),
                                           g(
                                             dt,
                                             null,
                                             Et(
                                               E(Ft).embedding,
-                                              (v, kt) => (
+                                              (p, kt) => (
                                                 f(),
                                                 g(
                                                   "li",
@@ -18086,16 +18187,16 @@ const E_ = { class: "bbs-page" },
                                                     class: "bbs-dbg-card",
                                                   },
                                                   [
-                                                    a("div", nw, [
+                                                    a("div", sw, [
                                                       a(
                                                         "span",
                                                         {
                                                           class: "bbs-dbg-src",
-                                                          title: `Nguồn ${tl(v.queryIndex)}`,
+                                                          title: `Nguồn ${tl(p.queryIndex)}`,
                                                         },
-                                                        A(tl(v.queryIndex)),
+                                                        A(tl(p.queryIndex)),
                                                         9,
-                                                        ew,
+                                                        ow,
                                                       ),
                                                       a(
                                                         "span",
@@ -18104,43 +18205,43 @@ const E_ = { class: "bbs-page" },
                                                             "bbs-dbg-from",
                                                             {
                                                               "is-bundle":
-                                                                v.source ===
+                                                                p.source ===
                                                                 "Hồ sơ cũ",
                                                             },
                                                           ]),
                                                         },
-                                                        A(v.source),
+                                                        A(p.source),
                                                         3,
                                                       ),
-                                                      v.storyTime
+                                                      p.storyTime
                                                         ? (f(),
                                                           g(
                                                             "span",
-                                                            iw,
+                                                            rw,
                                                             "【" +
-                                                              A(v.storyTime) +
+                                                              A(p.storyTime) +
                                                               "】",
                                                             1,
                                                           ))
                                                         : H("", !0),
                                                       a(
                                                         "span",
-                                                        sw,
+                                                        aw,
                                                         A(
-                                                          v.similarity.toFixed(
+                                                          p.similarity.toFixed(
                                                             3,
                                                           ),
                                                         ),
                                                         1,
                                                       ),
                                                     ]),
-                                                    a("div", ow, [
+                                                    a("div", lw, [
                                                       a(
                                                         "i",
                                                         {
                                                           style: Me({
                                                             width:
-                                                              nl(v.similarity) +
+                                                              nl(p.similarity) +
                                                               "%",
                                                           }),
                                                         },
@@ -18148,7 +18249,7 @@ const E_ = { class: "bbs-page" },
                                                         4,
                                                       ),
                                                     ]),
-                                                    a("p", rw, A(v.preview), 1),
+                                                    a("p", cw, A(p.preview), 1),
                                                   ],
                                                 )
                                               ),
@@ -18156,7 +18257,7 @@ const E_ = { class: "bbs-page" },
                                             128,
                                           )),
                                         ]))
-                                      : (f(), g("p", aw, "Không có")),
+                                      : (f(), g("p", uw, "Không có")),
                                   ]),
                                   _: 1,
                                 },
@@ -18173,14 +18274,14 @@ const E_ = { class: "bbs-page" },
                                   default: $t(() => [
                                     E(Ft).rerank.length
                                       ? (f(),
-                                        g("ul", lw, [
+                                        g("ul", hw, [
                                           (f(!0),
                                           g(
                                             dt,
                                             null,
                                             Et(
                                               E(Ft).rerank,
-                                              (v, kt) => (
+                                              (p, kt) => (
                                                 f(),
                                                 g(
                                                   "li",
@@ -18190,21 +18291,21 @@ const E_ = { class: "bbs-page" },
                                                       "bbs-dbg-card",
                                                       {
                                                         "is-dropped":
-                                                          v.tier === "drop",
+                                                          p.tier === "drop",
                                                       },
                                                     ]),
                                                   },
                                                   [
-                                                    a("div", cw, [
+                                                    a("div", dw, [
                                                       a(
                                                         "span",
                                                         {
                                                           class: Tt([
                                                             "bbs-dbg-tier",
-                                                            `is-${v.tier}`,
+                                                            `is-${p.tier}`,
                                                           ]),
                                                         },
-                                                        A(tm[v.tier]),
+                                                        A(nm[p.tier]),
                                                         3,
                                                       ),
                                                       a(
@@ -18214,30 +18315,30 @@ const E_ = { class: "bbs-page" },
                                                             "bbs-dbg-from",
                                                             {
                                                               "is-bundle":
-                                                                v.source ===
+                                                                p.source ===
                                                                 "Hồ sơ cũ",
                                                             },
                                                           ]),
                                                         },
-                                                        A(v.source),
+                                                        A(p.source),
                                                         3,
                                                       ),
-                                                      v.storyTime
+                                                      p.storyTime
                                                         ? (f(),
                                                           g(
                                                             "span",
-                                                            uw,
+                                                            mw,
                                                             "【" +
-                                                              A(v.storyTime) +
+                                                              A(p.storyTime) +
                                                               "】",
                                                             1,
                                                           ))
                                                         : H("", !0),
                                                       a(
                                                         "span",
-                                                        hw,
+                                                        fw,
                                                         A(
-                                                          v.rerankScore.toFixed(
+                                                          p.rerankScore.toFixed(
                                                             3,
                                                           ),
                                                         ),
@@ -18249,7 +18350,7 @@ const E_ = { class: "bbs-page" },
                                                       {
                                                         class: Tt([
                                                           "bbs-dbg-bar",
-                                                          `tier-${v.tier}`,
+                                                          `tier-${p.tier}`,
                                                         ]),
                                                       },
                                                       [
@@ -18259,7 +18360,7 @@ const E_ = { class: "bbs-page" },
                                                             style: Me({
                                                               width:
                                                                 nl(
-                                                                  v.rerankScore,
+                                                                  p.rerankScore,
                                                                 ) + "%",
                                                             }),
                                                           },
@@ -18269,7 +18370,7 @@ const E_ = { class: "bbs-page" },
                                                       ],
                                                       2,
                                                     ),
-                                                    a("p", dw, A(v.preview), 1),
+                                                    a("p", gw, A(p.preview), 1),
                                                   ],
                                                   2,
                                                 )
@@ -18281,7 +18382,7 @@ const E_ = { class: "bbs-page" },
                                       : (f(),
                                         g(
                                           "p",
-                                          mw,
+                                          bw,
                                           "Không có (chưa thực hiện rerank hoặc không có ứng viên)",
                                         )),
                                   ]),
@@ -18297,9 +18398,9 @@ const E_ = { class: "bbs-page" },
                                   default: $t(() => [
                                     E(Ft).injectedText
                                       ? (f(),
-                                        g("pre", fw, A(E(Ft).injectedText), 1))
+                                        g("pre", pw, A(E(Ft).injectedText), 1))
                                       : (f(),
-                                        g("p", gw, "Lượt này chưa chèn.")),
+                                        g("p", vw, "Lượt này chưa chèn.")),
                                   ]),
                                   _: 1,
                                 },
@@ -18308,7 +18409,7 @@ const E_ = { class: "bbs-page" },
                           : (f(),
                             g(
                               "p",
-                              FT,
+                              GT,
                               " Chưa có nhật ký triệu hồi. Sau khi cấu hình xong kênh vector, hãy gửi một tin nhắn để kích hoạt triệu hồi, kết quả các giai đoạn viết lại / tìm kiếm / xếp hạng lại / tiêm dữ liệu sẽ hiển thị tại đây. ",
                             )),
                       ]),
@@ -18324,8 +18425,8 @@ const E_ = { class: "bbs-page" },
               { title: "Tạo đối thoại mới kèm dữ liệu", open: !1 },
               {
                 default: $t(() => [
-                  m[138] ||
-                    (m[138] = a(
+                  m[141] ||
+                    (m[141] = a(
                       "p",
                       { class: "bbs-field-hint" },
                       ' Đóng gói "cửa sổ nguyên văn gần nhất + Tóm tắt lịch sử gộp + Trạng thái hiện tại (Thời gian/Địa điểm, khung cảnh, vật phẩm, nhân vật, kế hoạch, biến số)" của cuộc trò chuyện hiện tại để tạo một cuộc trò chuyện mới mang theo sang. Cuộc trò chuyện mới sẽ phát lại từ một "nút lá hạt giống" để khôi phục trạng thái, cốt truyện cũ đi kèm dưới dạng tóm tắt; nếu đã bật Ký ức vector, cuộc trò chuyện cũ sẽ được chụp lại bản sao, cuộc trò chuyện mới có thể triệu hồi vector nội dung từ đó (tích lũy qua từng lần, các nhánh cũng tự động kế thừa). ',
@@ -18335,7 +18436,7 @@ const E_ = { class: "bbs-page" },
                     ? (f(),
                       g(
                         "div",
-                        bw,
+                        yw,
                         " Sẽ mang theo: " +
                           A(Kn.value.aiCount) +
                           " tin nhắn AI / " +
@@ -18352,7 +18453,7 @@ const E_ = { class: "bbs-page" },
                       class: "bbs-btn bbs-btn-sm bbs-btn-primary",
                       type: "button",
                       disabled: rn.value || !Kn.value?.hasData,
-                      onClick: m[31] || (m[31] = (v) => (Gn.value = !0)),
+                      onClick: m[32] || (m[32] = (p) => (Gn.value = !0)),
                     },
                     A(
                       rn.value
@@ -18360,9 +18461,9 @@ const E_ = { class: "bbs-page" },
                         : "Tạo đối thoại mới kèm dữ liệu",
                     ),
                     9,
-                    pw,
+                    kw,
                   ),
-                  an.value ? (f(), g("p", vw, A(an.value), 1)) : H("", !0),
+                  an.value ? (f(), g("p", _w, A(an.value), 1)) : H("", !0),
                 ]),
                 _: 1,
               },
@@ -18372,8 +18473,8 @@ const E_ = { class: "bbs-page" },
               { title: "Di chuyển từ bản cũ Horae", open: !1 },
               {
                 default: $t(() => [
-                  m[139] ||
-                    (m[139] = a(
+                  m[142] ||
+                    (m[142] = a(
                       "p",
                       { class: "bbs-field-hint" },
                       " Di chuyển tóm tắt, vật phẩm, kế hoạch từ phiên bản Horae cũ trong cuộc trò chuyện hiện tại sang. Các cuộc trò chuyện cần di chuyển hãy bấm nút một lần, thao tác này không làm thay đổi dữ liệu gốc của Horae. ",
@@ -18381,14 +18482,14 @@ const E_ = { class: "bbs-page" },
                     )),
                   Jn.value
                     ? (f(),
-                      g("div", yw, [
+                      g("div", xw, [
                         Jn.value.hasData
                           ? (f(),
                             g(
                               dt,
                               { key: 0 },
                               [
-                                yt(
+                                gt(
                                   " Phát hiện: có thể tạo tóm tắt " +
                                     A(Jn.value.leafFloors) +
                                     " tầng / " +
@@ -18404,7 +18505,7 @@ const E_ = { class: "bbs-page" },
                                   ? (f(),
                                     g(
                                       "span",
-                                      kw,
+                                      Tw,
                                       "⚠️ Cuộc trò chuyện hiện tại đã có dữ liệu của tiện ích này, di chuyển sẽ ghi đè.",
                                     ))
                                   : H("", !0),
@@ -18416,7 +18517,7 @@ const E_ = { class: "bbs-page" },
                               dt,
                               { key: 1 },
                               [
-                                yt(
+                                gt(
                                   "Không phát hiện dữ liệu cũ Horae trong cuộc trò chuyện hiện tại (vui lòng mở cuộc trò chuyện chứa dữ liệu cũ).",
                                 ),
                               ],
@@ -18430,7 +18531,7 @@ const E_ = { class: "bbs-page" },
                       class: "bbs-btn bbs-btn-sm bbs-btn-primary",
                       type: "button",
                       disabled: mn.value || !Jn.value?.hasData,
-                      onClick: m[32] || (m[32] = (v) => (le.value = !0)),
+                      onClick: m[33] || (m[33] = (p) => (le.value = !0)),
                     },
                     A(
                       mn.value
@@ -18438,9 +18539,9 @@ const E_ = { class: "bbs-page" },
                         : "Di chuyển dữ liệu Horae của cuộc trò chuyện hiện tại",
                     ),
                     9,
-                    _w,
+                    ww,
                   ),
-                  Ht.value ? (f(), g("p", xw, A(Ht.value), 1)) : H("", !0),
+                  Ht.value ? (f(), g("p", Sw, A(Ht.value), 1)) : H("", !0),
                 ]),
                 _: 1,
               },
@@ -18450,16 +18551,16 @@ const E_ = { class: "bbs-page" },
             Fe,
             {
               open: Gn.value,
-              "onUpdate:open": m[33] || (m[33] = (v) => (Gn.value = v)),
+              "onUpdate:open": m[34] || (m[34] = (p) => (Gn.value = p)),
               title: "Tạo đối thoại mới kèm dữ liệu",
               "confirm-text": "Tạo mới và chuyển sang",
               onConfirm: hn,
             },
             {
               default: $t(() => [
-                ...(m[140] ||
-                  (m[140] = [
-                    yt(
+                ...(m[143] ||
+                  (m[143] = [
+                    gt(
                       " Sẽ tạo một cuộc trò chuyện mới kèm dữ liệu dựa trên cuộc trò chuyện hiện tại và chuyển sang đó. Bạn có muốn tiếp tục không? ",
                       -1,
                     ),
@@ -18474,12 +18575,12 @@ const E_ = { class: "bbs-page" },
             Fe,
             {
               open: le.value,
-              "onUpdate:open": m[34] || (m[34] = (v) => (le.value = v)),
+              "onUpdate:open": m[35] || (m[35] = (p) => (le.value = p)),
               title: "Di chuyển từ bản cũ Horae",
               "confirm-text": "Bắt đầu di chuyển",
               onConfirm: V,
             },
-            { default: $t(() => [yt(A(er.value), 1)]), _: 1 },
+            { default: $t(() => [gt(A(er.value), 1)]), _: 1 },
             8,
             ["open"],
           ),
@@ -18490,10 +18591,10 @@ const E_ = { class: "bbs-page" },
               default: $t(() => [
                 u.value
                   ? (f(),
-                    g("div", Tw, [
-                      a("header", ww, [
-                        m[141] ||
-                          (m[141] = a(
+                    g("div", Cw, [
+                      a("header", $w, [
+                        m[144] ||
+                          (m[144] = a(
                             "span",
                             { class: "bbs-modal-title" },
                             "Chỉnh sửa kênh",
@@ -18510,9 +18611,9 @@ const E_ = { class: "bbs-page" },
                           [N(X, { name: "close" })],
                         ),
                       ]),
-                      a("label", Sw, [
-                        m[142] ||
-                          (m[142] = a(
+                      a("label", Ew, [
+                        m[145] ||
+                          (m[145] = a(
                             "span",
                             { class: "bbs-modal-label" },
                             "Tên kênh",
@@ -18523,7 +18624,7 @@ const E_ = { class: "bbs-page" },
                             "input",
                             {
                               "onUpdate:modelValue":
-                                m[35] || (m[35] = (v) => (u.value.name = v)),
+                                m[36] || (m[36] = (p) => (u.value.name = p)),
                               class: "bbs-input",
                               placeholder: "Tên kênh",
                             },
@@ -18533,9 +18634,9 @@ const E_ = { class: "bbs-page" },
                           [[ut, u.value.name]],
                         ),
                       ]),
-                      a("label", Cw, [
-                        m[143] ||
-                          (m[143] = a(
+                      a("label", Iw, [
+                        m[146] ||
+                          (m[146] = a(
                             "span",
                             { class: "bbs-modal-label" },
                             "Địa chỉ API",
@@ -18546,7 +18647,7 @@ const E_ = { class: "bbs-page" },
                             "input",
                             {
                               "onUpdate:modelValue":
-                                m[36] || (m[36] = (v) => (u.value.url = v)),
+                                m[37] || (m[37] = (p) => (u.value.url = p)),
                               class: "bbs-input",
                               placeholder: "Ví dụ: https://api.openai.com/v1",
                             },
@@ -18556,28 +18657,28 @@ const E_ = { class: "bbs-page" },
                           [[ut, u.value.url]],
                         ),
                       ]),
-                      a("label", $w, [
-                        m[144] ||
-                          (m[144] = a(
+                      a("label", Aw, [
+                        m[147] ||
+                          (m[147] = a(
                             "span",
                             { class: "bbs-modal-label" },
                             "Khóa API",
                             -1,
                           )),
-                        a("div", Ew, [
+                        a("div", Mw, [
                           et(
                             a(
                               "input",
                               {
                                 "onUpdate:modelValue":
-                                  m[37] || (m[37] = (v) => (u.value.key = v)),
+                                  m[38] || (m[38] = (p) => (u.value.key = p)),
                                 class: "bbs-input",
-                                type: p.value ? "text" : "password",
+                                type: v.value ? "text" : "password",
                                 placeholder: "Khóa API",
                               },
                               null,
                               8,
-                              Iw,
+                              Nw,
                             ),
                             [[Hl, u.value.key]],
                           ),
@@ -18586,50 +18687,50 @@ const E_ = { class: "bbs-page" },
                             {
                               class: "bbs-icon-mini",
                               type: "button",
-                              title: p.value ? "Ẩn khóa" : "Hiện khóa",
-                              "aria-pressed": p.value,
+                              title: v.value ? "Ẩn khóa" : "Hiện khóa",
+                              "aria-pressed": v.value,
                               onClick:
-                                m[38] || (m[38] = (v) => (p.value = !p.value)),
+                                m[39] || (m[39] = (p) => (v.value = !v.value)),
                             },
                             [
                               N(
                                 X,
-                                { name: p.value ? "eye-off" : "eye" },
+                                { name: v.value ? "eye-off" : "eye" },
                                 null,
                                 8,
                                 ["name"],
                               ),
                             ],
                             8,
-                            Aw,
+                            Pw,
                           ),
                         ]),
                       ]),
-                      a("label", Mw, [
-                        m[145] ||
-                          (m[145] = a(
+                      a("label", Rw, [
+                        m[148] ||
+                          (m[148] = a(
                             "span",
                             { class: "bbs-modal-label" },
                             "Mô hình",
                             -1,
                           )),
-                        a("div", Nw, [
-                          a("div", Pw, [
+                        a("div", Ow, [
+                          a("div", Lw, [
                             et(
                               a(
                                 "input",
                                 {
                                   "onUpdate:modelValue":
-                                    m[39] ||
-                                    (m[39] = (v) => (u.value.model = v)),
+                                    m[40] ||
+                                    (m[40] = (p) => (u.value.model = p)),
                                   class: "bbs-input",
                                   placeholder: _t.value.length
                                     ? "Tìm hoặc nhập tên mô hình..."
                                     : "Tên mô hình, ví dụ gpt-4o-mini",
                                   onFocus: Lt,
                                   onInput:
-                                    m[40] ||
-                                    (m[40] = (v) => {
+                                    m[41] ||
+                                    (m[41] = (p) => {
                                       ((b.value = u.value.model),
                                         (z.value = !0));
                                     }),
@@ -18637,7 +18738,7 @@ const E_ = { class: "bbs-page" },
                                 },
                                 null,
                                 40,
-                                Rw,
+                                Bw,
                               ),
                               [[ut, u.value.model]],
                             ),
@@ -18659,38 +18760,38 @@ const E_ = { class: "bbs-page" },
                               : H("", !0),
                             z.value && _t.value.length
                               ? (f(),
-                                g("ul", Ow, [
+                                g("ul", qw, [
                                   At.value.length
                                     ? H("", !0)
                                     : (f(),
-                                      g("li", Lw, "Không có mô hình khớp")),
+                                      g("li", Vw, "Không có mô hình khớp")),
                                   (f(!0),
                                   g(
                                     dt,
                                     null,
                                     Et(
                                       At.value,
-                                      (v) => (
+                                      (p) => (
                                         f(),
                                         g(
                                           "li",
                                           {
-                                            key: v,
+                                            key: p,
                                             class: Tt([
                                               "bbs-combo-item",
                                               {
                                                 "is-active":
-                                                  v === u.value.model,
+                                                  p === u.value.model,
                                               },
                                             ]),
                                             onMousedown: pe(
-                                              (kt) => at(v),
+                                              (kt) => at(p),
                                               ["prevent"],
                                             ),
                                           },
-                                          A(v),
+                                          A(p),
                                           43,
-                                          Bw,
+                                          Dw,
                                         )
                                       ),
                                     ),
@@ -18708,18 +18809,18 @@ const E_ = { class: "bbs-page" },
                                 ? "Đang tải..."
                                 : "Tải danh sách mô hình",
                               disabled: D.value[u.value.id],
-                              onClick: m[41] || (m[41] = (v) => x(u.value)),
+                              onClick: m[42] || (m[42] = (p) => x(u.value)),
                             },
                             [N(X, { name: "refresh" })],
                             8,
-                            qw,
+                            jw,
                           ),
                         ]),
                       ]),
-                      a("div", Vw, [
-                        a("label", Dw, [
-                          m[146] ||
-                            (m[146] = a(
+                      a("div", Kw, [
+                        a("label", Hw, [
+                          m[149] ||
+                            (m[149] = a(
                               "span",
                               null,
                               "Nhiệt độ (Temperature)",
@@ -18730,8 +18831,8 @@ const E_ = { class: "bbs-page" },
                               "input",
                               {
                                 "onUpdate:modelValue":
-                                  m[42] ||
-                                  (m[42] = (v) => (u.value.temperature = v)),
+                                  m[43] ||
+                                  (m[43] = (p) => (u.value.temperature = p)),
                                 class: "bbs-input",
                                 type: "number",
                                 step: "0.1",
@@ -18744,16 +18845,16 @@ const E_ = { class: "bbs-page" },
                             [[ut, u.value.temperature, void 0, { number: !0 }]],
                           ),
                         ]),
-                        a("label", jw, [
-                          m[147] ||
-                            (m[147] = a("span", null, "Token tối đa", -1)),
+                        a("label", Fw, [
+                          m[150] ||
+                            (m[150] = a("span", null, "Token tối đa", -1)),
                           et(
                             a(
                               "input",
                               {
                                 "onUpdate:modelValue":
-                                  m[43] ||
-                                  (m[43] = (v) => (u.value.maxTokens = v)),
+                                  m[44] ||
+                                  (m[44] = (p) => (u.value.maxTokens = p)),
                                 class: "bbs-input",
                                 type: "number",
                                 step: "256",
@@ -18766,9 +18867,9 @@ const E_ = { class: "bbs-page" },
                           ),
                         ]),
                       ]),
-                      a("label", Kw, [
-                        m[148] ||
-                          (m[148] = a(
+                      a("label", Uw, [
+                        m[151] ||
+                          (m[151] = a(
                             "span",
                             { class: "bbs-modal-label" },
                             "Truyền dữ liệu luồng (stream)",
@@ -18779,19 +18880,19 @@ const E_ = { class: "bbs-page" },
                             "input",
                             {
                               "onUpdate:modelValue":
-                                m[44] || (m[44] = (v) => (u.value.stream = v)),
+                                m[45] || (m[45] = (p) => (u.value.stream = p)),
                               type: "checkbox",
                               class: "bbs-checkbox",
                             },
                             null,
                             512,
                           ),
-                          [[Ln, u.value.stream]],
+                          [[Sn, u.value.stream]],
                         ),
                       ]),
-                      a("label", Hw, [
-                        m[149] ||
-                          (m[149] = a(
+                      a("label", Ww, [
+                        m[152] ||
+                          (m[152] = a(
                             "span",
                             { class: "bbs-modal-label" },
                             "Gửi tiền điền (prefill)",
@@ -18802,26 +18903,26 @@ const E_ = { class: "bbs-page" },
                             "input",
                             {
                               "onUpdate:modelValue":
-                                m[45] || (m[45] = (v) => (u.value.prefill = v)),
+                                m[46] || (m[46] = (p) => (u.value.prefill = p)),
                               type: "checkbox",
                               class: "bbs-checkbox",
                             },
                             null,
                             512,
                           ),
-                          [[Ln, u.value.prefill]],
+                          [[Sn, u.value.prefill]],
                         ),
                       ]),
-                      m[157] ||
-                        (m[157] = a(
+                      m[160] ||
+                        (m[160] = a(
                           "span",
                           { class: "bbs-field-hint" },
                           "Mặc định bật. Nếu thông báo lỗi API phụ xuất hiện chữ prefill, chỉ cần tắt đi.",
                           -1,
                         )),
-                      a("label", Fw, [
-                        m[150] ||
-                          (m[150] = a(
+                      a("label", Gw, [
+                        m[153] ||
+                          (m[153] = a(
                             "span",
                             { class: "bbs-modal-label" },
                             "Loại trừ tham số",
@@ -18832,7 +18933,7 @@ const E_ = { class: "bbs-page" },
                             "input",
                             {
                               "onUpdate:modelValue":
-                                m[46] || (m[46] = (v) => (S.value = v)),
+                                m[47] || (m[47] = (p) => (S.value = p)),
                               class: "bbs-input",
                               type: "text",
                               placeholder:
@@ -18843,8 +18944,8 @@ const E_ = { class: "bbs-page" },
                           ),
                           [[ut, S.value]],
                         ),
-                        m[151] ||
-                          (m[151] = a(
+                        m[154] ||
+                          (m[154] = a(
                             "span",
                             { class: "bbs-field-hint" },
                             "Các tham số này sẽ bị xóa khỏi body trước khi gửi yêu cầu, nhằm tránh lỗi với các endpoint tương thích không nhận tham số đó. Phân cách bằng dấu phẩy, để trống là không loại trừ.",
@@ -18852,9 +18953,9 @@ const E_ = { class: "bbs-page" },
                           )),
                       ]),
                       ct.value[u.value.id]
-                        ? (f(), g("p", Uw, A(ct.value[u.value.id]), 1))
+                        ? (f(), g("p", Jw, A(ct.value[u.value.id]), 1))
                         : H("", !0),
-                      a("footer", Ww, [
+                      a("footer", Qw, [
                         a(
                           "button",
                           {
@@ -18864,11 +18965,11 @@ const E_ = { class: "bbs-page" },
                           },
                           [
                             N(X, { name: "trash" }),
-                            m[152] || (m[152] = yt(" Xóa ", -1)),
+                            m[155] || (m[155] = gt(" Xóa ", -1)),
                           ],
                         ),
-                        m[156] ||
-                          (m[156] = a(
+                        m[159] ||
+                          (m[159] = a(
                             "span",
                             { class: "bbs-modal-foot-spacer" },
                             null,
@@ -18880,20 +18981,20 @@ const E_ = { class: "bbs-page" },
                             class: "bbs-btn",
                             type: "button",
                             title: "Kiểm tra kênh",
-                            onClick: m[47] || (m[47] = (v) => O(u.value)),
+                            onClick: m[48] || (m[48] = (p) => O(u.value)),
                           },
                           [
                             N(X, { name: "plug" }),
-                            m[153] || (m[153] = yt()),
-                            m[154] ||
-                              (m[154] = a(
+                            m[156] || (m[156] = gt()),
+                            m[157] ||
+                              (m[157] = a(
                                 "span",
                                 { class: "bbs-btn-label-full" },
                                 "Kiểm tra kênh",
                                 -1,
                               )),
-                            m[155] ||
-                              (m[155] = a(
+                            m[158] ||
+                              (m[158] = a(
                                 "span",
                                 { class: "bbs-btn-label-short" },
                                 "Kiểm tra",
@@ -18916,7 +19017,7 @@ const E_ = { class: "bbs-page" },
                         {
                           open: L.value,
                           "onUpdate:open":
-                            m[48] || (m[48] = (v) => (L.value = v)),
+                            m[49] || (m[49] = (p) => (L.value = p)),
                           title: "Xóa kênh",
                           "confirm-text": "Xóa",
                           "confirm-icon": "trash",
@@ -18926,7 +19027,7 @@ const E_ = { class: "bbs-page" },
                         },
                         {
                           default: $t(() => [
-                            yt(
+                            gt(
                               ' Bạn có chắc chắn muốn xóa kênh "' +
                                 A(u.value.name || "Kênh chưa đặt tên") +
                                 '" không? Thao tác này không thể hoàn tác, các nhiệm vụ đã chỉ định cho kênh này sẽ bị xóa bỏ. ',
@@ -18948,10 +19049,10 @@ const E_ = { class: "bbs-page" },
           ),
           N(
             qn,
-            { open: !!bt.value, onClose: xt },
+            { open: !!pt.value, onClose: xt },
             {
               default: $t(() => [
-                bt.value
+                pt.value
                   ? (f(),
                     g(
                       "div",
@@ -18960,11 +19061,11 @@ const E_ = { class: "bbs-page" },
                         class: "bbs-modal bbs-modal-wide",
                         role: "dialog",
                         "aria-modal": "true",
-                        "aria-label": `Chỉnh sửa ${bt.value.label}`,
+                        "aria-label": `Chỉnh sửa ${pt.value.label}`,
                       },
                       [
-                        a("header", Jw, [
-                          a("span", Qw, "Chỉnh sửa " + A(bt.value.label), 1),
+                        a("header", zw, [
+                          a("span", Xw, "Chỉnh sửa " + A(pt.value.label), 1),
                           a(
                             "button",
                             {
@@ -18976,10 +19077,10 @@ const E_ = { class: "bbs-page" },
                             [N(X, { name: "close" })],
                           ),
                         ]),
-                        a("p", Yw, A(bt.value.hint), 1),
-                        a("div", zw, [
-                          m[158] ||
-                            (m[158] = a(
+                        a("p", Zw, A(pt.value.hint), 1),
+                        a("div", tS, [
+                          m[161] ||
+                            (m[161] = a(
                               "span",
                               { class: "bbs-macro-tip" },
                               "Nhấn để chèn macro:",
@@ -18990,21 +19091,21 @@ const E_ = { class: "bbs-page" },
                             dt,
                             null,
                             Et(
-                              bt.value.macros,
-                              (v) => (
+                              pt.value.macros,
+                              (p) => (
                                 f(),
                                 g(
                                   "button",
                                   {
-                                    key: v.token,
+                                    key: p.token,
                                     class: "bbs-macro",
                                     type: "button",
-                                    title: v.desc,
-                                    onClick: (kt) => Xd(v.token),
+                                    title: p.desc,
+                                    onClick: (kt) => Zd(p.token),
                                   },
-                                  A(v.token),
+                                  A(p.token),
                                   9,
-                                  Xw,
+                                  nS,
                                 )
                               ),
                             ),
@@ -19018,7 +19119,7 @@ const E_ = { class: "bbs-page" },
                               ref_key: "promptArea",
                               ref: Ut,
                               "onUpdate:modelValue":
-                                m[49] || (m[49] = (v) => (Ct.value = v)),
+                                m[50] || (m[50] = (p) => (Ct.value = p)),
                               class: "bbs-input bbs-prompt-area",
                               spellcheck: "false",
                               rows: "16",
@@ -19028,7 +19129,7 @@ const E_ = { class: "bbs-page" },
                           ),
                           [[ut, Ct.value]],
                         ),
-                        a("footer", Zw, [
+                        a("footer", eS, [
                           a(
                             "button",
                             {
@@ -19038,12 +19139,12 @@ const E_ = { class: "bbs-page" },
                             },
                             [
                               N(X, { name: "refresh" }),
-                              m[159] ||
-                                (m[159] = yt(" Khôi phục mặc định ", -1)),
+                              m[162] ||
+                                (m[162] = gt(" Khôi phục mặc định ", -1)),
                             ],
                           ),
-                          m[160] ||
-                            (m[160] = a(
+                          m[163] ||
+                            (m[163] = a(
                               "span",
                               { class: "bbs-modal-foot-spacer" },
                               null,
@@ -19066,7 +19167,7 @@ const E_ = { class: "bbs-page" },
                         ]),
                       ],
                       8,
-                      Gw,
+                      Yw,
                     ))
                   : H("", !0),
               ]),
@@ -19080,10 +19181,10 @@ const E_ = { class: "bbs-page" },
             { open: P.value, onClose: nn },
             {
               default: $t(() => [
-                a("div", tS, [
-                  a("header", nS, [
-                    m[161] ||
-                      (m[161] = a(
+                a("div", iS, [
+                  a("header", sS, [
+                    m[164] ||
+                      (m[164] = a(
                         "span",
                         { class: "bbs-modal-title" },
                         "Loại trừ nhân vật",
@@ -19105,7 +19206,7 @@ const E_ = { class: "bbs-page" },
                       "input",
                       {
                         "onUpdate:modelValue":
-                          m[50] || (m[50] = (v) => (G.value = v)),
+                          m[51] || (m[51] = (p) => (G.value = p)),
                         class: "bbs-input",
                         type: "search",
                         placeholder: "Tìm tên nhân vật...",
@@ -19116,29 +19217,29 @@ const E_ = { class: "bbs-page" },
                     ),
                     [[ut, G.value]],
                   ),
-                  a("div", eS, [
+                  a("div", oS, [
                     (f(!0),
                     g(
                       dt,
                       null,
                       Et(
                         Zt.value,
-                        (v) => (
+                        (p) => (
                           f(),
-                          g("label", { key: v, class: "bbs-exclude-row" }, [
+                          g("label", { key: p, class: "bbs-exclude-row" }, [
                             a(
                               "input",
                               {
                                 type: "checkbox",
                                 class: "bbs-checkbox",
-                                checked: cn(v),
-                                onChange: (kt) => Te(v),
+                                checked: cn(p),
+                                onChange: (kt) => Te(p),
                               },
                               null,
                               40,
-                              iS,
+                              rS,
                             ),
-                            a("span", sS, A(v), 1),
+                            a("span", aS, A(p), 1),
                           ])
                         ),
                       ),
@@ -19150,7 +19251,7 @@ const E_ = { class: "bbs-page" },
                         : (f(),
                           g(
                             "p",
-                            rS,
+                            cS,
                             "Không có nhân vật nào khớp với 「" +
                               A(G.value) +
                               "」.",
@@ -19159,22 +19260,22 @@ const E_ = { class: "bbs-page" },
                       : (f(),
                         g(
                           "p",
-                          oS,
+                          lS,
                           "Không đọc được danh sách nhân vật. Vui lòng tải thẻ nhân vật trong ST trước.",
                         )),
                   ]),
-                  a("footer", aS, [
+                  a("footer", uS, [
                     a(
                       "span",
-                      lS,
+                      hS,
                       "Tổng " +
                         A(Rt.value.length) +
                         " nhân vật · Đã loại trừ " +
                         A(E(C).excludedChars.length),
                       1,
                     ),
-                    m[162] ||
-                      (m[162] = a(
+                    m[165] ||
+                      (m[165] = a(
                         "span",
                         { class: "bbs-modal-foot-spacer" },
                         null,
@@ -19202,10 +19303,10 @@ const E_ = { class: "bbs-page" },
             { open: yi.value, onClose: ir },
             {
               default: $t(() => [
-                a("div", cS, [
-                  a("header", uS, [
-                    m[163] ||
-                      (m[163] = a(
+                a("div", dS, [
+                  a("header", mS, [
+                    m[166] ||
+                      (m[166] = a(
                         "span",
                         { class: "bbs-modal-title" },
                         "Loại trừ nguyên bộ thế giới thư",
@@ -19227,7 +19328,7 @@ const E_ = { class: "bbs-page" },
                       "input",
                       {
                         "onUpdate:modelValue":
-                          m[51] || (m[51] = (v) => (Be.value = v)),
+                          m[52] || (m[52] = (p) => (Be.value = p)),
                         class: "bbs-input",
                         type: "search",
                         placeholder: "Tìm tên thế giới thư...",
@@ -19238,29 +19339,29 @@ const E_ = { class: "bbs-page" },
                     ),
                     [[ut, Be.value]],
                   ),
-                  a("div", hS, [
+                  a("div", fS, [
                     (f(!0),
                     g(
                       dt,
                       null,
                       Et(
                         Ya.value,
-                        (v) => (
+                        (p) => (
                           f(),
-                          g("label", { key: v, class: "bbs-exclude-row" }, [
+                          g("label", { key: p, class: "bbs-exclude-row" }, [
                             a(
                               "input",
                               {
                                 type: "checkbox",
                                 class: "bbs-checkbox",
-                                checked: Qd(v),
-                                onChange: (kt) => za(v),
+                                checked: Yd(p),
+                                onChange: (kt) => za(p),
                               },
                               null,
                               40,
-                              dS,
+                              gS,
                             ),
-                            a("span", mS, A(v), 1),
+                            a("span", bS, A(p), 1),
                           ])
                         ),
                       ),
@@ -19272,7 +19373,7 @@ const E_ = { class: "bbs-page" },
                         : (f(),
                           g(
                             "p",
-                            gS,
+                            vS,
                             "Không có thế giới thư nào khớp với 「" +
                               A(Be.value) +
                               "」.",
@@ -19281,22 +19382,22 @@ const E_ = { class: "bbs-page" },
                       : (f(),
                         g(
                           "p",
-                          fS,
+                          pS,
                           "Không đọc được thế giới thư. Vui lòng tải / gắn thế giới thư trong ST trước.",
                         )),
                   ]),
-                  a("footer", bS, [
+                  a("footer", yS, [
                     a(
                       "span",
-                      pS,
+                      kS,
                       "Tổng " +
                         A(Ds.value.length) +
                         " bộ · Đã loại trừ " +
                         A(E(C).excludedWorldNames.length),
                       1,
                     ),
-                    m[164] ||
-                      (m[164] = a(
+                    m[167] ||
+                      (m[167] = a(
                         "span",
                         { class: "bbs-modal-foot-spacer" },
                         null,
@@ -19323,7 +19424,7 @@ const E_ = { class: "bbs-page" },
             Fe,
             {
               open: B.value,
-              "onUpdate:open": m[52] || (m[52] = (v) => (B.value = v)),
+              "onUpdate:open": m[53] || (m[53] = (p) => (B.value = p)),
               title: "Phát hiện phiên bản mới",
               "confirm-text": "Cập nhật và làm mới",
               "busy-text": "Đang cập nhật...",
@@ -19332,7 +19433,7 @@ const E_ = { class: "bbs-page" },
             },
             {
               default: $t(() => [
-                yt(
+                gt(
                   " Phiên bản hiện tại v" +
                     A(E(ln).current || "—") +
                     ", phiên bản mới nhất v" +
@@ -19340,9 +19441,9 @@ const E_ = { class: "bbs-page" },
                     ".",
                   1,
                 ),
-                m[165] || (m[165] = a("br", null, null, -1)),
-                m[166] ||
-                  (m[166] = yt(
+                m[168] || (m[168] = a("br", null, null, -1)),
+                m[169] ||
+                  (m[169] = gt(
                     "Cập nhật ngay bây giờ? Sau khi hoàn tất sẽ tự động làm mới trang để có hiệu lực. ",
                     -1,
                   )),
@@ -19356,31 +19457,31 @@ const E_ = { class: "bbs-page" },
       );
     },
   }),
-  yS = Pn(vS, [["__scopeId", "data-v-68a2d1ea"]]),
-  jd = Symbol("summaryCtx"),
-  kS = { class: "bbs-node" },
-  _S = { class: "bbs-summary-main" },
-  xS = { class: "bbs-summary-meta" },
-  TS = { class: "bbs-summary-badge" },
-  wS = { class: "bbs-summary-loc" },
-  SS = { key: 0, class: "bbs-summary-rel" },
-  CS = { key: 1, class: "bbs-summary-time" },
-  $S = { key: 0, class: "bbs-summary-rel" },
-  ES = { class: "bbs-summary-loc" },
-  IS = { key: 1, class: "bbs-summary-dateline" },
-  AS = { key: 2, class: "bbs-summary-acts" },
-  MS = ["title"],
-  NS = ["title"],
-  PS = { class: "bbs-summary-text" },
-  RS = ["aria-expanded"],
-  OS = { class: "bbs-node-children-inner" },
-  LS = { class: "bbs-node-children-body" },
-  BS = Nn({
+  xS = Rn(_S, [["__scopeId", "data-v-a0edacd1"]]),
+  Kd = Symbol("summaryCtx"),
+  TS = { class: "bbs-node" },
+  wS = { class: "bbs-summary-main" },
+  SS = { class: "bbs-summary-meta" },
+  CS = { class: "bbs-summary-badge" },
+  $S = { class: "bbs-summary-loc" },
+  ES = { key: 0, class: "bbs-summary-rel" },
+  IS = { key: 1, class: "bbs-summary-time" },
+  AS = { key: 0, class: "bbs-summary-rel" },
+  MS = { class: "bbs-summary-loc" },
+  NS = { key: 1, class: "bbs-summary-dateline" },
+  PS = { key: 2, class: "bbs-summary-acts" },
+  RS = ["title"],
+  OS = ["title"],
+  LS = { class: "bbs-summary-text" },
+  BS = ["aria-expanded"],
+  qS = { class: "bbs-node-children-inner" },
+  VS = { class: "bbs-node-children-body" },
+  DS = Pn({
     __name: "SummaryNode",
     props: { node: {}, depth: {} },
     setup(t) {
       const n = t,
-        e = cs(jd),
+        e = cs(Kd),
         i = lt(() => e.toRow(n.node, e.byId.value)),
         s = lt(() => {
           if (n.node.kind !== "comp") return [];
@@ -19397,7 +19498,7 @@ const E_ = { class: "bbs-page" },
         const u = Eu("SummaryNode", !0);
         return (
           f(),
-          g("div", kS, [
+          g("div", TS, [
             a(
               "article",
               {
@@ -19411,28 +19512,28 @@ const E_ = { class: "bbs-page" },
                 ]),
               },
               [
-                a("div", _S, [
-                  a("header", xS, [
+                a("div", wS, [
+                  a("header", SS, [
                     i.value.kind === "comp"
                       ? (f(),
                         g(
                           dt,
                           { key: 0 },
                           [
-                            a("span", TS, A(E(e).levelLabel(i.value.level)), 1),
-                            a("span", wS, A(E(e).floorLabel(i.value)), 1),
+                            a("span", CS, A(E(e).levelLabel(i.value.level)), 1),
+                            a("span", $S, A(E(e).floorLabel(i.value)), 1),
                             E(e).rowRelative(i.value)
                               ? (f(),
                                 g(
                                   "span",
-                                  SS,
+                                  ES,
                                   "(" + A(E(e).rowRelative(i.value)) + ")",
                                   1,
                                 ))
                               : H("", !0),
                             E(e).rowTime(i.value)
                               ? (f(),
-                                g("span", CS, A(E(e).rowTime(i.value)), 1))
+                                g("span", IS, A(E(e).rowTime(i.value)), 1))
                               : H("", !0),
                           ],
                           64,
@@ -19444,12 +19545,12 @@ const E_ = { class: "bbs-page" },
                           [
                             E(e).rowRelative(i.value)
                               ? (f(),
-                                g("span", $S, A(E(e).rowRelative(i.value)), 1))
+                                g("span", AS, A(E(e).rowRelative(i.value)), 1))
                               : H("", !0),
-                            a("span", ES, A(E(e).floorLabel(i.value)), 1),
+                            a("span", MS, A(E(e).floorLabel(i.value)), 1),
                             E(e).rowTime(i.value)
                               ? (f(),
-                                g("span", IS, A(E(e).rowTime(i.value)), 1))
+                                g("span", NS, A(E(e).rowTime(i.value)), 1))
                               : H("", !0),
                           ],
                           64,
@@ -19457,7 +19558,7 @@ const E_ = { class: "bbs-page" },
                     l.value
                       ? H("", !0)
                       : (f(),
-                        g("span", AS, [
+                        g("span", PS, [
                           a(
                             "button",
                             {
@@ -19472,7 +19573,7 @@ const E_ = { class: "bbs-page" },
                             },
                             [N(X, { name: "edit" })],
                             8,
-                            MS,
+                            RS,
                           ),
                           a(
                             "button",
@@ -19488,11 +19589,11 @@ const E_ = { class: "bbs-page" },
                             },
                             [N(X, { name: "trash" })],
                             8,
-                            NS,
+                            OS,
                           ),
                         ])),
                   ]),
-                  a("p", PS, A(i.value.text), 1),
+                  a("p", LS, A(i.value.text), 1),
                   o.value
                     ? (f(),
                       g(
@@ -19520,7 +19621,7 @@ const E_ = { class: "bbs-page" },
                             8,
                             ["class"],
                           ),
-                          yt(
+                          gt(
                             " " +
                               A(
                                 r.value
@@ -19531,7 +19632,7 @@ const E_ = { class: "bbs-page" },
                           ),
                         ],
                         8,
-                        RS,
+                        BS,
                       ))
                     : H("", !0),
                 ]),
@@ -19547,8 +19648,8 @@ const E_ = { class: "bbs-page" },
                     class: Tt(["bbs-node-children", { "is-open": r.value }]),
                   },
                   [
-                    a("div", OS, [
-                      a("div", LS, [
+                    a("div", qS, [
+                      a("div", VS, [
                         (f(!0),
                         g(
                           dt,
@@ -19587,7 +19688,7 @@ const E_ = { class: "bbs-page" },
                               name: "chevron",
                               class: "bbs-collapse-caret",
                             }),
-                            yt(
+                            gt(
                               " Thu gọn tầng dưới " +
                                 A(s.value.length) +
                                 " mục ",
@@ -19606,113 +19707,113 @@ const E_ = { class: "bbs-page" },
       };
     },
   }),
-  qS = Pn(BS, [["__scopeId", "data-v-b9fc24b3"]]),
-  VS = { class: "bbs-page" },
-  DS = { class: "bbs-section-head" },
-  jS = ["disabled", "aria-expanded", "title"],
-  KS = { key: 1, class: "bbs-fold-count" },
-  HS = ["disabled", "title"],
-  FS = { class: "bbs-fold-inner" },
-  US = { key: 0, class: "bbs-plan-group" },
-  WS = { class: "bbs-plan-head" },
-  GS = { key: 0, class: "bbs-plan-floor" },
-  JS = { class: "bbs-plan-acts" },
-  QS = ["onClick"],
-  YS = ["onClick"],
-  zS = { class: "bbs-plan-content" },
-  XS = { key: 0, class: "bbs-plan-times" },
-  ZS = { key: 0, class: "bbs-plan-time" },
-  tC = { key: 1, class: "bbs-plan-time bbs-plan-time-target" },
-  nC = { key: 1, class: "bbs-plan-empty" },
-  eC = { class: "bbs-section-head" },
-  iC = { class: "bbs-summary-tools" },
-  sC = ["disabled", "title"],
-  oC = ["disabled"],
-  rC = ["disabled"],
-  aC = { key: 0, class: "bbs-pending-spin" },
-  lC = { key: 0, class: "bbs-resummary-hint" },
-  cC = { key: 1, class: "bbs-search" },
-  uC = ["title"],
-  hC = { key: 2, class: "bbs-pending" },
-  dC = { class: "bbs-pending-head" },
-  mC = ["data-count"],
-  fC = ["disabled"],
-  gC = { key: 1, class: "bbs-batch-progress" },
-  bC = ["disabled"],
-  pC = { class: "bbs-pending-chips" },
-  vC = ["disabled", "title", "onClick"],
-  yC = { key: 0, class: "bbs-pending-spin" },
-  kC = { key: 3, class: "bbs-state" },
-  _C = { key: 0, class: "bbs-state-item" },
-  xC = { class: "bbs-state-val" },
-  TC = { key: 1, class: "bbs-state-item" },
-  wC = { class: "bbs-state-val" },
-  SC = { key: 4, class: "bbs-error" },
-  CC = { key: 5, class: "bbs-summary-list" },
-  $C = { key: 0, class: "bbs-summary-check" },
-  EC = ["checked", "onChange"],
-  IC = { class: "bbs-summary-main" },
-  AC = { class: "bbs-summary-meta" },
-  MC = { class: "bbs-summary-badge" },
-  NC = { class: "bbs-summary-loc" },
-  PC = { key: 0, class: "bbs-summary-rel" },
-  RC = { key: 1, class: "bbs-summary-time" },
-  OC = { key: 0, class: "bbs-summary-rel" },
-  LC = { class: "bbs-summary-loc" },
-  BC = { key: 1, class: "bbs-summary-dateline" },
-  qC = { key: 2, class: "bbs-summary-stale" },
-  VC = { key: 3, class: "bbs-summary-acts" },
-  DC = ["title", "onClick"],
-  jC = ["title", "onClick"],
-  KC = { class: "bbs-summary-text" },
-  HC = { key: 0, class: "bbs-hit" },
-  FC = { key: 7, class: "bbs-empty" },
-  UC = { class: "bbs-empty-icon" },
-  WC = { key: 8, class: "bbs-empty" },
-  GC = { class: "bbs-empty-icon" },
-  JC = { key: 9, class: "bbs-select-bar" },
-  QC = { class: "bbs-select-info" },
-  YC = { key: 0, class: "bbs-select-warn" },
-  zC = ["disabled"],
-  XC = { key: 0, class: "bbs-pending-spin" },
-  ZC = {
+  jS = Rn(DS, [["__scopeId", "data-v-b9fc24b3"]]),
+  KS = { class: "bbs-page" },
+  HS = { class: "bbs-section-head" },
+  FS = ["disabled", "aria-expanded", "title"],
+  US = { key: 1, class: "bbs-fold-count" },
+  WS = ["disabled", "title"],
+  GS = { class: "bbs-fold-inner" },
+  JS = { key: 0, class: "bbs-plan-group" },
+  QS = { class: "bbs-plan-head" },
+  YS = { key: 0, class: "bbs-plan-floor" },
+  zS = { class: "bbs-plan-acts" },
+  XS = ["onClick"],
+  ZS = ["onClick"],
+  tC = { class: "bbs-plan-content" },
+  nC = { key: 0, class: "bbs-plan-times" },
+  eC = { key: 0, class: "bbs-plan-time" },
+  iC = { key: 1, class: "bbs-plan-time bbs-plan-time-target" },
+  sC = { key: 1, class: "bbs-plan-empty" },
+  oC = { class: "bbs-section-head" },
+  rC = { class: "bbs-summary-tools" },
+  aC = ["disabled", "title"],
+  lC = ["disabled"],
+  cC = ["disabled"],
+  uC = { key: 0, class: "bbs-pending-spin" },
+  hC = { key: 0, class: "bbs-resummary-hint" },
+  dC = { key: 1, class: "bbs-search" },
+  mC = ["title"],
+  fC = { key: 2, class: "bbs-pending" },
+  gC = { class: "bbs-pending-head" },
+  bC = ["data-count"],
+  pC = ["disabled"],
+  vC = { key: 1, class: "bbs-batch-progress" },
+  yC = ["disabled"],
+  kC = { class: "bbs-pending-chips" },
+  _C = ["disabled", "title", "onClick"],
+  xC = { key: 0, class: "bbs-pending-spin" },
+  TC = { key: 3, class: "bbs-state" },
+  wC = { key: 0, class: "bbs-state-item" },
+  SC = { class: "bbs-state-val" },
+  CC = { key: 1, class: "bbs-state-item" },
+  $C = { class: "bbs-state-val" },
+  EC = { key: 4, class: "bbs-error" },
+  IC = { key: 5, class: "bbs-summary-list" },
+  AC = { key: 0, class: "bbs-summary-check" },
+  MC = ["checked", "onChange"],
+  NC = { class: "bbs-summary-main" },
+  PC = { class: "bbs-summary-meta" },
+  RC = { class: "bbs-summary-badge" },
+  OC = { class: "bbs-summary-loc" },
+  LC = { key: 0, class: "bbs-summary-rel" },
+  BC = { key: 1, class: "bbs-summary-time" },
+  qC = { key: 0, class: "bbs-summary-rel" },
+  VC = { class: "bbs-summary-loc" },
+  DC = { key: 1, class: "bbs-summary-dateline" },
+  jC = { key: 2, class: "bbs-summary-stale" },
+  KC = { key: 3, class: "bbs-summary-acts" },
+  HC = ["title", "onClick"],
+  FC = ["title", "onClick"],
+  UC = { class: "bbs-summary-text" },
+  WC = { key: 0, class: "bbs-hit" },
+  GC = { key: 7, class: "bbs-empty" },
+  JC = { class: "bbs-empty-icon" },
+  QC = { key: 8, class: "bbs-empty" },
+  YC = { class: "bbs-empty-icon" },
+  zC = { key: 9, class: "bbs-select-bar" },
+  XC = { class: "bbs-select-info" },
+  ZC = { key: 0, class: "bbs-select-warn" },
+  t$ = ["disabled"],
+  n$ = { key: 0, class: "bbs-pending-spin" },
+  e$ = {
     class: "bbs-modal",
     role: "dialog",
     "aria-modal": "true",
     "aria-label": "Thêm kế hoạch hoặc huyền niệm",
   },
-  t$ = { class: "bbs-modal-head" },
-  n$ = { class: "bbs-modal-field" },
-  e$ = { class: "bbs-kind-toggle" },
-  i$ = { class: "bbs-modal-field" },
-  s$ = ["onKeydown"],
-  o$ = { key: 0, class: "bbs-modal-field" },
-  r$ = { class: "bbs-modal-foot" },
-  a$ = ["disabled"],
-  l$ = {
+  i$ = { class: "bbs-modal-head" },
+  s$ = { class: "bbs-modal-field" },
+  o$ = { class: "bbs-kind-toggle" },
+  r$ = { class: "bbs-modal-field" },
+  a$ = ["onKeydown"],
+  l$ = { key: 0, class: "bbs-modal-field" },
+  c$ = { class: "bbs-modal-foot" },
+  u$ = ["disabled"],
+  h$ = {
     key: 0,
     class: "bbs-modal",
     role: "dialog",
     "aria-modal": "true",
     "aria-label": "Chỉnh sửa kế hoạch hoặc huyền niệm",
   },
-  c$ = { class: "bbs-modal-head" },
-  u$ = { class: "bbs-modal-title" },
-  h$ = { class: "bbs-modal-field" },
-  d$ = { class: "bbs-modal-field" },
-  m$ = { key: 0, class: "bbs-modal-field" },
-  f$ = { class: "bbs-modal-foot" },
-  g$ = ["disabled"],
-  b$ = ["aria-label"],
-  p$ = { class: "bbs-modal-head" },
-  v$ = { class: "bbs-modal-title" },
-  y$ = { key: 0, class: "bbs-modal-field bbs-time-pair" },
-  k$ = { class: "bbs-time-col" },
-  _$ = { class: "bbs-time-col" },
-  x$ = { class: "bbs-modal-field" },
-  T$ = { class: "bbs-modal-label" },
+  d$ = { class: "bbs-modal-head" },
+  m$ = { class: "bbs-modal-title" },
+  f$ = { class: "bbs-modal-field" },
+  g$ = { class: "bbs-modal-field" },
+  b$ = { key: 0, class: "bbs-modal-field" },
+  p$ = { class: "bbs-modal-foot" },
+  v$ = ["disabled"],
+  y$ = ["aria-label"],
+  k$ = { class: "bbs-modal-head" },
+  _$ = { class: "bbs-modal-title" },
+  x$ = { key: 0, class: "bbs-modal-field bbs-time-pair" },
+  T$ = { class: "bbs-time-col" },
+  w$ = { class: "bbs-time-col" },
+  S$ = { class: "bbs-modal-field" },
+  C$ = { class: "bbs-modal-label" },
   $c = "bbs.ui.suspenseCollapsed.v1",
-  w$ = Nn({
+  $$ = Pn({
     __name: "index",
     setup(t) {
       Je(() => wn());
@@ -19737,7 +19838,7 @@ const E_ = { class: "bbs-page" },
         l = st(!1),
         c = st(null);
       function h() {
-        p.value &&
+        v.value &&
           ((s.value = "plan"),
           (o.value = ""),
           (r.value = ""),
@@ -19748,7 +19849,7 @@ const E_ = { class: "bbs-page" },
         l.value = !1;
       }
       const d = lt(() => U.plans.filter((V) => V.status === "open")),
-        p = lt(() => en.hasLeaf),
+        v = lt(() => en.hasLeaf),
         S = st(w());
       function w() {
         try {
@@ -19785,7 +19886,7 @@ const E_ = { class: "bbs-page" },
           },
         }) && ((o.value = ""), (r.value = ""), (l.value = !1));
       }
-      function pt(V) {
+      function vt(V) {
         xn({ plans: { remove: [V] } });
       }
       const ct = st(null);
@@ -19805,7 +19906,7 @@ const E_ = { class: "bbs-page" },
         const V = ct.value;
         !V ||
           !V.content.trim() ||
-          (qp(V.id, {
+          (Dp(V.id, {
             content: V.content,
             createdTime: V.createdTime,
             targetTime: V.kind === "plan" ? V.targetTime : "",
@@ -19819,7 +19920,7 @@ const E_ = { class: "bbs-page" },
         if (!(Mt.running || z.value !== null)) {
           z.value = V;
           try {
-            await Sy(V);
+            await $y(V);
           } finally {
             z.value = null;
           }
@@ -19832,12 +19933,12 @@ const E_ = { class: "bbs-page" },
       function Lt() {
         ((_t.value = !1),
           !Mt.running &&
-            My({ floors: [...en.pendingFloors].sort((V, P) => V - P) }));
+            Py({ floors: [...en.pendingFloors].sort((V, P) => V - P) }));
       }
       const at = st(!1),
         F = st("");
       let J = null;
-      const bt = lt(
+      const pt = lt(
           () => (Math.max(0, C.keepRecent) + C.leafBatchThreshold) * 2,
         ),
         Ct = lt(() => C.leafBatchThreshold >= 2);
@@ -19845,12 +19946,12 @@ const E_ = { class: "bbs-page" },
         if (!(at.value || Mt.running)) {
           ((at.value = !0), (F.value = ""));
           try {
-            const V = await Ly();
+            const V = await qy();
             if (Mt.lastError) F.value = "";
             else if (V > 0) F.value = `Đã tạo ${V} tổng kết`;
             else {
               const P = Ct.value
-                ? `, khoảng ${bt.value} tầng tổng kết 1 lần`
+                ? `, khoảng ${pt.value} tầng tổng kết 1 lần`
                 : "";
               F.value = `Hiện chưa đạt ngưỡng tổng kết tóm tắt${P}`;
             }
@@ -19861,7 +19962,7 @@ const E_ = { class: "bbs-page" },
           }
         }
       }
-      const vt = lt(() => {
+      const yt = lt(() => {
         const V = new Map();
         for (const P of en.leaves)
           P.stale ||
@@ -19929,7 +20030,7 @@ const E_ = { class: "bbs-page" },
         };
       }
       const Bt = lt(() => {
-          const V = vt.value,
+          const V = yt.value,
             P = new Set();
           for (const Zt of U.summaries)
             for (const Qt of Zt.childIds ?? []) P.add(Qt);
@@ -19959,7 +20060,7 @@ const E_ = { class: "bbs-page" },
         (P.has(V) ? P.delete(V) : P.add(V), (Jt.value = P));
       }
       function Z() {
-        const V = vt.value,
+        const V = yt.value,
           P = sn.value.trim(),
           G = P.toLowerCase(),
           Rt = /^#?\d+$/.test(P) ? Number(P.replace(/^#/, "")) : null,
@@ -19994,7 +20095,7 @@ const E_ = { class: "bbs-page" },
       }
       const ht = lt(() => {
         if (y.value) return Z();
-        const V = vt.value;
+        const V = yt.value;
         return Bt.value.map((P) => ({ ...xt(P, V), isChild: !1 }));
       });
       function T(V) {
@@ -20043,8 +20144,8 @@ const E_ = { class: "bbs-page" },
             if (V[P] !== V[P - 1] + 1) return !1;
           return !0;
         }),
-        gt = lt(() => {
-          const V = vt.value,
+        bt = lt(() => {
+          const V = yt.value,
             P = Bt.value.filter((Qt) => qt.value.has(Qt.id));
           if (!P.length)
             return { count: 0, floorLo: -1, floorHi: -1, level: 1 };
@@ -20076,7 +20177,7 @@ const E_ = { class: "bbs-page" },
           .map((G) => Bt.value[G].id);
         Pt.value = !0;
         try {
-          const G = await Oy(P);
+          const G = await By(P);
           G.made > 0 ? _() : G.error && zt(G.error, "warning");
         } finally {
           Pt.value = !1;
@@ -20126,7 +20227,7 @@ const E_ = { class: "bbs-page" },
             )
           )
             return;
-          Dp(V.id);
+          Kp(V.id);
         }
         gn();
       }
@@ -20157,14 +20258,14 @@ const E_ = { class: "bbs-page" },
         const V = Ht.value;
         V &&
           (V.kind === "leaf"
-            ? Lp(V.msgIndex, V.text, V.timeStart, V.timeEnd)
-            : Vp(V.compId, V.text),
+            ? qp(V.msgIndex, V.text, V.timeStart, V.timeEnd)
+            : jp(V.compId, V.text),
           gn(),
           (Ht.value = null));
       }
       return (
-        mu(jd, {
-          byId: vt,
+        mu(Kd, {
+          byId: yt,
           expanded: Jt,
           selectMode: jt,
           searching: y,
@@ -20183,8 +20284,8 @@ const E_ = { class: "bbs-page" },
         }),
         (V, P) => (
           f(),
-          g("section", VS, [
-            a("div", DS, [
+          g("section", KS, [
+            a("div", HS, [
               a(
                 "button",
                 {
@@ -20226,36 +20327,36 @@ const E_ = { class: "bbs-page" },
                     )),
                   nt.value
                     ? (f(),
-                      g("span", KS, "Tổng " + A(d.value.length) + " mục", 1))
+                      g("span", US, "Tổng " + A(d.value.length) + " mục", 1))
                     : H("", !0),
                 ],
                 10,
-                jS,
+                FS,
               ),
               a(
                 "button",
                 {
                   class: "bbs-add-mini",
                   type: "button",
-                  disabled: !p.value,
-                  title: p.value
+                  disabled: !v.value,
+                  title: v.value
                     ? "Thêm kế hoạch / huyền niệm thủ công"
                     : "Cần có tóm tắt trước để thêm thủ công",
                   onClick: h,
                 },
                 [N(X, { name: "plus" })],
                 8,
-                HS,
+                WS,
               ),
             ]),
             a(
               "div",
               { class: Tt(["bbs-fold-wrap", { "is-collapsed": !R.value }]) },
               [
-                a("div", FS, [
+                a("div", GS, [
                   d.value.length
                     ? (f(),
-                      g("div", US, [
+                      g("div", JS, [
                         (f(!0),
                         g(
                           dt,
@@ -20265,7 +20366,7 @@ const E_ = { class: "bbs-page" },
                             (G) => (
                               f(),
                               g("div", { key: G.id, class: "bbs-plan" }, [
-                                a("div", WS, [
+                                a("div", QS, [
                                   a(
                                     "span",
                                     { class: Tt(["bbs-plan-kind", G.kind]) },
@@ -20277,9 +20378,9 @@ const E_ = { class: "bbs-page" },
                                     3,
                                   ),
                                   W(G.id) !== void 0
-                                    ? (f(), g("span", GS, "#" + A(W(G.id)), 1))
+                                    ? (f(), g("span", YS, "#" + A(W(G.id)), 1))
                                     : H("", !0),
-                                  a("span", JS, [
+                                  a("span", zS, [
                                     a(
                                       "button",
                                       {
@@ -20290,7 +20391,7 @@ const E_ = { class: "bbs-page" },
                                       },
                                       [N(X, { name: "edit" })],
                                       8,
-                                      QS,
+                                      XS,
                                     ),
                                     a(
                                       "button",
@@ -20298,23 +20399,23 @@ const E_ = { class: "bbs-page" },
                                         class: "bbs-plan-act bbs-plan-del",
                                         type: "button",
                                         title: "Xóa",
-                                        onClick: (Rt) => pt(G.id),
+                                        onClick: (Rt) => vt(G.id),
                                       },
                                       [N(X, { name: "close" })],
                                       8,
-                                      YS,
+                                      ZS,
                                     ),
                                   ]),
                                 ]),
-                                a("p", zS, A(G.content), 1),
+                                a("p", tC, A(G.content), 1),
                                 G.createdTime || G.targetTime
                                   ? (f(),
-                                    g("div", XS, [
+                                    g("div", nC, [
                                       G.createdTime
                                         ? (f(),
                                           g(
                                             "span",
-                                            ZS,
+                                            eC,
                                             "Tạo lúc " + A(G.createdTime),
                                             1,
                                           ))
@@ -20323,7 +20424,7 @@ const E_ = { class: "bbs-page" },
                                         ? (f(),
                                           g(
                                             "span",
-                                            tC,
+                                            iC,
                                             "Mục tiêu " + A(G.targetTime),
                                             1,
                                           ))
@@ -20339,7 +20440,7 @@ const E_ = { class: "bbs-page" },
                     : (f(),
                       g(
                         "p",
-                        nC,
+                        sC,
                         "Chưa có kế hoạch hay huyền niệm nào. Sẽ tự động bắt lấy khi tóm tắt, cũng có thể thêm thủ công.",
                       )),
                 ]),
@@ -20357,7 +20458,7 @@ const E_ = { class: "bbs-page" },
                 [a("span", { class: "bbs-divider-mark" })],
                 -1,
               )),
-            a("div", eC, [
+            a("div", oC, [
               P[19] ||
                 (P[19] = a(
                   "h2",
@@ -20365,7 +20466,7 @@ const E_ = { class: "bbs-page" },
                   "Tóm tắt",
                   -1,
                 )),
-              a("div", iC, [
+              a("div", rC, [
                 jt.value
                   ? H("", !0)
                   : (f(),
@@ -20383,7 +20484,7 @@ const E_ = { class: "bbs-page" },
                       },
                       [N(X, { name: "search" })],
                       10,
-                      sC,
+                      aC,
                     )),
                 jt.value
                   ? (f(),
@@ -20430,7 +20531,7 @@ const E_ = { class: "bbs-page" },
                           )),
                       ],
                       8,
-                      oC,
+                      lC,
                     )),
                 jt.value
                   ? H("", !0)
@@ -20448,7 +20549,7 @@ const E_ = { class: "bbs-page" },
                       },
                       [
                         at.value
-                          ? (f(), g("span", aC))
+                          ? (f(), g("span", uC))
                           : (f(), fn(X, { key: 1, name: "bolt" })),
                         P[18] ||
                           (P[18] = a(
@@ -20459,14 +20560,14 @@ const E_ = { class: "bbs-page" },
                           )),
                       ],
                       8,
-                      rC,
+                      cC,
                     )),
               ]),
             ]),
-            F.value ? (f(), g("p", lC, A(F.value), 1)) : H("", !0),
+            F.value ? (f(), g("p", hC, A(F.value), 1)) : H("", !0),
             !jt.value && on.value && Bt.value.length
               ? (f(),
-                g("div", cC, [
+                g("div", dC, [
                   N(X, { name: "search", class: "bbs-search-icon" }),
                   et(
                     a(
@@ -20499,14 +20600,14 @@ const E_ = { class: "bbs-page" },
                     },
                     [N(X, { name: "close" })],
                     8,
-                    uC,
+                    mC,
                   ),
                 ]))
               : H("", !0),
             x.value.length
               ? (f(),
-                g("div", hC, [
-                  a("div", dC, [
+                g("div", fC, [
+                  a("div", gC, [
                     a(
                       "span",
                       {
@@ -20515,14 +20616,14 @@ const E_ = { class: "bbs-page" },
                       },
                       [
                         N(X, { name: "summary" }),
-                        P[20] || (P[20] = yt("Tầng chưa tóm tắt ", -1)),
+                        P[20] || (P[20] = gt("Tầng chưa tóm tắt ", -1)),
                       ],
                       8,
-                      mC,
+                      bC,
                     ),
-                    E(Sn).running
+                    E(Cn).running
                       ? (f(),
-                        g("span", gC, [
+                        g("span", vC, [
                           P[22] ||
                             (P[22] = a(
                               "span",
@@ -20530,11 +20631,11 @@ const E_ = { class: "bbs-page" },
                               null,
                               -1,
                             )),
-                          yt(
+                          gt(
                             " Đang tóm tắt bù " +
-                              A(E(Sn).done) +
+                              A(E(Cn).done) +
                               "/" +
-                              A(E(Sn).total) +
+                              A(E(Cn).total) +
                               " ",
                             1,
                           ),
@@ -20543,15 +20644,15 @@ const E_ = { class: "bbs-page" },
                             {
                               class: "bbs-batch-cancel",
                               type: "button",
-                              disabled: E(Sn).cancelRequested,
+                              disabled: E(Cn).cancelRequested,
                               onClick:
                                 P[2] || (P[2] = (...G) => E(bc) && E(bc)(...G)),
                             },
                             A(
-                              E(Sn).cancelRequested ? "Đang dừng..." : "Hủy bỏ",
+                              E(Cn).cancelRequested ? "Đang dừng..." : "Hủy bỏ",
                             ),
                             9,
-                            bC,
+                            yC,
                           ),
                         ]))
                       : (f(),
@@ -20569,13 +20670,13 @@ const E_ = { class: "bbs-page" },
                           [
                             N(X, { name: "plans" }),
                             P[21] ||
-                              (P[21] = yt("Bổ sung tóm tắt hàng loạt ", -1)),
+                              (P[21] = gt("Bổ sung tóm tắt hàng loạt ", -1)),
                           ],
                           8,
-                          fC,
+                          pC,
                         )),
                   ]),
-                  a("div", pC, [
+                  a("div", kC, [
                     (f(!0),
                     g(
                       dt,
@@ -20593,18 +20694,18 @@ const E_ = { class: "bbs-page" },
                               disabled:
                                 E(Mt).running ||
                                 z.value !== null ||
-                                E(Sn).running,
+                                E(Cn).running,
                               title: `Tạo tóm tắt cho tầng #${G}`,
                               onClick: (Rt) => b(G),
                             },
                             [
                               z.value === G
-                                ? (f(), g("span", yC))
+                                ? (f(), g("span", xC))
                                 : (f(),
-                                  g(dt, { key: 1 }, [yt("#" + A(G), 1)], 64)),
+                                  g(dt, { key: 1 }, [gt("#" + A(G), 1)], 64)),
                             ],
                             8,
-                            vC,
+                            _C,
                           )
                         ),
                       ),
@@ -20624,7 +20725,7 @@ const E_ = { class: "bbs-page" },
               },
               {
                 default: $t(() => [
-                  yt(
+                  gt(
                     " Tổng cộng " +
                       A(x.value.length) +
                       " tầng chưa tóm tắt, sẽ chia lô theo lượng nội dung để tóm tắt bù tuần tự (tiết kiệm token và nhanh hơn tóm tắt từng tầng). Có thể hủy bỏ bất cứ lúc nào trong quá trình (sẽ dừng lại sau khi hoàn tất lô hiện tại). Tiếp tục? ",
@@ -20638,10 +20739,10 @@ const E_ = { class: "bbs-page" },
             ),
             an.value || E(U).state.location
               ? (f(),
-                g("div", kC, [
+                g("div", TC, [
                   an.value
                     ? (f(),
-                      g("div", _C, [
+                      g("div", wC, [
                         P[23] ||
                           (P[23] = a(
                             "span",
@@ -20649,14 +20750,14 @@ const E_ = { class: "bbs-page" },
                             "Thời gian",
                             -1,
                           )),
-                        a("span", xC, [
-                          yt(A(an.value), 1),
+                        a("span", SC, [
+                          gt(A(an.value), 1),
                           Gn.value
                             ? (f(),
                               g(
                                 dt,
                                 { key: 0 },
-                                [yt(" (" + A(Gn.value) + ")", 1)],
+                                [gt(" (" + A(Gn.value) + ")", 1)],
                                 64,
                               ))
                             : H("", !0),
@@ -20665,7 +20766,7 @@ const E_ = { class: "bbs-page" },
                     : H("", !0),
                   E(U).state.location
                     ? (f(),
-                      g("div", TC, [
+                      g("div", CC, [
                         P[24] ||
                           (P[24] = a(
                             "span",
@@ -20673,17 +20774,17 @@ const E_ = { class: "bbs-page" },
                             "Địa điểm",
                             -1,
                           )),
-                        a("span", wC, A(E(U).state.location), 1),
+                        a("span", $C, A(E(U).state.location), 1),
                       ]))
                     : H("", !0),
                 ]))
               : H("", !0),
             E(Mt).lastError
-              ? (f(), g("p", SC, A(E(Mt).lastError), 1))
+              ? (f(), g("p", EC, A(E(Mt).lastError), 1))
               : H("", !0),
             !y.value && !jt.value && Bt.value.length
               ? (f(),
-                g("div", CC, [
+                g("div", IC, [
                   (f(!0),
                   g(
                     dt,
@@ -20693,7 +20794,7 @@ const E_ = { class: "bbs-page" },
                       (G) => (
                         f(),
                         fn(
-                          qS,
+                          jS,
                           { key: `${G.kind}:${G.id}`, node: G, depth: 0 },
                           null,
                           8,
@@ -20742,7 +20843,7 @@ const E_ = { class: "bbs-page" },
                               [
                                 jt.value
                                   ? (f(),
-                                    g("label", $C, [
+                                    g("label", AC, [
                                       a(
                                         "input",
                                         {
@@ -20753,32 +20854,32 @@ const E_ = { class: "bbs-page" },
                                         },
                                         null,
                                         40,
-                                        EC,
+                                        MC,
                                       ),
                                     ]))
                                   : H("", !0),
-                                a("div", IC, [
-                                  a("header", AC, [
+                                a("div", NC, [
+                                  a("header", PC, [
                                     G.kind === "comp"
                                       ? (f(),
                                         g(
                                           dt,
                                           { key: 0 },
                                           [
-                                            a("span", MC, A(Kn(G.level)), 1),
-                                            a("span", NC, A(hn(G)), 1),
+                                            a("span", RC, A(Kn(G.level)), 1),
+                                            a("span", OC, A(hn(G)), 1),
                                             rn(G)
                                               ? (f(),
                                                 g(
                                                   "span",
-                                                  PC,
+                                                  LC,
                                                   "(" + A(rn(G)) + ")",
                                                   1,
                                                 ))
                                               : H("", !0),
                                             Xt(G)
                                               ? (f(),
-                                                g("span", RC, A(Xt(G)), 1))
+                                                g("span", BC, A(Xt(G)), 1))
                                               : H("", !0),
                                           ],
                                           64,
@@ -20790,22 +20891,22 @@ const E_ = { class: "bbs-page" },
                                           [
                                             rn(G)
                                               ? (f(),
-                                                g("span", OC, A(rn(G)), 1))
+                                                g("span", qC, A(rn(G)), 1))
                                               : H("", !0),
-                                            a("span", LC, A(hn(G)), 1),
+                                            a("span", VC, A(hn(G)), 1),
                                             Xt(G)
                                               ? (f(),
-                                                g("span", BC, A(Xt(G)), 1))
+                                                g("span", DC, A(Xt(G)), 1))
                                               : H("", !0),
                                           ],
                                           64,
                                         )),
                                     G.stale
-                                      ? (f(), g("span", qC, "Chờ cập nhật"))
+                                      ? (f(), g("span", jC, "Chờ cập nhật"))
                                       : H("", !0),
                                     !jt.value && !G.isChild
                                       ? (f(),
-                                        g("span", VC, [
+                                        g("span", KC, [
                                           a(
                                             "button",
                                             {
@@ -20819,7 +20920,7 @@ const E_ = { class: "bbs-page" },
                                             },
                                             [N(X, { name: "edit" })],
                                             8,
-                                            DC,
+                                            HC,
                                           ),
                                           a(
                                             "button",
@@ -20835,12 +20936,12 @@ const E_ = { class: "bbs-page" },
                                             },
                                             [N(X, { name: "trash" })],
                                             8,
-                                            jC,
+                                            FC,
                                           ),
                                         ]))
                                       : H("", !0),
                                   ]),
-                                  a("p", KC, [
+                                  a("p", UC, [
                                     (f(!0),
                                     g(
                                       dt,
@@ -20855,12 +20956,12 @@ const E_ = { class: "bbs-page" },
                                             [
                                               Rt.hit
                                                 ? (f(),
-                                                  g("mark", HC, A(Rt.t), 1))
+                                                  g("mark", WC, A(Rt.t), 1))
                                                 : (f(),
                                                   g(
                                                     dt,
                                                     { key: 1 },
-                                                    [yt(A(Rt.t), 1)],
+                                                    [gt(A(Rt.t), 1)],
                                                     64,
                                                   )),
                                             ],
@@ -20884,8 +20985,8 @@ const E_ = { class: "bbs-page" },
                   ))
                 : y.value
                   ? (f(),
-                    g("div", FC, [
-                      a("span", UC, [N(X, { name: "search" })]),
+                    g("div", GC, [
+                      a("span", JC, [N(X, { name: "search" })]),
                       a(
                         "p",
                         null,
@@ -20896,8 +20997,8 @@ const E_ = { class: "bbs-page" },
                       ),
                     ]))
                   : (f(),
-                    g("div", WC, [
-                      a("span", GC, [N(X, { name: "summary" })]),
+                    g("div", QC, [
+                      a("span", YC, [N(X, { name: "summary" })]),
                       P[25] ||
                         (P[25] = a(
                           "p",
@@ -20908,27 +21009,27 @@ const E_ = { class: "bbs-page" },
                     ])),
             jt.value
               ? (f(),
-                g("div", JC, [
-                  a("span", QC, [
-                    gt.value.count
+                g("div", zC, [
+                  a("span", XC, [
+                    bt.value.count
                       ? (f(),
                         g(
                           dt,
                           { key: 0 },
                           [
-                            yt(" Đã chọn " + A(gt.value.count) + " mục ", 1),
-                            gt.value.floorLo >= 0
+                            gt(" Đã chọn " + A(bt.value.count) + " mục ", 1),
+                            bt.value.floorLo >= 0
                               ? (f(),
                                 g(
                                   dt,
                                   { key: 0 },
                                   [
-                                    yt(
+                                    gt(
                                       " · Bao phủ " +
                                         A(
-                                          gt.value.floorLo === gt.value.floorHi
-                                            ? `#${gt.value.floorLo}`
-                                            : `#${gt.value.floorLo} - #${gt.value.floorHi}`,
+                                          bt.value.floorLo === bt.value.floorHi
+                                            ? `#${bt.value.floorLo}`
+                                            : `#${bt.value.floorLo} - #${bt.value.floorHi}`,
                                         ),
                                       1,
                                     ),
@@ -20936,7 +21037,7 @@ const E_ = { class: "bbs-page" },
                                   64,
                                 ))
                               : H("", !0),
-                            yt(" · Tạo " + A(Kn(gt.value.level)), 1),
+                            gt(" · Tạo " + A(Kn(bt.value.level)), 1),
                           ],
                           64,
                         ))
@@ -20944,12 +21045,12 @@ const E_ = { class: "bbs-page" },
                         g(
                           dt,
                           { key: 1 },
-                          [yt("Chọn nhiều tóm tắt liên tiếp để gộp")],
+                          [gt("Chọn nhiều tóm tắt liên tiếp để gộp")],
                           64,
                         )),
                   ]),
-                  gt.value.count >= 2 && !mt.value
-                    ? (f(), g("span", YC, "Cần chọn tóm tắt liên tiếp"))
+                  bt.value.count >= 2 && !mt.value
+                    ? (f(), g("span", ZC, "Cần chọn tóm tắt liên tiếp"))
                     : H("", !0),
                   a(
                     "button",
@@ -20961,12 +21062,12 @@ const E_ = { class: "bbs-page" },
                     },
                     [
                       Pt.value
-                        ? (f(), g("span", XC))
+                        ? (f(), g("span", n$))
                         : (f(), fn(X, { key: 1, name: "plans" })),
-                      P[26] || (P[26] = yt(" Gộp tổng kết ", -1)),
+                      P[26] || (P[26] = gt(" Gộp tổng kết ", -1)),
                     ],
                     8,
-                    zC,
+                    t$,
                   ),
                 ]))
               : H("", !0),
@@ -20981,11 +21082,11 @@ const E_ = { class: "bbs-page" },
               },
               {
                 default: $t(() => [
-                  yt(
+                  gt(
                     " Sẽ gộp " +
-                      A(gt.value.count) +
+                      A(bt.value.count) +
                       " mục tóm tắt đã chọn thành một " +
-                      A(Kn(gt.value.level)) +
+                      A(Kn(bt.value.level)) +
                       " (bỏ qua ngưỡng tổng kết tự động). Tóm tắt gốc sẽ được thu nạp vào tổng kết mới và ẩn khỏi danh sách (dữ liệu không mất, có thể xóa tổng kết mới để khôi phục). Tiếp tục? ",
                     1,
                   ),
@@ -21000,8 +21101,8 @@ const E_ = { class: "bbs-page" },
               { open: l.value, onClose: u },
               {
                 default: $t(() => [
-                  a("div", ZC, [
-                    a("header", t$, [
+                  a("div", e$, [
+                    a("header", i$, [
                       P[27] ||
                         (P[27] = a(
                           "span",
@@ -21020,7 +21121,7 @@ const E_ = { class: "bbs-page" },
                         [N(X, { name: "close" })],
                       ),
                     ]),
-                    a("div", n$, [
+                    a("div", s$, [
                       P[28] ||
                         (P[28] = a(
                           "span",
@@ -21028,7 +21129,7 @@ const E_ = { class: "bbs-page" },
                           "Loại",
                           -1,
                         )),
-                      a("div", e$, [
+                      a("div", o$, [
                         a(
                           "button",
                           {
@@ -21058,7 +21159,7 @@ const E_ = { class: "bbs-page" },
                         ),
                       ]),
                     ]),
-                    a("label", i$, [
+                    a("label", r$, [
                       P[29] ||
                         (P[29] = a(
                           "span",
@@ -21084,14 +21185,14 @@ const E_ = { class: "bbs-page" },
                           },
                           null,
                           40,
-                          s$,
+                          a$,
                         ),
                         [[ut, o.value]],
                       ),
                     ]),
                     s.value === "plan"
                       ? (f(),
-                        g("label", o$, [
+                        g("label", l$, [
                           P[30] ||
                             (P[30] = a(
                               "span",
@@ -21117,7 +21218,7 @@ const E_ = { class: "bbs-page" },
                           ),
                         ]))
                       : H("", !0),
-                    a("footer", r$, [
+                    a("footer", c$, [
                       a(
                         "button",
                         { class: "bbs-btn", type: "button", onClick: u },
@@ -21133,7 +21234,7 @@ const E_ = { class: "bbs-page" },
                         },
                         "Thêm",
                         8,
-                        a$,
+                        u$,
                       ),
                     ]),
                   ]),
@@ -21150,11 +21251,11 @@ const E_ = { class: "bbs-page" },
                 default: $t(() => [
                   ct.value
                     ? (f(),
-                      g("div", l$, [
-                        a("header", c$, [
+                      g("div", h$, [
+                        a("header", d$, [
                           a(
                             "span",
-                            u$,
+                            m$,
                             "Chỉnh sửa" +
                               A(
                                 ct.value.kind === "suspense"
@@ -21174,7 +21275,7 @@ const E_ = { class: "bbs-page" },
                             [N(X, { name: "close" })],
                           ),
                         ]),
-                        a("label", h$, [
+                        a("label", f$, [
                           P[31] ||
                             (P[31] = a(
                               "span",
@@ -21198,7 +21299,7 @@ const E_ = { class: "bbs-page" },
                             [[ut, ct.value.content]],
                           ),
                         ]),
-                        a("label", d$, [
+                        a("label", g$, [
                           P[32] ||
                             (P[32] = a(
                               "span",
@@ -21226,7 +21327,7 @@ const E_ = { class: "bbs-page" },
                         ]),
                         ct.value.kind === "plan"
                           ? (f(),
-                            g("label", m$, [
+                            g("label", b$, [
                               P[33] ||
                                 (P[33] = a(
                                   "span",
@@ -21254,7 +21355,7 @@ const E_ = { class: "bbs-page" },
                               ),
                             ]))
                           : H("", !0),
-                        a("footer", f$, [
+                        a("footer", p$, [
                           a(
                             "button",
                             { class: "bbs-btn", type: "button", onClick: ot },
@@ -21270,7 +21371,7 @@ const E_ = { class: "bbs-page" },
                             },
                             "Lưu",
                             8,
-                            g$,
+                            v$,
                           ),
                         ]),
                       ]))
@@ -21301,10 +21402,10 @@ const E_ = { class: "bbs-page" },
                               : "Chỉnh sửa tóm tắt",
                         },
                         [
-                          a("header", p$, [
+                          a("header", k$, [
                             a(
                               "span",
-                              v$,
+                              _$,
                               A(
                                 Ht.value.kind === "comp"
                                   ? `Chỉnh sửa${Kn(Ht.value.level)}`
@@ -21325,8 +21426,8 @@ const E_ = { class: "bbs-page" },
                           ]),
                           Ht.value.kind === "leaf"
                             ? (f(),
-                              g("div", y$, [
-                                a("label", k$, [
+                              g("div", x$, [
+                                a("label", T$, [
                                   P[34] ||
                                     (P[34] = a(
                                       "span",
@@ -21352,7 +21453,7 @@ const E_ = { class: "bbs-page" },
                                     [[ut, Ht.value.timeStart]],
                                   ),
                                 ]),
-                                a("label", _$, [
+                                a("label", w$, [
                                   P[35] ||
                                     (P[35] = a(
                                       "span",
@@ -21380,10 +21481,10 @@ const E_ = { class: "bbs-page" },
                                 ]),
                               ]))
                             : H("", !0),
-                          a("label", x$, [
+                          a("label", S$, [
                             a(
                               "span",
-                              T$,
+                              C$,
                               A(
                                 Ht.value.kind === "comp"
                                   ? "Nội dung tổng kết"
@@ -21425,7 +21526,7 @@ const E_ = { class: "bbs-page" },
                           ]),
                         ],
                         8,
-                        b$,
+                        y$,
                       ))
                     : H("", !0),
                 ]),
@@ -21439,30 +21540,30 @@ const E_ = { class: "bbs-page" },
       );
     },
   }),
-  S$ = Pn(w$, [["__scopeId", "data-v-a6bb3583"]]),
-  C$ = { key: 0, class: "bbs-jte" },
-  $$ = { class: "bbs-jte-row" },
-  E$ = ["value", "onChange"],
-  I$ = ["value", "onChange"],
-  A$ = ["value"],
-  M$ = ["value", "onInput"],
-  N$ = ["value", "onInput"],
-  P$ = ["onClick"],
-  R$ = { key: 3, class: "bbs-jte-containertag" },
-  O$ = ["onClick"],
-  L$ = { key: 0, class: "bbs-jte-nest" },
-  B$ = { key: 1, class: "bbs-jte" },
-  q$ = { class: "bbs-jte-row" },
-  V$ = { class: "bbs-jte-idx" },
-  D$ = ["value", "onChange"],
-  j$ = ["value"],
-  K$ = ["value", "onInput"],
-  H$ = ["value", "onInput"],
-  F$ = ["onClick"],
-  U$ = { key: 3, class: "bbs-jte-containertag" },
-  W$ = ["onClick"],
-  G$ = { key: 0, class: "bbs-jte-nest" },
-  J$ = Nn({
+  E$ = Rn($$, [["__scopeId", "data-v-a6bb3583"]]),
+  I$ = { key: 0, class: "bbs-jte" },
+  A$ = { class: "bbs-jte-row" },
+  M$ = ["value", "onChange"],
+  N$ = ["value", "onChange"],
+  P$ = ["value"],
+  R$ = ["value", "onInput"],
+  O$ = ["value", "onInput"],
+  L$ = ["onClick"],
+  B$ = { key: 3, class: "bbs-jte-containertag" },
+  q$ = ["onClick"],
+  V$ = { key: 0, class: "bbs-jte-nest" },
+  D$ = { key: 1, class: "bbs-jte" },
+  j$ = { class: "bbs-jte-row" },
+  K$ = { class: "bbs-jte-idx" },
+  H$ = ["value", "onChange"],
+  F$ = ["value"],
+  U$ = ["value", "onInput"],
+  W$ = ["value", "onInput"],
+  G$ = ["onClick"],
+  J$ = { key: 3, class: "bbs-jte-containertag" },
+  Q$ = ["onClick"],
+  Y$ = { key: 0, class: "bbs-jte-nest" },
+  z$ = Pn({
     __name: "JsonTreeEditor",
     props: {
       modelValue: { type: [null, Boolean, Number, String, Array, Object] },
@@ -21514,11 +21615,11 @@ const E_ = { class: "bbs-page" },
         ),
         u = lt(() => Object.keys(h.value)),
         d = lt(() => (Array.isArray(e.modelValue) ? e.modelValue : []));
-      function p(O, ot) {
+      function v(O, ot) {
         i("update:modelValue", { ...h.value, [O]: ot });
       }
       function S(O, ot) {
-        p(O, l(ot.target.value));
+        v(O, l(ot.target.value));
       }
       function w(O, ot) {
         const D = ot.target.value.trim();
@@ -21552,7 +21653,7 @@ const E_ = { class: "bbs-page" },
         const ot = d.value.slice();
         (ot.splice(O, 1), i("update:modelValue", ot));
       }
-      function pt(O) {
+      function vt(O) {
         return O.target.value;
       }
       function ct(O) {
@@ -21563,7 +21664,7 @@ const E_ = { class: "bbs-page" },
         const D = Eu("JsonTreeEditor", !0);
         return c.value === "object"
           ? (f(),
-            g("div", C$, [
+            g("div", I$, [
               (f(!0),
               g(
                 dt,
@@ -21573,7 +21674,7 @@ const E_ = { class: "bbs-page" },
                   (x) => (
                     f(),
                     g("div", { key: x, class: "bbs-jte-field" }, [
-                      a("div", $$, [
+                      a("div", A$, [
                         a(
                           "input",
                           {
@@ -21585,7 +21686,7 @@ const E_ = { class: "bbs-page" },
                           },
                           null,
                           40,
-                          E$,
+                          M$,
                         ),
                         a(
                           "select",
@@ -21605,14 +21706,14 @@ const E_ = { class: "bbs-page" },
                                   { key: z.v, value: z.v },
                                   A(z.label),
                                   9,
-                                  A$,
+                                  P$,
                                 ),
                               ),
                               64,
                             )),
                           ],
                           40,
-                          I$,
+                          N$,
                         ),
                         o(h.value[x]) === "string"
                           ? (f(),
@@ -21624,11 +21725,11 @@ const E_ = { class: "bbs-page" },
                                 type: "text",
                                 value: h.value[x],
                                 placeholder: "Giá trị",
-                                onInput: (z) => p(x, pt(z)),
+                                onInput: (z) => v(x, vt(z)),
                               },
                               null,
                               40,
-                              M$,
+                              R$,
                             ))
                           : o(h.value[x]) === "number"
                             ? (f(),
@@ -21639,11 +21740,11 @@ const E_ = { class: "bbs-page" },
                                   class: "bbs-input bbs-jte-val",
                                   type: "number",
                                   value: h.value[x],
-                                  onInput: (z) => p(x, ct(z)),
+                                  onInput: (z) => v(x, ct(z)),
                                 },
                                 null,
                                 40,
-                                N$,
+                                O$,
                               ))
                             : o(h.value[x]) === "boolean"
                               ? (f(),
@@ -21656,16 +21757,16 @@ const E_ = { class: "bbs-page" },
                                       { on: h.value[x] === !0 },
                                     ]),
                                     type: "button",
-                                    onClick: (z) => p(x, h.value[x] !== !0),
+                                    onClick: (z) => v(x, h.value[x] !== !0),
                                   },
                                   A(h.value[x] === !0 ? "Có" : "Không"),
                                   11,
-                                  P$,
+                                  L$,
                                 ))
                               : (f(),
                                 g(
                                   "span",
-                                  R$,
+                                  B$,
                                   A(
                                     o(h.value[x]) === "array"
                                       ? "Mảng"
@@ -21683,17 +21784,17 @@ const E_ = { class: "bbs-page" },
                           },
                           [N(X, { name: "close" })],
                           8,
-                          O$,
+                          q$,
                         ),
                       ]),
                       r(h.value[x])
                         ? (f(),
-                          g("div", L$, [
+                          g("div", V$, [
                             N(
                               D,
                               {
                                 "model-value": h.value[x],
-                                "onUpdate:modelValue": (z) => p(x, z),
+                                "onUpdate:modelValue": (z) => v(x, z),
                               },
                               null,
                               8,
@@ -21711,13 +21812,13 @@ const E_ = { class: "bbs-page" },
                 { class: "bbs-jte-add", type: "button", onClick: M },
                 [
                   N(X, { name: "plus" }),
-                  ot[0] || (ot[0] = yt("Thêm trường", -1)),
+                  ot[0] || (ot[0] = gt("Thêm trường", -1)),
                 ],
               ),
             ]))
           : c.value === "array"
             ? (f(),
-              g("div", B$, [
+              g("div", D$, [
                 (f(!0),
                 g(
                   dt,
@@ -21727,8 +21828,8 @@ const E_ = { class: "bbs-page" },
                     (x, z) => (
                       f(),
                       g("div", { key: z, class: "bbs-jte-field" }, [
-                        a("div", q$, [
-                          a("span", V$, "#" + A(z), 1),
+                        a("div", j$, [
+                          a("span", K$, "#" + A(z), 1),
                           a(
                             "select",
                             {
@@ -21747,14 +21848,14 @@ const E_ = { class: "bbs-page" },
                                     { key: b.v, value: b.v },
                                     A(b.label),
                                     9,
-                                    j$,
+                                    F$,
                                   ),
                                 ),
                                 64,
                               )),
                             ],
                             40,
-                            D$,
+                            H$,
                           ),
                           o(x) === "string"
                             ? (f(),
@@ -21766,11 +21867,11 @@ const E_ = { class: "bbs-page" },
                                   type: "text",
                                   value: x,
                                   placeholder: "Giá trị",
-                                  onInput: (b) => R(z, pt(b)),
+                                  onInput: (b) => R(z, vt(b)),
                                 },
                                 null,
                                 40,
-                                K$,
+                                U$,
                               ))
                             : o(x) === "number"
                               ? (f(),
@@ -21785,7 +21886,7 @@ const E_ = { class: "bbs-page" },
                                   },
                                   null,
                                   40,
-                                  H$,
+                                  W$,
                                 ))
                               : o(x) === "boolean"
                                 ? (f(),
@@ -21802,12 +21903,12 @@ const E_ = { class: "bbs-page" },
                                     },
                                     A(x === !0 ? "Có" : "Không"),
                                     11,
-                                    F$,
+                                    G$,
                                   ))
                                 : (f(),
                                   g(
                                     "span",
-                                    U$,
+                                    J$,
                                     A(o(x) === "array" ? "Mảng" : "Đối tượng"),
                                     1,
                                   )),
@@ -21821,12 +21922,12 @@ const E_ = { class: "bbs-page" },
                             },
                             [N(X, { name: "close" })],
                             8,
-                            W$,
+                            Q$,
                           ),
                         ]),
                         r(x)
                           ? (f(),
-                            g("div", G$, [
+                            g("div", Y$, [
                               N(
                                 D,
                                 {
@@ -21849,7 +21950,7 @@ const E_ = { class: "bbs-page" },
                   { class: "bbs-jte-add", type: "button", onClick: W },
                   [
                     N(X, { name: "plus" }),
-                    ot[1] || (ot[1] = yt("Thêm một mục", -1)),
+                    ot[1] || (ot[1] = gt("Thêm một mục", -1)),
                   ],
                 ),
               ]))
@@ -21857,62 +21958,62 @@ const E_ = { class: "bbs-page" },
       };
     },
   }),
-  Q$ = Pn(J$, [["__scopeId", "data-v-66425c74"]]),
-  Y$ = { class: "bbs-page" },
-  z$ = { class: "bbs-section-head" },
-  X$ = { class: "bbs-var-tools" },
-  Z$ = ["disabled"],
-  t2 = { class: "bbs-var-blockhead" },
-  n2 = ["disabled"],
-  e2 = { key: 0, class: "bbs-json-view" },
-  i2 = { key: 1, class: "bbs-var-emptyline" },
-  s2 = { key: 2, class: "bbs-modal-hint" },
-  o2 = { class: "bbs-typegrid bbs-var-tierpick" },
-  r2 = ["disabled", "onClick"],
-  a2 = { class: "bbs-modal-hint" },
-  l2 = { class: "bbs-modal-field" },
-  c2 = { class: "bbs-jte-fieldhead" },
-  u2 = { class: "bbs-mode-toggle" },
-  h2 = { key: 0, class: "bbs-jte-wrap" },
-  d2 = { key: 0, class: "bbs-jte-empty" },
-  m2 = { key: 2, class: "bbs-json-err" },
-  f2 = { class: "bbs-modal-field" },
-  g2 = { class: "bbs-modal-field" },
-  b2 = { class: "bbs-modal-foot bbs-var-savefoot" },
-  p2 = ["disabled"],
-  v2 = {
+  X$ = Rn(z$, [["__scopeId", "data-v-66425c74"]]),
+  Z$ = { class: "bbs-page" },
+  t2 = { class: "bbs-section-head" },
+  n2 = { class: "bbs-var-tools" },
+  e2 = ["disabled"],
+  i2 = { class: "bbs-var-blockhead" },
+  s2 = ["disabled"],
+  o2 = { key: 0, class: "bbs-json-view" },
+  r2 = { key: 1, class: "bbs-var-emptyline" },
+  a2 = { key: 2, class: "bbs-modal-hint" },
+  l2 = { class: "bbs-typegrid bbs-var-tierpick" },
+  c2 = ["disabled", "onClick"],
+  u2 = { class: "bbs-modal-hint" },
+  h2 = { class: "bbs-modal-field" },
+  d2 = { class: "bbs-jte-fieldhead" },
+  m2 = { class: "bbs-mode-toggle" },
+  f2 = { key: 0, class: "bbs-jte-wrap" },
+  g2 = { key: 0, class: "bbs-jte-empty" },
+  b2 = { key: 2, class: "bbs-json-err" },
+  p2 = { class: "bbs-modal-field" },
+  v2 = { class: "bbs-modal-field" },
+  y2 = { class: "bbs-modal-foot bbs-var-savefoot" },
+  k2 = ["disabled"],
+  _2 = {
     class: "bbs-modal",
     role: "dialog",
     "aria-modal": "true",
     "aria-label": "Chỉnh sửa giá trị biến số hiện tại",
   },
-  y2 = { class: "bbs-modal-head" },
-  k2 = { key: 0, class: "bbs-json-err" },
-  _2 = { class: "bbs-modal-foot" },
-  x2 = {
+  x2 = { class: "bbs-modal-head" },
+  T2 = { key: 0, class: "bbs-json-err" },
+  w2 = { class: "bbs-modal-foot" },
+  S2 = {
     class: "bbs-modal",
     role: "dialog",
     "aria-modal": "true",
     "aria-label": "Xuất mẫu biến số",
   },
-  T2 = { class: "bbs-modal-head" },
-  w2 = ["value"],
-  S2 = { class: "bbs-modal-foot" },
-  C2 = {
+  C2 = { class: "bbs-modal-head" },
+  $2 = ["value"],
+  E2 = { class: "bbs-modal-foot" },
+  I2 = {
     class: "bbs-modal",
     role: "dialog",
     "aria-modal": "true",
     "aria-label": "Nhập mẫu biến số",
   },
-  $2 = { class: "bbs-modal-head" },
-  E2 = { class: "bbs-modal-field" },
-  I2 = { class: "bbs-modal-field" },
-  A2 = { class: "bbs-modal-field" },
-  M2 = { class: "bbs-typegrid" },
-  N2 = ["disabled", "onClick"],
-  P2 = { class: "bbs-modal-foot" },
-  R2 = ["disabled"],
-  O2 = Nn({
+  A2 = { class: "bbs-modal-head" },
+  M2 = { class: "bbs-modal-field" },
+  N2 = { class: "bbs-modal-field" },
+  P2 = { class: "bbs-modal-field" },
+  R2 = { class: "bbs-typegrid" },
+  O2 = ["disabled", "onClick"],
+  L2 = { class: "bbs-modal-foot" },
+  B2 = ["disabled"],
+  q2 = Pn({
     __name: "index",
     setup(t) {
       const n = lt(() => en.hasLeaf),
@@ -21929,9 +22030,9 @@ const E_ = { class: "bbs-page" },
           chat: { label: "Trò chuyện", hint: "Chỉ trò chuyện hiện tại" },
         },
         s = ["global", "char", "chat"];
-      function o(vt) {
+      function o(yt) {
         try {
-          const Q = JSON.parse(vt || "{}");
+          const Q = JSON.parse(yt || "{}");
           return Q && typeof Q == "object" && !Array.isArray(Q) ? Q : null;
         } catch {
           return null;
@@ -21952,13 +22053,13 @@ const E_ = { class: "bbs-page" },
       function d() {
         n.value && ((h.value = r.value), (u.value = ""), (c.value = !0));
       }
-      function p() {
-        const vt = o(h.value);
-        if (!vt) {
+      function v() {
+        const yt = o(h.value);
+        if (!yt) {
           u.value = "JSON không hợp lệ hoặc gốc không phải đối tượng {…}";
           return;
         }
-        if (!Cp(vt)) {
+        if (!Ep(yt)) {
           u.value = "Lưu thất bại: Cần có tóm tắt trước để ghi";
           return;
         }
@@ -21971,8 +22072,8 @@ const E_ = { class: "bbs-page" },
         L = st(""),
         W = st(""),
         j = st("");
-      function pt(vt) {
-        const Q = U.varTemplates[vt];
+      function vt(yt) {
+        const Q = U.varTemplates[yt];
         ((nt.value = JSON.parse(JSON.stringify(Q.json ?? {}))),
           (R.value = Object.keys(Q.json).length
             ? JSON.stringify(Q.json, null, 2)
@@ -21983,20 +22084,20 @@ const E_ = { class: "bbs-page" },
           (W.value = Q.rule),
           (j.value = ""));
       }
-      function ct(vt) {
-        (vt === "char" && !e.value) || ((w.value = vt), pt(vt));
+      function ct(yt) {
+        (yt === "char" && !e.value) || ((w.value = yt), vt(yt));
       }
-      (pt(w.value),
+      (vt(w.value),
         Dn(
           nt,
-          (vt) => {
-            R.value = JSON.stringify(vt, null, 2);
+          (yt) => {
+            R.value = JSON.stringify(yt, null, 2);
           },
           { deep: !0 },
         ));
-      function O(vt) {
-        if (vt !== M.value) {
-          if (vt === "tree") {
+      function O(yt) {
+        if (yt !== M.value) {
+          if (yt === "tree") {
             const Q = o(R.value);
             if (!Q) {
               j.value =
@@ -22005,31 +22106,31 @@ const E_ = { class: "bbs-page" },
             }
             ((nt.value = Q), (j.value = ""));
           } else R.value = JSON.stringify(nt.value, null, 2);
-          M.value = vt;
+          M.value = yt;
         }
       }
       function ot() {
         return M.value === "tree" ? nt.value : o(R.value);
       }
       function D() {
-        const vt = w.value;
-        if (vt === "char" && !e.value) return;
+        const yt = w.value;
+        if (yt === "char" && !e.value) return;
         const Q = ot();
         if (!Q) {
           j.value = "JSON không hợp lệ hoặc gốc không phải đối tượng {…}";
           return;
         }
         ((j.value = ""),
-          Zl(vt, { json: Q, meaning: L.value, rule: W.value }),
+          Zl(yt, { json: Q, meaning: L.value, rule: W.value }),
           gn(),
-          zt(`Đã lưu mẫu ${i[vt].label}`, "success"));
+          zt(`Đã lưu mẫu ${i[yt].label}`, "success"));
       }
       const x = st(!1),
         z = st(!1),
         b = st(""),
         _t = st("chat"),
         At = lt(() => {
-          const vt = Nh(U.varTemplates),
+          const yt = Nh(U.varTemplates),
             Q = s.map((Bt) => U.varTemplates[Bt].meaning.trim()).filter(Boolean)
               .join(`
 
@@ -22043,7 +22144,7 @@ const E_ = { class: "bbs-page" },
               app: "ST-BaiBai-Book",
               kind: "vars",
               version: 3,
-              json: vt,
+              json: yt,
               meaning: Q,
               rule: xt,
             },
@@ -22055,10 +22156,10 @@ const E_ = { class: "bbs-page" },
           () => (
             en.rev,
             s.some(
-              (vt) =>
-                Object.keys(U.varTemplates[vt].json).length ||
-                U.varTemplates[vt].meaning.trim() ||
-                U.varTemplates[vt].rule.trim(),
+              (yt) =>
+                Object.keys(U.varTemplates[yt].json).length ||
+                U.varTemplates[yt].meaning.trim() ||
+                U.varTemplates[yt].rule.trim(),
             )
           ),
         );
@@ -22079,17 +22180,17 @@ const E_ = { class: "bbs-page" },
           );
         }
       }
-      function bt() {
-        const vt = new Blob([At.value], { type: "application/json" }),
-          Q = URL.createObjectURL(vt),
+      function pt() {
+        const yt = new Blob([At.value], { type: "application/json" }),
+          Q = URL.createObjectURL(yt),
           xt = document.createElement("a");
         ((xt.href = Q),
           (xt.download = "baibai-vars.json"),
           xt.click(),
           URL.revokeObjectURL(Q));
       }
-      function Ct(vt) {
-        const Q = vt.target.files?.[0];
+      function Ct(yt) {
+        const Q = yt.target.files?.[0];
         if (!Q) return;
         const xt = new FileReader();
         ((xt.onload = () => {
@@ -22098,9 +22199,9 @@ const E_ = { class: "bbs-page" },
           xt.readAsText(Q));
       }
       function Ut() {
-        let vt;
+        let yt;
         try {
-          vt = JSON.parse(b.value);
+          yt = JSON.parse(b.value);
         } catch {
           zt("Phân tích JSON thất bại, vui lòng kiểm tra", "error");
           return;
@@ -22108,8 +22209,8 @@ const E_ = { class: "bbs-page" },
         let Q = {},
           xt = "",
           Bt = "";
-        if (vt && typeof vt == "object" && !Array.isArray(vt)) {
-          const qt = vt;
+        if (yt && typeof yt == "object" && !Array.isArray(yt)) {
+          const qt = yt;
           qt.json && typeof qt.json == "object" && !Array.isArray(qt.json)
             ? ((Q = qt.json),
               (xt = typeof qt.meaning == "string" ? qt.meaning : ""),
@@ -22133,14 +22234,14 @@ const E_ = { class: "bbs-page" },
 `);
         (Zl(Jt, { json: on, meaning: jn, rule: jt }),
           gn(),
-          w.value === Jt && pt(Jt),
+          w.value === Jt && vt(Jt),
           (z.value = !1),
           zt(`Đã nhập vào mẫu ${i[Jt].label}`, "success"));
       }
-      return (vt, Q) => (
+      return (yt, Q) => (
         f(),
-        g("section", Y$, [
-          a("div", z$, [
+        g("section", Z$, [
+          a("div", t2, [
             Q[16] ||
               (Q[16] = a(
                 "h2",
@@ -22148,7 +22249,7 @@ const E_ = { class: "bbs-page" },
                 "Biến số",
                 -1,
               )),
-            a("div", X$, [
+            a("div", n2, [
               a(
                 "button",
                 {
@@ -22160,7 +22261,7 @@ const E_ = { class: "bbs-page" },
                 },
                 [N(X, { name: "upload" })],
                 8,
-                Z$,
+                e2,
               ),
               a(
                 "button",
@@ -22175,7 +22276,7 @@ const E_ = { class: "bbs-page" },
             ]),
           ]),
           Q[33] || (Q[33] = a("hr", { class: "bbs-rule" }, null, -1)),
-          a("div", t2, [
+          a("div", i2, [
             Q[18] ||
               (Q[18] = a(
                 "span",
@@ -22192,24 +22293,24 @@ const E_ = { class: "bbs-page" },
                 title: "Chỉnh sửa thủ công toàn bộ JSON",
                 onClick: d,
               },
-              [N(X, { name: "edit" }), Q[17] || (Q[17] = yt("Chỉnh sửa ", -1))],
+              [N(X, { name: "edit" }), Q[17] || (Q[17] = gt("Chỉnh sửa ", -1))],
               8,
-              n2,
+              s2,
             ),
           ]),
           l.value
-            ? (f(), g("pre", e2, A(r.value), 1))
+            ? (f(), g("pre", o2, A(r.value), 1))
             : (f(),
               g(
                 "p",
-                i2,
+                r2,
                 "Chưa có trạng thái biến số. Khai báo mẫu ban đầu bên dưới, hoặc để AI tự tạo trong cốt truyện (ví dụ: thế lực mới, mục mới).",
               )),
           l.value && !n.value
             ? (f(),
               g(
                 "p",
-                s2,
+                a2,
                 "Sửa 'Giá trị hiện tại' cần có tóm tắt trước; hiện hiển thị là trạng thái ban đầu.",
               ))
             : H("", !0),
@@ -22227,7 +22328,7 @@ const E_ = { class: "bbs-page" },
               " Cấu trúc ban đầu + Hướng dẫn cho AI. Gộp 3 tầng (Hội thoại > Nhân vật > Toàn cục) làm điểm bắt đầu phát lại, AI dùng lệnh trong cốt truyện để thêm/xóa/sửa. Thay đổi giá trị ban đầu sẽ ảnh hưởng đến giá trị hiện tại của toàn bộ cuộc trò chuyện. ",
               -1,
             )),
-          a("div", o2, [
+          a("div", l2, [
             (f(),
             g(
               dt,
@@ -22244,7 +22345,7 @@ const E_ = { class: "bbs-page" },
                   },
                   A(i[xt].label),
                   11,
-                  r2,
+                  c2,
                 ),
               ),
               64,
@@ -22252,7 +22353,7 @@ const E_ = { class: "bbs-page" },
           ]),
           a(
             "span",
-            a2,
+            u2,
             A(
               w.value === "char" && !e.value
                 ? "Hiện không có nhân vật đơn lẻ (trò chuyện nhóm/chưa vào), tạm thời không thể sửa tầng nhân vật"
@@ -22260,8 +22361,8 @@ const E_ = { class: "bbs-page" },
             ),
             1,
           ),
-          a("div", l2, [
-            a("div", c2, [
+          a("div", h2, [
+            a("div", d2, [
               Q[19] ||
                 (Q[19] = a(
                   "span",
@@ -22269,7 +22370,7 @@ const E_ = { class: "bbs-page" },
                   "Cấu trúc ban đầu (có thể để trống để AI tự tạo từ đầu)",
                   -1,
                 )),
-              a("div", u2, [
+              a("div", m2, [
                 a(
                   "button",
                   {
@@ -22294,9 +22395,9 @@ const E_ = { class: "bbs-page" },
             ]),
             M.value === "tree"
               ? (f(),
-                g("div", h2, [
+                g("div", f2, [
                   N(
-                    Q$,
+                    X$,
                     {
                       modelValue: nt.value,
                       "onUpdate:modelValue":
@@ -22311,7 +22412,7 @@ const E_ = { class: "bbs-page" },
                     : (f(),
                       g(
                         "p",
-                        d2,
+                        g2,
                         "Cấu trúc trống. Nhấn 'Thêm trường' để tạo cấu trúc muốn theo dõi, hoặc để trống cho AI tự xây dựng trong cốt truyện.",
                       )),
                 ]))
@@ -22332,9 +22433,9 @@ const E_ = { class: "bbs-page" },
                   )),
                   [[ut, R.value]],
                 ),
-            j.value ? (f(), g("span", m2, A(j.value), 1)) : H("", !0),
+            j.value ? (f(), g("span", b2, A(j.value), 1)) : H("", !0),
           ]),
-          a("label", f2, [
+          a("label", p2, [
             Q[20] ||
               (Q[20] = a(
                 "span",
@@ -22359,7 +22460,7 @@ const E_ = { class: "bbs-page" },
               [[ut, L.value]],
             ),
           ]),
-          a("label", g2, [
+          a("label", v2, [
             Q[21] ||
               (Q[21] = a(
                 "span",
@@ -22384,7 +22485,7 @@ const E_ = { class: "bbs-page" },
               [[ut, W.value]],
             ),
           ]),
-          a("div", b2, [
+          a("div", y2, [
             a(
               "button",
               {
@@ -22395,10 +22496,10 @@ const E_ = { class: "bbs-page" },
               },
               [
                 N(X, { name: "check" }),
-                yt("Lưu mẫu " + A(i[w.value].label), 1),
+                gt("Lưu mẫu " + A(i[w.value].label), 1),
               ],
               8,
-              p2,
+              k2,
             ),
           ]),
           N(
@@ -22406,8 +22507,8 @@ const E_ = { class: "bbs-page" },
             { open: c.value, onClose: Q[9] || (Q[9] = (xt) => (c.value = !1)) },
             {
               default: $t(() => [
-                a("div", v2, [
-                  a("header", y2, [
+                a("div", _2, [
+                  a("header", x2, [
                     Q[22] ||
                       (Q[22] = a(
                         "span",
@@ -22447,8 +22548,8 @@ const E_ = { class: "bbs-page" },
                     ),
                     [[ut, h.value]],
                   ),
-                  u.value ? (f(), g("span", k2, A(u.value), 1)) : H("", !0),
-                  a("footer", _2, [
+                  u.value ? (f(), g("span", T2, A(u.value), 1)) : H("", !0),
+                  a("footer", w2, [
                     a(
                       "button",
                       {
@@ -22463,7 +22564,7 @@ const E_ = { class: "bbs-page" },
                       {
                         class: "bbs-btn bbs-btn-primary",
                         type: "button",
-                        onClick: p,
+                        onClick: v,
                       },
                       "Lưu",
                     ),
@@ -22483,8 +22584,8 @@ const E_ = { class: "bbs-page" },
             },
             {
               default: $t(() => [
-                a("div", x2, [
-                  a("header", T2, [
+                a("div", S2, [
+                  a("header", C2, [
                     Q[24] ||
                       (Q[24] = a(
                         "span",
@@ -22519,15 +22620,15 @@ const E_ = { class: "bbs-page" },
                     },
                     null,
                     8,
-                    w2,
+                    $2,
                   ),
-                  a("footer", S2, [
+                  a("footer", E2, [
                     a(
                       "button",
-                      { class: "bbs-btn", type: "button", onClick: bt },
+                      { class: "bbs-btn", type: "button", onClick: pt },
                       [
                         N(X, { name: "download" }),
-                        Q[25] || (Q[25] = yt("Tải tập tin", -1)),
+                        Q[25] || (Q[25] = gt("Tải tập tin", -1)),
                       ],
                     ),
                     a(
@@ -22539,7 +22640,7 @@ const E_ = { class: "bbs-page" },
                       },
                       [
                         N(X, { name: "check" }),
-                        Q[26] || (Q[26] = yt("Sao chép", -1)),
+                        Q[26] || (Q[26] = gt("Sao chép", -1)),
                       ],
                     ),
                   ]),
@@ -22558,8 +22659,8 @@ const E_ = { class: "bbs-page" },
             },
             {
               default: $t(() => [
-                a("div", C2, [
-                  a("header", $2, [
+                a("div", I2, [
+                  a("header", A2, [
                     Q[28] ||
                       (Q[28] = a(
                         "span",
@@ -22578,7 +22679,7 @@ const E_ = { class: "bbs-page" },
                       [N(X, { name: "close" })],
                     ),
                   ]),
-                  a("label", E2, [
+                  a("label", M2, [
                     Q[29] ||
                       (Q[29] = a(
                         "span",
@@ -22603,7 +22704,7 @@ const E_ = { class: "bbs-page" },
                       [[ut, b.value]],
                     ),
                   ]),
-                  a("label", I2, [
+                  a("label", N2, [
                     Q[30] ||
                       (Q[30] = a(
                         "span",
@@ -22623,7 +22724,7 @@ const E_ = { class: "bbs-page" },
                       32,
                     ),
                   ]),
-                  a("div", A2, [
+                  a("div", P2, [
                     Q[31] ||
                       (Q[31] = a(
                         "span",
@@ -22631,7 +22732,7 @@ const E_ = { class: "bbs-page" },
                         "Nhập vào tầng nào",
                         -1,
                       )),
-                    a("div", M2, [
+                    a("div", R2, [
                       (f(),
                       g(
                         dt,
@@ -22651,7 +22752,7 @@ const E_ = { class: "bbs-page" },
                             },
                             A(i[xt].label),
                             11,
-                            N2,
+                            O2,
                           ),
                         ),
                         64,
@@ -22665,7 +22766,7 @@ const E_ = { class: "bbs-page" },
                         -1,
                       )),
                   ]),
-                  a("footer", P2, [
+                  a("footer", L2, [
                     a(
                       "button",
                       {
@@ -22685,7 +22786,7 @@ const E_ = { class: "bbs-page" },
                       },
                       "Nhập",
                       8,
-                      R2,
+                      B2,
                     ),
                   ]),
                 ]),
@@ -22699,23 +22800,23 @@ const E_ = { class: "bbs-page" },
       );
     },
   }),
-  L2 = Pn(O2, [["__scopeId", "data-v-05afb3de"]]),
+  V2 = Rn(q2, [["__scopeId", "data-v-05afb3de"]]),
   ra = [
-    { id: "summary", label: "Tóm tắt", component: S$ },
-    { id: "items", label: "Vật phẩm", component: xk },
-    { id: "scenes", label: "Bối cảnh", component: t_ },
-    { id: "npcs", label: "Nhân vật", component: v0 },
-    { id: "vars", label: "Biến số", component: L2 },
-    { id: "settings", label: "Cài đặt", component: yS },
+    { id: "summary", label: "Tóm tắt", component: E$ },
+    { id: "items", label: "Vật phẩm", component: wk },
+    { id: "scenes", label: "Bối cảnh", component: e_ },
+    { id: "npcs", label: "Nhân vật", component: k0 },
+    { id: "vars", label: "Biến số", component: V2 },
+    { id: "settings", label: "Cài đặt", component: xS },
   ];
-function B2(t) {
+function D2(t) {
   return ra.find((n) => n.id === t) ?? ra[0];
 }
-const q2 = ["title", "aria-label", "aria-current", "onClick"],
-  V2 = { class: "bbs-nav-icon-wrap" },
-  D2 = { key: 0, class: "bbs-nav-dot", "aria-label": "Có bản cập nhật mới" },
-  j2 = { key: 0, class: "bbs-nav-label" },
-  K2 = Nn({
+const j2 = ["title", "aria-label", "aria-current", "onClick"],
+  K2 = { class: "bbs-nav-icon-wrap" },
+  H2 = { key: 0, class: "bbs-nav-dot", "aria-label": "Có bản cập nhật mới" },
+  F2 = { key: 0, class: "bbs-nav-label" },
+  U2 = Pn({
     __name: "NavBar",
     props: { placement: {}, narrow: { type: Boolean } },
     setup(t) {
@@ -22765,18 +22866,18 @@ const q2 = ["title", "aria-label", "aria-current", "onClick"],
                       onClick: (l) => i(r.id),
                     },
                     [
-                      a("span", V2, [
+                      a("span", K2, [
                         N(X, { name: r.id, class: "bbs-nav-icon" }, null, 8, [
                           "name",
                         ]),
-                        e(r.id) ? (f(), g("span", D2)) : H("", !0),
+                        e(r.id) ? (f(), g("span", H2)) : H("", !0),
                       ]),
                       t.placement === "top" && !t.narrow
-                        ? (f(), g("span", j2, A(r.label), 1))
+                        ? (f(), g("span", F2, A(r.label), 1))
                         : H("", !0),
                     ],
                     10,
-                    q2,
+                    j2,
                   )
                 ),
               ),
@@ -22788,12 +22889,12 @@ const q2 = ["title", "aria-label", "aria-current", "onClick"],
       );
     },
   }),
-  Ec = Pn(K2, [["__scopeId", "data-v-51de7795"]]),
-  H2 = ["src"],
+  Ec = Rn(U2, [["__scopeId", "data-v-51de7795"]]),
+  W2 = ["src"],
   Ic = 56,
-  F2 = 6,
+  G2 = 6,
   Ac = "bbs.orb.pos.v1",
-  U2 = Nn({
+  J2 = Pn({
     __name: "FloatingOrb",
     setup(t) {
       const n = lt(() =>
@@ -22834,7 +22935,7 @@ const q2 = ["title", "aria-label", "aria-current", "onClick"],
           s.x = Math.min(Math.max(0, s.x), ot);
         }
       }
-      function p() {
+      function v() {
         try {
           localStorage.setItem(Ac, JSON.stringify(s));
         } catch {}
@@ -22893,7 +22994,7 @@ const q2 = ["title", "aria-label", "aria-current", "onClick"],
       }
       function j(O) {
         if (!o.value || O.pointerId !== l) return;
-        if (((o.value = !1), (l = null), u < F2)) {
+        if (((o.value = !1), (l = null), u < G2)) {
           Ki();
           return;
         }
@@ -22905,13 +23006,13 @@ const q2 = ["title", "aria-label", "aria-current", "onClick"],
             ? (s.dock = "right")
             : (s.dock = "none"),
           d(),
-          p());
+          v());
       }
-      function pt(O) {
+      function vt(O) {
         (O.key === "Enter" || O.key === " ") && (O.preventDefault(), Ki());
       }
       const ct = () => {
-        (d(), p());
+        (d(), v());
       };
       return (
         Je(() => {
@@ -22942,7 +23043,7 @@ const q2 = ["title", "aria-label", "aria-current", "onClick"],
               onPointerleave: ot[1] || (ot[1] = (D) => (r.value = !1)),
               onFocus: ot[2] || (ot[2] = (D) => (r.value = !0)),
               onBlur: ot[3] || (ot[3] = (D) => (r.value = !1)),
-              onKeydown: pt,
+              onKeydown: vt,
             },
             [
               w.value
@@ -22958,7 +23059,7 @@ const q2 = ["title", "aria-label", "aria-current", "onClick"],
                     },
                     null,
                     8,
-                    H2,
+                    W2,
                   ))
                 : (f(),
                   fn(X, { key: 1, name: "bookmark", class: "bbs-orb-icon" })),
@@ -22969,14 +23070,14 @@ const q2 = ["title", "aria-label", "aria-current", "onClick"],
       );
     },
   }),
-  W2 = Pn(U2, [["__scopeId", "data-v-d60d5a07"]]),
-  G2 = ["data-theme"],
-  J2 = { class: "bbs-head" },
-  Q2 = { class: "bbs-head-actions" },
-  Y2 = ["title"],
-  z2 = { class: "bbs-body" },
-  X2 = 110,
-  Z2 = Nn({
+  Q2 = Rn(J2, [["__scopeId", "data-v-d60d5a07"]]),
+  Y2 = ["data-theme"],
+  z2 = { class: "bbs-head" },
+  X2 = { class: "bbs-head-actions" },
+  Z2 = ["title"],
+  tE = { class: "bbs-body" },
+  nE = 110,
+  eE = Pn({
     __name: "App",
     setup(t) {
       const n = lt(() => {
@@ -22995,13 +23096,13 @@ const q2 = ["title", "aria-label", "aria-current", "onClick"],
               ? "bottom"
               : "top",
         ),
-        r = lt(() => B2(rt.activePage));
+        r = lt(() => D2(rt.activePage));
       let l = !1;
       function c(L) {
         l = L.target === L.currentTarget;
       }
       function h(L) {
-        (!(performance.now() - Ad < 350) &&
+        (!(performance.now() - Md < 350) &&
           l &&
           L.target === L.currentTarget &&
           ri(),
@@ -23009,22 +23110,22 @@ const q2 = ["title", "aria-label", "aria-current", "onClick"],
       }
       const u = st(0),
         d = st(!1);
-      let p = 0,
+      let v = 0,
         S = null;
       function w(L) {
         i.value &&
           ((S = L.pointerId),
-          (p = L.clientY),
+          (v = L.clientY),
           (d.value = !0),
           L.currentTarget.setPointerCapture(L.pointerId));
       }
       function M(L) {
-        !d.value || L.pointerId !== S || (u.value = Math.max(0, L.clientY - p));
+        !d.value || L.pointerId !== S || (u.value = Math.max(0, L.clientY - v));
       }
       function nt(L) {
         !d.value ||
           L.pointerId !== S ||
-          ((d.value = !1), (S = null), u.value > X2 && ri(), (u.value = 0));
+          ((d.value = !1), (S = null), u.value > nE && ri(), (u.value = 0));
       }
       const R = lt(() => {
         if (!(!i.value || u.value === 0))
@@ -23040,7 +23141,7 @@ const q2 = ["title", "aria-label", "aria-current", "onClick"],
           { class: "bbs-root", "data-theme": E(rt).theme },
           [
             a("div", { ref_key: "modalHost", ref: Is }, null, 512),
-            E(rt).showOrb ? (f(), fn(W2, { key: 0 })) : H("", !0),
+            E(rt).showOrb ? (f(), fn(Q2, { key: 0 })) : H("", !0),
             N(
               mo,
               { name: "bbs-fade" },
@@ -23100,7 +23201,7 @@ const q2 = ["title", "aria-label", "aria-current", "onClick"],
                                     32,
                                   ))
                                 : H("", !0),
-                              a("header", J2, [
+                              a("header", z2, [
                                 W[4] ||
                                   (W[4] = a(
                                     "span",
@@ -23108,7 +23209,7 @@ const q2 = ["title", "aria-label", "aria-current", "onClick"],
                                     "Bách Bảo Thư",
                                     -1,
                                   )),
-                                a("div", Q2, [
+                                a("div", X2, [
                                   a(
                                     "button",
                                     {
@@ -23125,7 +23226,7 @@ const q2 = ["title", "aria-label", "aria-current", "onClick"],
                                       ]),
                                     ],
                                     8,
-                                    Y2,
+                                    Z2,
                                   ),
                                   a(
                                     "button",
@@ -23155,14 +23256,14 @@ const q2 = ["title", "aria-label", "aria-current", "onClick"],
                                     ["narrow"],
                                   ))
                                 : H("", !0),
-                              a("main", z2, [
+                              a("main", tE, [
                                 N(
                                   mo,
                                   { name: "bbs-page", mode: "out-in" },
                                   {
                                     default: $t(() => [
                                       (f(),
-                                      fn(df(r.value.component), {
+                                      fn(ff(r.value.component), {
                                         key: r.value.id,
                                       })),
                                     ]),
@@ -23197,16 +23298,16 @@ const q2 = ["title", "aria-label", "aria-current", "onClick"],
             ),
           ],
           8,
-          G2,
+          Y2,
         )
       );
     },
   }),
-  tE = Pn(Z2, [["__scopeId", "data-v-494193b0"]]);
+  iE = Rn(eE, [["__scopeId", "data-v-494193b0"]]);
 function Ar(t) {
   ((t.style.height = "auto"), (t.style.height = `${t.scrollHeight}px`));
 }
-const nE = {
+const sE = {
     mounted(t) {
       (t.addEventListener("input", () => Ar(t)),
         requestAnimationFrame(() => Ar(t)));
@@ -23216,7 +23317,7 @@ const nE = {
     },
   },
   Mc = "bbs-menu-item";
-function eE() {
+function oE() {
   const t = () => {
     const e = $("#extensionsMenu");
     if (e.length === 0) return !1;
@@ -23242,9 +23343,9 @@ function eE() {
     t() && clearInterval(n);
   }, 500);
 }
-const iE = "\\e0bb",
+const rE = "\\e0bb",
   Mr = new Set();
-function sE(t, n) {
+function aE(t, n) {
   if (Mr.has(t) || document.getElementById(t)) {
     Mr.add(t);
     return;
@@ -23253,7 +23354,7 @@ function sE(t, n) {
   ((e.id = t),
     (e.textContent = `
 ${n}::before {
-  content: '${iE}' !important;
+  content: '${rE}' !important;
   width: auto !important;
   height: auto !important;
   font-size: inherit !important;
@@ -23265,12 +23366,12 @@ ${n}::before {
     Mr.add(t));
 }
 const tr = "bbs-topbar-button",
-  oE = "bbs-topbar-style";
-function rE() {
-  sE(oE, `#top-settings-holder #${tr} .drawer-icon.fa-solid`);
+  lE = "bbs-topbar-style";
+function cE() {
+  aE(lE, `#top-settings-holder #${tr} .drawer-icon.fa-solid`);
 }
 let ii = null;
-function aE() {
+function uE() {
   const t = document.createElement("div");
   return (
     (t.id = tr),
@@ -23290,17 +23391,17 @@ function Nc() {
   const t = document.getElementById("top-settings-holder");
   if (!t) return !1;
   if (document.getElementById(tr)) return !0;
-  rE();
-  const n = aE(),
+  cE();
+  const n = uE(),
     e = document.getElementById("persona-management-button");
   return (e ? e.before(n) : t.appendChild(n), !0);
 }
-function lE() {
+function hE() {
   document.getElementById(tr)?.remove();
 }
 function Pc(t) {
   if ((ii && (clearInterval(ii), (ii = null)), !t)) {
-    lE();
+    hE();
     return;
   }
   if (Nc()) return;
@@ -23310,15 +23411,15 @@ function Pc(t) {
   }, 500);
 }
 const Vs = "bbs-qr-button",
-  Kd = "bbs-qr-bar";
+  Hd = "bbs-qr-bar";
 let si = null,
   bs = null;
-function cE(t) {
+function dE(t) {
   let n = Array.from(t.querySelectorAll("div")).find((i) => i.id === "qr--bar");
   n ||
     ((n = document.createElement("div")),
     (n.id = "qr--bar"),
-    (n.className = `${Kd} flex-container flexGap5`),
+    (n.className = `${Hd} flex-container flexGap5`),
     t.prepend(n));
   let e = n.querySelector(".qr--buttons");
   return (
@@ -23329,7 +23430,7 @@ function cE(t) {
     e
   );
 }
-function uE() {
+function mE() {
   const t = document.createElement("div");
   return (
     (t.id = Vs),
@@ -23349,11 +23450,11 @@ function uE() {
 }
 function aa() {
   const t = document.getElementById("send_form");
-  return t ? (document.getElementById(Vs) || cE(t).appendChild(uE()), !0) : !1;
+  return t ? (document.getElementById(Vs) || dE(t).appendChild(mE()), !0) : !1;
 }
-function hE() {
+function fE() {
   document.getElementById(Vs)?.remove();
-  const t = document.querySelector(`#qr--bar.${Kd}`);
+  const t = document.querySelector(`#qr--bar.${Hd}`);
   t && t.querySelector(".qr--buttons")?.children.length === 0 && t.remove();
 }
 function Rc() {
@@ -23365,12 +23466,12 @@ function Rc() {
     })),
     bs.observe(t, { childList: !0, subtree: !0 }));
 }
-function dE() {
+function gE() {
   (bs?.disconnect(), (bs = null));
 }
 function Oc(t) {
   if ((si && (clearInterval(si), (si = null)), !t)) {
-    (dE(), hE());
+    (gE(), fE());
     return;
   }
   if (aa()) {
@@ -23385,56 +23486,56 @@ function Oc(t) {
       document.getElementById(Vs) && Rc());
   }, 500);
 }
-const mE = ["data-theme"],
-  fE = { class: "bbs-fp-head-main" },
-  gE = { class: "bbs-fp-head-top" },
-  bE = { key: 0, class: "bbs-fp-head-time" },
-  pE = ["title", "disabled"],
-  vE = { class: "bbs-fp-drawer-inner" },
-  yE = { class: "bbs-fp-drawer-body" },
-  kE = { key: 0, class: "bbs-fp-note" },
-  _E = { class: "bbs-fp-chips" },
-  xE = { key: 0, class: "bbs-fp-editform" },
-  TE = { class: "bbs-fp-nrow" },
-  wE = { class: "bbs-fp-nrow" },
-  SE = { key: 2, class: "bbs-fp-chip" },
-  CE = { key: 3, class: "bbs-fp-editform" },
+const bE = ["data-theme"],
+  pE = { class: "bbs-fp-head-main" },
+  vE = { class: "bbs-fp-head-top" },
+  yE = { key: 0, class: "bbs-fp-head-time" },
+  kE = ["title", "disabled"],
+  _E = { class: "bbs-fp-drawer-inner" },
+  xE = { class: "bbs-fp-drawer-body" },
+  TE = { key: 0, class: "bbs-fp-note" },
+  wE = { class: "bbs-fp-chips" },
+  SE = { key: 0, class: "bbs-fp-editform" },
+  CE = { class: "bbs-fp-nrow" },
   $E = { class: "bbs-fp-nrow" },
-  EE = { key: 5, class: "bbs-fp-chip" },
-  IE = { key: 0, class: "bbs-fp-texteditor" },
-  AE = ["title"],
-  ME = { key: 2, class: "bbs-fp-groups" },
-  NE = { key: 0, class: "bbs-fp-group" },
-  PE = { class: "bbs-fp-gtitle" },
-  RE = { class: "bbs-fp-flow" },
-  OE = { key: 0, class: "bbs-fp-editform" },
-  LE = { class: "bbs-fp-nrow" },
-  BE = { class: "bbs-fp-nrow" },
-  qE = { class: "bbs-fp-nrow" },
+  EE = { key: 2, class: "bbs-fp-chip" },
+  IE = { key: 3, class: "bbs-fp-editform" },
+  AE = { class: "bbs-fp-nrow" },
+  ME = { key: 5, class: "bbs-fp-chip" },
+  NE = { key: 0, class: "bbs-fp-texteditor" },
+  PE = ["title"],
+  RE = { key: 2, class: "bbs-fp-groups" },
+  OE = { key: 0, class: "bbs-fp-group" },
+  LE = { class: "bbs-fp-gtitle" },
+  BE = { class: "bbs-fp-flow" },
+  qE = { key: 0, class: "bbs-fp-editform" },
   VE = { class: "bbs-fp-nrow" },
-  DE = { class: "bbs-fp-nlabel" },
-  jE = ["onUpdate:modelValue", "placeholder"],
-  KE = { key: 2, class: "bbs-fp-nrow" },
-  HE = { class: "bbs-fp-nrow" },
-  FE = { key: 0, class: "bbs-fp-nrow" },
-  UE = { key: 1, class: "bbs-fp-nrow" },
-  WE = { key: 2, class: "bbs-fp-nrow" },
-  GE = { key: 4, class: "bbs-fp-nrow" },
-  JE = { key: 5, class: "bbs-fp-editreadonly" },
-  QE = { class: "bbs-fp-editfoot" },
-  YE = ["onClick"],
-  zE = ["onClick"],
-  XE = ["disabled", "title", "onClick"],
-  ZE = { class: "bbs-fp-op" },
-  tI = { class: "bbs-fp-tagbody" },
-  nI = { class: "bbs-fp-tagmain" },
-  eI = { key: 0, class: "bbs-fp-tagsub" },
-  iI = { key: 2, class: "bbs-summary-text bbs-fp-text is-muted" },
-  sI = { key: 3, class: "bbs-fp-footer" },
-  oI = ["disabled"],
-  rI = ["disabled"],
-  aI = ["disabled"],
-  lI = Nn({
+  DE = { class: "bbs-fp-nrow" },
+  jE = { class: "bbs-fp-nrow" },
+  KE = { class: "bbs-fp-nrow" },
+  HE = { class: "bbs-fp-nlabel" },
+  FE = ["onUpdate:modelValue", "placeholder"],
+  UE = { key: 2, class: "bbs-fp-nrow" },
+  WE = { class: "bbs-fp-nrow" },
+  GE = { key: 0, class: "bbs-fp-nrow" },
+  JE = { key: 1, class: "bbs-fp-nrow" },
+  QE = { key: 2, class: "bbs-fp-nrow" },
+  YE = { key: 4, class: "bbs-fp-nrow" },
+  zE = { key: 5, class: "bbs-fp-editreadonly" },
+  XE = { class: "bbs-fp-editfoot" },
+  ZE = ["onClick"],
+  tI = ["onClick"],
+  nI = ["disabled", "title", "onClick"],
+  eI = { class: "bbs-fp-op" },
+  iI = { class: "bbs-fp-tagbody" },
+  sI = { class: "bbs-fp-tagmain" },
+  oI = { key: 0, class: "bbs-fp-tagsub" },
+  rI = { key: 2, class: "bbs-summary-text bbs-fp-text is-muted" },
+  aI = { key: 3, class: "bbs-fp-footer" },
+  lI = ["disabled"],
+  cI = ["disabled"],
+  uI = ["disabled"],
+  hI = Pn({
     __name: "FloorPanel",
     props: { floor: {}, sig: {} },
     setup(t) {
@@ -23469,7 +23570,7 @@ const mE = ["data-theme"],
             ? `${k} → ${_}`
             : k || _ || T.timeLabel?.trim() || "";
         }),
-        p = {
+        v = {
           add: "Thêm mới",
           update: "Cập nhật",
           remove: "Xóa bỏ",
@@ -23648,7 +23749,7 @@ const mE = ["data-theme"],
             (T.resolve ?? []).forEach((_, B) => {
               const Y = typeof _ == "string" ? _ : _.id,
                 mt = typeof _ == "string" ? void 0 : _.outcome,
-                gt =
+                bt =
                   mt === "done"
                     ? "Đạt được"
                     : mt === "cancelled"
@@ -23662,7 +23763,7 @@ const mE = ["data-theme"],
                 op: "resolve",
                 bucket: "resolve",
                 idx: B,
-                text: j(gt, Y),
+                text: j(bt, Y),
                 sub: St || void 0,
                 editable: !1,
               });
@@ -23692,10 +23793,10 @@ const mE = ["data-theme"],
         });
       function j(T, k) {
         en.rev;
-        const _ = cp(k);
+        const _ = hp(k);
         return _ ? `${T}:${_}` : `${T} một mục`;
       }
-      const pt = {
+      const vt = {
           set: "update",
           add: "update",
           assign: "add",
@@ -23708,7 +23809,7 @@ const mE = ["data-theme"],
                 const { text: B, sub: Y } = Ph(k);
                 return {
                   key: `var:op:${_}`,
-                  op: pt[k.op],
+                  op: vt[k.op],
                   bucket: "op",
                   idx: _,
                   text: B,
@@ -23801,7 +23902,7 @@ const mE = ["data-theme"],
           .forEach((k) => F(k)),
           At.value instanceof HTMLTextAreaElement && F(At.value));
       }
-      function bt(T) {
+      function pt(T) {
         F(T.target);
       }
       function Ct(T) {
@@ -23810,7 +23911,7 @@ const mE = ["data-theme"],
       function Ut() {
         z.value = null;
       }
-      function vt(T) {
+      function yt(T) {
         const k = s.value;
         if (!k) return;
         const _ = JSON.parse(JSON.stringify(k.delta ?? {}));
@@ -23858,7 +23959,7 @@ const mE = ["data-theme"],
       }
       function on() {
         const T = b.location.trim();
-        vt((k) => {
+        yt((k) => {
           T ? (k.location = T) : delete k.location;
         });
       }
@@ -23872,7 +23973,7 @@ const mE = ["data-theme"],
         if (!Y) return [];
         if (k === "add") return w;
         const mt = Y;
-        return w.filter((gt) => mt[gt.key] !== void 0);
+        return w.filter((bt) => mt[bt.key] !== void 0);
       });
       function jt(T) {
         const k = r.value;
@@ -23931,7 +24032,7 @@ const mE = ["data-theme"],
         }
       }
       function qt(T) {
-        vt((k) => {
+        yt((k) => {
           if (T.key.startsWith("item:"))
             if (T.bucket === "remove")
               k.items?.remove && (k.items.remove[T.idx] = b.name.trim());
@@ -23958,8 +24059,8 @@ const mE = ["data-theme"],
                 B.name = b.name.trim();
                 const Y = B;
                 for (const mt of w) {
-                  const gt = b[mt.draft].trim();
-                  gt ? (Y[mt.key] = gt) : delete Y[mt.key];
+                  const bt = b[mt.draft].trim();
+                  bt ? (Y[mt.key] = bt) : delete Y[mt.key];
                 }
               }
             }
@@ -23987,7 +24088,7 @@ const mE = ["data-theme"],
       }
       function y(T) {
         const [k, _] = T.key.split(":");
-        vt((B) => {
+        yt((B) => {
           if (k === "var") {
             Array.isArray(B.varOps) && B.varOps.splice(T.idx, 1);
             return;
@@ -24029,7 +24130,7 @@ const mE = ["data-theme"],
         if (!c.value) {
           c.value = !0;
           try {
-            await Cy(n.floor, !i.value);
+            await Ey(n.floor, !i.value);
           } finally {
             c.value = !1;
           }
@@ -24064,8 +24165,8 @@ const mE = ["data-theme"],
                     onClick: k[0] || (k[0] = (_) => (l.value = !l.value)),
                   },
                   [
-                    a("span", fE, [
-                      a("span", gE, [
+                    a("span", pE, [
+                      a("span", vE, [
                         a(
                           "span",
                           {
@@ -24081,7 +24182,7 @@ const mE = ["data-theme"],
                           3,
                         ),
                         d.value
-                          ? (f(), g("span", bE, "🕑 " + A(d.value), 1))
+                          ? (f(), g("span", yE, "🕑 " + A(d.value), 1))
                           : H("", !0),
                       ]),
                       a(
@@ -24109,7 +24210,7 @@ const mE = ["data-theme"],
                       },
                       [N(X, { name: "sparkles" })],
                       10,
-                      pE,
+                      kE,
                     ),
                     N(
                       X,
@@ -24130,13 +24231,13 @@ const mE = ["data-theme"],
                   "div",
                   { class: Tt(["bbs-fp-drawer", { "is-open": l.value }]) },
                   [
-                    a("div", vE, [
-                      a("div", yE, [
+                    a("div", _E, [
+                      a("div", xE, [
                         i.value
                           ? (f(),
                             g(
                               "p",
-                              kE,
+                              TE,
                               "Tầng này đã đánh dấu ngoại truyện, dữ liệu bên dưới không đưa vào ký ức; hủy ngoại truyện để khôi phục.",
                             ))
                           : H("", !0),
@@ -24146,11 +24247,11 @@ const mE = ["data-theme"],
                               dt,
                               { key: 1 },
                               [
-                                a("div", _E, [
+                                a("div", wE, [
                                   z.value === "time"
                                     ? (f(),
-                                      g("div", xE, [
-                                        a("label", TE, [
+                                      g("div", SE, [
+                                        a("label", CE, [
                                           k[16] ||
                                             (k[16] = a(
                                               "span",
@@ -24172,7 +24273,7 @@ const mE = ["data-theme"],
                                                   "bbs-input bbs-fp-nfield",
                                                 placeholder:
                                                   "Ví dụ 1988/9/29 21:00",
-                                                onInput: bt,
+                                                onInput: pt,
                                                 onKeydown: Ct,
                                               },
                                               null,
@@ -24181,7 +24282,7 @@ const mE = ["data-theme"],
                                             [[ut, b.timeStart]],
                                           ),
                                         ]),
-                                        a("label", wE, [
+                                        a("label", $E, [
                                           k[17] ||
                                             (k[17] = a(
                                               "span",
@@ -24202,7 +24303,7 @@ const mE = ["data-theme"],
                                                   "bbs-input bbs-fp-nfield",
                                                 placeholder:
                                                   "Để trống = giống thời gian bắt đầu",
-                                                onInput: bt,
+                                                onInput: pt,
                                                 onKeydown: Ct,
                                               },
                                               null,
@@ -24236,7 +24337,7 @@ const mE = ["data-theme"],
                                     : i.value
                                       ? d.value
                                         ? (f(),
-                                          g("span", SE, "🕑 " + A(d.value), 1))
+                                          g("span", EE, "🕑 " + A(d.value), 1))
                                         : H("", !0)
                                       : (f(),
                                         g(
@@ -24253,8 +24354,8 @@ const mE = ["data-theme"],
                                         )),
                                   z.value === "loc"
                                     ? (f(),
-                                      g("div", CE, [
-                                        a("label", $E, [
+                                      g("div", IE, [
+                                        a("label", AE, [
                                           k[18] ||
                                             (k[18] = a(
                                               "span",
@@ -24276,7 +24377,7 @@ const mE = ["data-theme"],
                                                   "bbs-input bbs-fp-nfield",
                                                 placeholder:
                                                   "Địa điểm hiện tại",
-                                                onInput: bt,
+                                                onInput: pt,
                                                 onKeydown: Ct,
                                               },
                                               null,
@@ -24312,7 +24413,7 @@ const mE = ["data-theme"],
                                         ? (f(),
                                           g(
                                             "span",
-                                            EE,
+                                            ME,
                                             "📍 " + A(r.value.location),
                                             1,
                                           ))
@@ -24336,7 +24437,7 @@ const mE = ["data-theme"],
                                 ]),
                                 z.value === "text"
                                   ? (f(),
-                                    g("div", IE, [
+                                    g("div", NE, [
                                       et(
                                         a(
                                           "textarea",
@@ -24347,7 +24448,7 @@ const mE = ["data-theme"],
                                               (k[4] = (_) => (b.text = _)),
                                             class: "bbs-input bbs-fp-textarea",
                                             rows: "3",
-                                            onInput: bt,
+                                            onInput: pt,
                                           },
                                           null,
                                           544,
@@ -24403,11 +24504,11 @@ const mE = ["data-theme"],
                                           "(Không có nội dung tóm tắt, nhấn để viết)",
                                       ),
                                       11,
-                                      AE,
+                                      PE,
                                     )),
                                 x.value
                                   ? (f(),
-                                    g("div", ME, [
+                                    g("div", RE, [
                                       (f(!0),
                                       g(
                                         dt,
@@ -24422,8 +24523,8 @@ const mE = ["data-theme"],
                                               [
                                                 _.tags.length
                                                   ? (f(),
-                                                    g("section", NE, [
-                                                      a("span", PE, [
+                                                    g("section", OE, [
+                                                      a("span", LE, [
                                                         N(
                                                           X,
                                                           {
@@ -24435,9 +24536,9 @@ const mE = ["data-theme"],
                                                           8,
                                                           ["name"],
                                                         ),
-                                                        yt(A(_.title), 1),
+                                                        gt(A(_.title), 1),
                                                       ]),
-                                                      a("div", RE, [
+                                                      a("div", BE, [
                                                         (f(!0),
                                                         g(
                                                           dt,
@@ -24455,7 +24556,7 @@ const mE = ["data-theme"],
                                                                     ? (f(),
                                                                       g(
                                                                         "div",
-                                                                        OE,
+                                                                        qE,
                                                                         [
                                                                           B.editable &&
                                                                           B.key.startsWith(
@@ -24472,7 +24573,7 @@ const mE = ["data-theme"],
                                                                                 [
                                                                                   a(
                                                                                     "label",
-                                                                                    LE,
+                                                                                    VE,
                                                                                     [
                                                                                       k[19] ||
                                                                                         (k[19] =
@@ -24506,7 +24607,7 @@ const mE = ["data-theme"],
                                                                                             placeholder:
                                                                                               "Tên",
                                                                                             onInput:
-                                                                                              bt,
+                                                                                              pt,
                                                                                             onKeydown:
                                                                                               Ct,
                                                                                           },
@@ -24524,7 +24625,7 @@ const mE = ["data-theme"],
                                                                                   ),
                                                                                   a(
                                                                                     "label",
-                                                                                    BE,
+                                                                                    DE,
                                                                                     [
                                                                                       k[20] ||
                                                                                         (k[20] =
@@ -24569,7 +24670,7 @@ const mE = ["data-theme"],
                                                                                   ),
                                                                                   a(
                                                                                     "label",
-                                                                                    qE,
+                                                                                    jE,
                                                                                     [
                                                                                       k[21] ||
                                                                                         (k[21] =
@@ -24600,7 +24701,7 @@ const mE = ["data-theme"],
                                                                                             placeholder:
                                                                                               "Tùy chọn",
                                                                                             onInput:
-                                                                                              bt,
+                                                                                              pt,
                                                                                             onKeydown:
                                                                                               Ct,
                                                                                           },
@@ -24634,7 +24735,7 @@ const mE = ["data-theme"],
                                                                                   [
                                                                                     a(
                                                                                       "label",
-                                                                                      VE,
+                                                                                      KE,
                                                                                       [
                                                                                         k[22] ||
                                                                                           (k[22] =
@@ -24668,7 +24769,7 @@ const mE = ["data-theme"],
                                                                                               placeholder:
                                                                                                 "Tên",
                                                                                               onInput:
-                                                                                                bt,
+                                                                                                pt,
                                                                                               onKeydown:
                                                                                                 Ct,
                                                                                             },
@@ -24706,7 +24807,7 @@ const mE = ["data-theme"],
                                                                                             [
                                                                                               a(
                                                                                                 "span",
-                                                                                                DE,
+                                                                                                HE,
                                                                                                 A(
                                                                                                   Y.label,
                                                                                                 ),
@@ -24730,13 +24831,13 @@ const mE = ["data-theme"],
                                                                                                     placeholder:
                                                                                                       Y.label,
                                                                                                     onInput:
-                                                                                                      bt,
+                                                                                                      pt,
                                                                                                     onKeydown:
                                                                                                       Ct,
                                                                                                   },
                                                                                                   null,
                                                                                                   40,
-                                                                                                  jE,
+                                                                                                  FE,
                                                                                                 ),
                                                                                                 [
                                                                                                   [
@@ -24764,7 +24865,7 @@ const mE = ["data-theme"],
                                                                                 ? (f(),
                                                                                   g(
                                                                                     "label",
-                                                                                    KE,
+                                                                                    UE,
                                                                                     [
                                                                                       k[23] ||
                                                                                         (k[23] =
@@ -24798,7 +24899,7 @@ const mE = ["data-theme"],
                                                                                             placeholder:
                                                                                               "Nội dung",
                                                                                             onInput:
-                                                                                              bt,
+                                                                                              pt,
                                                                                             onKeydown:
                                                                                               Ct,
                                                                                           },
@@ -24826,7 +24927,7 @@ const mE = ["data-theme"],
                                                                                       [
                                                                                         a(
                                                                                           "label",
-                                                                                          HE,
+                                                                                          WE,
                                                                                           [
                                                                                             k[24] ||
                                                                                               (k[24] =
@@ -24860,7 +24961,7 @@ const mE = ["data-theme"],
                                                                                                   placeholder:
                                                                                                     "Ví dụ: Độ hảo cảm hoặc Thế lực.Hội đồng ma thuật.Danh vọng",
                                                                                                   onInput:
-                                                                                                    bt,
+                                                                                                    pt,
                                                                                                   onKeydown:
                                                                                                     Ct,
                                                                                                 },
@@ -24887,7 +24988,7 @@ const mE = ["data-theme"],
                                                                                           ? (f(),
                                                                                             g(
                                                                                               "label",
-                                                                                              FE,
+                                                                                              GE,
                                                                                               [
                                                                                                 k[25] ||
                                                                                                   (k[25] =
@@ -24918,7 +25019,7 @@ const mE = ["data-theme"],
                                                                                                       placeholder:
                                                                                                         "Khóa đối tượng / Chỉ số mảng",
                                                                                                       onInput:
-                                                                                                        bt,
+                                                                                                        pt,
                                                                                                       onKeydown:
                                                                                                         Ct,
                                                                                                     },
@@ -24945,7 +25046,7 @@ const mE = ["data-theme"],
                                                                                           ? (f(),
                                                                                             g(
                                                                                               "label",
-                                                                                              UE,
+                                                                                              JE,
                                                                                               [
                                                                                                 k[26] ||
                                                                                                   (k[26] =
@@ -25003,7 +25104,7 @@ const mE = ["data-theme"],
                                                                                           ? (f(),
                                                                                             g(
                                                                                               "label",
-                                                                                              WE,
+                                                                                              QE,
                                                                                               [
                                                                                                 k[27] ||
                                                                                                   (k[27] =
@@ -25034,7 +25135,7 @@ const mE = ["data-theme"],
                                                                                                       placeholder:
                                                                                                         "Văn bản ghi trực tiếp; số/true/JSON giữ nguyên",
                                                                                                       onInput:
-                                                                                                        bt,
+                                                                                                        pt,
                                                                                                       onKeydown:
                                                                                                         Ct,
                                                                                                     },
@@ -25063,7 +25164,7 @@ const mE = ["data-theme"],
                                                                                     ? (f(),
                                                                                       g(
                                                                                         "label",
-                                                                                        GE,
+                                                                                        YE,
                                                                                         [
                                                                                           k[28] ||
                                                                                             (k[28] =
@@ -25097,7 +25198,7 @@ const mE = ["data-theme"],
                                                                                                 placeholder:
                                                                                                   "Tên",
                                                                                                 onInput:
-                                                                                                  bt,
+                                                                                                  pt,
                                                                                                 onKeydown:
                                                                                                   Ct,
                                                                                               },
@@ -25116,7 +25217,7 @@ const mE = ["data-theme"],
                                                                                     : (f(),
                                                                                       g(
                                                                                         "p",
-                                                                                        JE,
+                                                                                        zE,
                                                                                         A(
                                                                                           B.sub
                                                                                             ? `${B.text} · ${B.sub}`
@@ -25126,7 +25227,7 @@ const mE = ["data-theme"],
                                                                                       )),
                                                                           a(
                                                                             "div",
-                                                                            QE,
+                                                                            XE,
                                                                             [
                                                                               a(
                                                                                 "button",
@@ -25153,13 +25254,13 @@ const mE = ["data-theme"],
                                                                                   ),
                                                                                   k[29] ||
                                                                                     (k[29] =
-                                                                                      yt(
+                                                                                      gt(
                                                                                         "Xóa",
                                                                                         -1,
                                                                                       )),
                                                                                 ],
                                                                                 8,
-                                                                                YE,
+                                                                                ZE,
                                                                               ),
                                                                               k[30] ||
                                                                                 (k[30] =
@@ -25202,7 +25303,7 @@ const mE = ["data-theme"],
                                                                                     },
                                                                                     "Lưu",
                                                                                     8,
-                                                                                    zE,
+                                                                                    tI,
                                                                                   ))
                                                                                 : H(
                                                                                     "",
@@ -25241,9 +25342,9 @@ const mE = ["data-theme"],
                                                                         [
                                                                           a(
                                                                             "span",
-                                                                            ZE,
+                                                                            eI,
                                                                             A(
-                                                                              p[
+                                                                              v[
                                                                                 B
                                                                                   .op
                                                                               ],
@@ -25252,11 +25353,11 @@ const mE = ["data-theme"],
                                                                           ),
                                                                           a(
                                                                             "span",
-                                                                            tI,
+                                                                            iI,
                                                                             [
                                                                               a(
                                                                                 "span",
-                                                                                nI,
+                                                                                sI,
                                                                                 A(
                                                                                   B.text,
                                                                                 ),
@@ -25266,7 +25367,7 @@ const mE = ["data-theme"],
                                                                                 ? (f(),
                                                                                   g(
                                                                                     "span",
-                                                                                    eI,
+                                                                                    oI,
                                                                                     A(
                                                                                       B.sub,
                                                                                     ),
@@ -25280,7 +25381,7 @@ const mE = ["data-theme"],
                                                                           ),
                                                                         ],
                                                                         10,
-                                                                        XE,
+                                                                        nI,
                                                                       )),
                                                                 ],
                                                                 64,
@@ -25304,10 +25405,10 @@ const mE = ["data-theme"],
                               ],
                               64,
                             ))
-                          : (f(), g("p", iI, "Tầng này chưa có tóm tắt.")),
+                          : (f(), g("p", rI, "Tầng này chưa có tóm tắt.")),
                         s.value && !i.value
                           ? (f(),
-                            g("div", sI, [
+                            g("div", aI, [
                               I.value
                                 ? (f(),
                                   g(
@@ -25331,7 +25432,7 @@ const mE = ["data-theme"],
                                         },
                                         "Hủy",
                                         8,
-                                        oI,
+                                        lI,
                                       ),
                                       a(
                                         "button",
@@ -25343,10 +25444,10 @@ const mE = ["data-theme"],
                                         },
                                         [
                                           N(X, { name: "trash" }),
-                                          k[31] || (k[31] = yt("Xóa ", -1)),
+                                          k[31] || (k[31] = gt("Xóa ", -1)),
                                         ],
                                         8,
-                                        rI,
+                                        cI,
                                       ),
                                     ],
                                     64,
@@ -25364,10 +25465,10 @@ const mE = ["data-theme"],
                                     },
                                     [
                                       N(X, { name: "trash" }),
-                                      k[33] || (k[33] = yt("Xóa tóm tắt ", -1)),
+                                      k[33] || (k[33] = gt("Xóa tóm tắt ", -1)),
                                     ],
                                     8,
-                                    aI,
+                                    uI,
                                   )),
                             ]))
                           : H("", !0),
@@ -25381,36 +25482,36 @@ const mE = ["data-theme"],
             ),
           ],
           8,
-          mE,
+          bE,
         )
       );
     },
   }),
-  cI = Pn(lI, [["__scopeId", "data-v-94d9311f"]]),
+  dI = Rn(hI, [["__scopeId", "data-v-94d9311f"]]),
   To = "bbs-fp-host",
   Hi = "data-bbs-fp";
-let Hd = !1,
+let Fd = !1,
   ps = null,
   vs = null,
   ts = "";
 const Lc = new Set(),
-  Fd = Un({ tick: 0 });
+  Ud = Un({ tick: 0 });
 function wo() {
-  Fd.tick++;
+  Ud.tick++;
 }
 const Re = new Map();
-function Ud() {
+function Wd() {
   if (ts) return ts;
   try {
-    ts = wd("./index.css", import.meta.url);
+    ts = Sd("./index.css", import.meta.url);
   } catch {
     ts = "";
   }
   return ts;
 }
-async function uI() {
+async function mI() {
   if (vs || typeof CSSStyleSheet > "u") return;
-  const t = Ud();
+  const t = Wd();
   if (t)
     try {
       const e = await (await fetch(t)).text(),
@@ -25424,13 +25525,13 @@ async function uI() {
       }
     } catch {}
 }
-function hI(t) {
+function fI(t) {
   if (vs) {
     t.adoptedStyleSheets.includes(vs) ||
       (t.adoptedStyleSheets = [...t.adoptedStyleSheets, vs]);
     return;
   }
-  const n = Ud();
+  const n = Wd();
   if (n && !t.querySelector("link[data-bbs-fp-css]")) {
     const e = document.createElement("link");
     ((e.rel = "stylesheet"),
@@ -25439,14 +25540,14 @@ function hI(t) {
       t.appendChild(e));
   }
 }
-function dI() {
+function gI() {
   return ft()?.chat?.length ?? 0;
 }
 function Qa(t) {
   return document.querySelector(`.mes[mesid="${t}"]`);
 }
 function se() {
-  return Hd && Wn();
+  return Fd && Wn();
 }
 function nr(t) {
   const n = ft()?.chat ?? [];
@@ -25457,23 +25558,23 @@ function nr(t) {
   const i = document.createElement("div");
   ((i.className = To), i.setAttribute("data-bbs-fp-floor", String(t)));
   const s = i.attachShadow({ mode: "open" });
-  hI(s);
+  fI(s);
   const o = document.createElement("div");
   s.appendChild(o);
-  const r = ah(cI, { floor: t, sig: Fd });
+  const r = ah(dI, { floor: t, sig: Ud });
   r.mount(o);
   const l = e.querySelector(".mes_text");
   (l ? l.insertAdjacentElement("afterend", i) : e.appendChild(i),
     Re.set(t, { host: i, app: r }),
     e.setAttribute(Hi, "1"));
 }
-function mI(t) {
+function bI(t) {
   const n = Re.get(t);
   (n && (n.app.unmount(), n.host.remove(), Re.delete(t)),
     Qa(t)?.removeAttribute(Hi));
 }
 function So() {
-  for (const e of [...Re.keys()]) mI(e);
+  for (const e of [...Re.keys()]) bI(e);
   if (
     (document.querySelectorAll(`.${To}`).forEach((e) => e.remove()),
     document
@@ -25482,7 +25583,7 @@ function So() {
     !se())
   )
     return;
-  const t = dI(),
+  const t = gI(),
     n = ft()?.chat ?? [];
   for (let e = 0; e < t; e++) Yo(n[e]) && nr(e);
 }
@@ -25494,21 +25595,21 @@ function Co() {
     Number.isFinite(e) && Yo(t[e]) && !Re.has(e) && nr(e);
   });
 }
-function fI(t) {
+function pI(t) {
   if (!se()) return;
   const n = Number(t);
   setTimeout(() => {
     (Number.isFinite(n) && nr(n), Co(), wo());
   }, 50);
 }
-function gI(t) {
+function vI(t) {
   if (!se()) return;
   const n = Number(t);
   setTimeout(() => {
     Number.isFinite(n) && (Re.has(n) || nr(n), wo());
   }, 50);
 }
-function bI() {
+function yI() {
   const t = ft(),
     n = t?.eventSource,
     e = t?.eventTypes;
@@ -25516,9 +25617,9 @@ function bI() {
   const i = (s, o) => {
     !s || Lc.has(s) || (n.on(s, o), Lc.add(s));
   };
-  (i(e.CHARACTER_MESSAGE_RENDERED, fI),
+  (i(e.CHARACTER_MESSAGE_RENDERED, pI),
     i(e.USER_MESSAGE_RENDERED, () => se() && setTimeout(Co, 50)),
-    i(e.MESSAGE_SWIPED, gI),
+    i(e.MESSAGE_SWIPED, vI),
     i(e.MESSAGE_DELETED, () => se() && setTimeout(So, 50)),
     i(e.MESSAGE_UPDATED, () => se() && setTimeout(wo, 50)),
     i(e.MESSAGE_EDITED, () => se() && setTimeout(wo, 50)),
@@ -25527,7 +25628,7 @@ function bI() {
       i(e.MORE_MESSAGES_LOADED, () => se() && setTimeout(Co, 50)));
 }
 let Oi = null;
-function pI() {
+function kI() {
   if (ps) return;
   const t = document.getElementById("chat");
   t &&
@@ -25545,27 +25646,27 @@ function pI() {
     })),
     ps.observe(t, { childList: !0, subtree: !0 }));
 }
-function vI() {
+function _I() {
   (ps?.disconnect(), (ps = null), Oi && (clearTimeout(Oi), (Oi = null)));
 }
-function yI(t) {
-  if (((Hd = t), !t)) {
-    (vI(), So());
+function xI(t) {
+  if (((Fd = t), !t)) {
+    (_I(), So());
     return;
   }
-  (uI(), bI(), pI(), So());
+  (mI(), yI(), kI(), So());
 }
-function kI() {
+function TI() {
   Dn(
     () => C.ui.showFloorPanel,
-    (t) => yI(!!t),
+    (t) => xI(!!t),
     { immediate: !0 },
   );
 }
 const Bc = "bbs-app-host";
 globalThis.bbs_generateInterceptor = async (t, n, e, i) => {
   try {
-    !(await wy(i, e)) && my(i) && (await fy());
+    !(await Cy(i, e)) && gy(i) && (await by());
   } catch (s) {
     console.error(
       "[Bách Bảo Thư] Lỗi bộ chặn tạo văn bản (cho phép tạo lần này)",
@@ -25573,7 +25674,7 @@ globalThis.bbs_generateInterceptor = async (t, n, e, i) => {
     );
   }
 };
-const _I = {
+const wI = {
   "font-family":
     "'MiSans','HarmonyOS Sans SC','PingFang SC','Microsoft YaHei',-apple-system,BlinkMacSystemFont,'Segoe UI','Inter',system-ui,sans-serif",
   "font-size": "14px",
@@ -25591,31 +25692,31 @@ const _I = {
   color: "#1c242c",
   direction: "ltr",
 };
-function xI() {
+function SI() {
   let t = document.getElementById(Bc);
   (t ||
     ((t = document.createElement("div")),
     (t.id = Bc),
     document.body.appendChild(t)),
     t.style.setProperty("display", "contents", "important"));
-  for (const [o, r] of Object.entries(_I))
+  for (const [o, r] of Object.entries(wI))
     t.style.setProperty(o, r, "important");
   const n = t.shadowRoot ?? t.attachShadow({ mode: "open" });
   n.textContent = "";
   const e = document.createElement("link");
   ((e.rel = "stylesheet"),
-    (e.href = wd("./index.css", import.meta.url)),
+    (e.href = Sd("./index.css", import.meta.url)),
     n.appendChild(e));
   const i = document.createElement("div");
   n.appendChild(i);
-  const s = ah(tE);
-  (s.directive("autosize", nE),
+  const s = ah(iE);
+  (s.directive("autosize", sE),
     s.mount(i),
     $(window).on("pagehide", () => s.unmount()));
 }
 $(() => {
-  (xI(),
-    eE(),
+  (SI(),
+    oE(),
     Pc(rt.showTopBar),
     Dn(
       () => rt.showTopBar,
@@ -25626,20 +25727,20 @@ $(() => {
       () => rt.showQuickReply,
       (t) => Oc(t),
     ),
-    Wd());
+    Gd());
 });
-function Wd(t = 0) {
+function Gd(t = 0) {
   if (window.SillyTavern?.getContext) {
     try {
       (console.log(
         "[Bách Bảo Thư] Bắt đầu liên kết chuỗi khởi động (getContext sẵn sàng)",
       ),
-        Ug(),
-        sp(),
-        By(),
+        Gg(),
+        rp(),
+        Vy(),
         Ah(),
         gn(),
-        kI(),
+        TI(),
         oa(),
         console.log("[Bách Bảo Thư] Liên kết chuỗi khởi động hoàn tất"));
     } catch (n) {
@@ -25647,6 +25748,6 @@ function Wd(t = 0) {
     }
     return;
   }
-  t > 40 || setTimeout(() => Wd(t + 1), 500);
+  t > 40 || setTimeout(() => Gd(t + 1), 500);
 }
 //# sourceMappingURL=index.js.map

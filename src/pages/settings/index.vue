@@ -942,6 +942,17 @@ function scorePct(score: number): number {
           Khi tóm tắt/tổng kết sẽ kích hoạt Thế giới thư làm tài liệu tham khảo. Tại đây bạn có thể loại bỏ các mục không hữu ích cho ký ức cốt truyện —— chẳng hạn như Kiến thức bổ sung, giải thích quy tắc gắn toàn cục..., vừa tiết kiệm token vừa tránh nhiễu. Chỉ ảnh hưởng đến API phụ tóm tắt, không làm thay đổi Thế giới thư trong cuộc trò chuyện chính của bạn.
         </p>
 
+        <!-- Kết xuất mẫu Thế giới thư: phối hợp với plugin ST-Prompt-Template -->
+        <label class="bbs-switch-row">
+          <span class="bbs-field-label">Kết xuất mẫu Thế giới thư</span>
+          <input v-model="apiSettings.renderWorldInfoTemplates" type="checkbox" class="bbs-checkbox" />
+        </label>
+        <p class="bbs-field-hint">
+          Khi bật, trước khi đọc bài Thế giới thư hệ thống sẽ mở rộng <code v-pre>{{macro}}</code> và thực thi EJS (<code>&lt;% %&gt;</code>) của plugin <strong>ST-Prompt-Template</strong>, giúp các mục động (như tự đổi thái độ theo độ hảo cảm) nhận được <strong>văn bản thành phẩm sau khi thực thi</strong> thay vì nguyên văn code. Khi chưa cài plugin ST-Prompt-Template sẽ chỉ mở rộng macro.
+          <br />
+          ⚠️ Nếu lệnh EJS trong Thế giới thư có chứa thao tác <strong>ghi/thay đổi biến</strong> (như <code>setvar</code>), mỗi lần tóm tắt sẽ chạy lệnh thêm một lần và có thể làm sai lệch biến số. Hãy tắt mục này nếu bộ sách của bạn gặp trường hợp đó.
+        </p>
+
         <!-- 整本排除:复刻Loại trừ nhân vật的搜索+勾选弹窗 -->
         <div class="bbs-channel-bar">
           <span class="bbs-field-label">Loại trừ nguyên bộ · Đã chọn {{ apiSettings.excludedWorldNames.length }} bộ</span>
