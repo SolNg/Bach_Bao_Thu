@@ -10947,7 +10947,7 @@ function Mg() {
       },
     ));
 }
-const xf = "0.9.5";
+const xf = "0.9.7";
 function $f(e, t) {
   const n = new URL(e, t);
   return (n.searchParams.set("ver", xf), n.href);
