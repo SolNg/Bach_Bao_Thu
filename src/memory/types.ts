@@ -27,6 +27,8 @@ export interface MemItem {
   id: string;
   /** 物品名(同时作为匹配键) */
   name: string;
+  /** Giới tính (tầng hồ sơ; giá trị ngắn như "Nam", "Nữ". Luôn tiêm vào mọi tầng kể cả vắng mặt để tránh AI nhầm giới tính) */
+  gender?: string;
   /** 简述/备注 */
   desc?: string;
   /** 数量;省略表示不计数 */
@@ -47,6 +49,8 @@ export interface MemItem {
 export interface ItemLogEntry {
   /** 物品名 */
   name: string;
+  /** Giới tính (tầng hồ sơ; giá trị ngắn như "Nam", "Nữ". Luôn tiêm vào mọi tầng kể cả vắng mặt để tránh AI nhầm giới tính) */
+  gender?: string;
   /** add=获得/新增,update=数量或描述变更,remove=移除/消耗尽 */
   kind: 'add' | 'update' | 'remove';
   /** 变更前数量(仅在已知且有意义时);qty 不计数的物品省略 */
@@ -137,6 +141,8 @@ export interface MemScene {
   id: string;
   /** 本级地名(路径最后一段原文) */
   name: string;
+  /** Giới tính (tầng hồ sơ; giá trị ngắn như "Nam", "Nữ". Luôn tiêm vào mọi tầng kể cả vắng mặt để tránh AI nhầm giới tính) */
+  gender?: string;
   /** 完整路径原文(由粗到细,如 ["王都","城西区","归雁客栈"]),用于展示与匹配 */
   path: string[];
   /** 父节点 id;根节点为空串 */
@@ -165,6 +171,8 @@ export interface MemNpc {
   id: string;
   /** 名字(同时作为匹配键) */
   name: string;
+  /** Giới tính (tầng hồ sơ; giá trị ngắn như "Nam", "Nữ". Luôn tiêm vào mọi tầng kể cả vắng mặt để tránh AI nhầm giới tính) */
+  gender?: string;
   /** 身份/职业一句话(不在场时唯一保留的信息) */
   title?: string;
   /** 固定外貌:发色/身材/疤痕等长期不变的体貌(档案层,高门槛,几乎不更新) */
@@ -364,6 +372,8 @@ export interface ItemDelta {
 /** NPC 指令里单个角色的形状(AI / 手动共用) */
 export interface NpcDelta {
   name: string;
+  /** Giới tính (tầng hồ sơ; giá trị ngắn như "Nam", "Nữ". Luôn tiêm vào mọi tầng kể cả vắng mặt để tránh AI nhầm giới tính) */
+  gender?: string;
   /** 身份/职业一句话 */
   title?: string;
   /** 固定外貌:长期不变的体貌(档案层) */

@@ -354,7 +354,9 @@ function fmtNpcContext(npcs: MemNpc[], scenes: MemScene[], here: string, locatio
     // 主要角色:状态面板优先。身份留一句帮定位,外貌/性格从简(卡里通常已有),重点是即时状态。
     const detailed = main
       .map(n => {
-        const head = oneLine(n.title) ? `${n.name}(${oneLine(n.title)})` : n.name;
+        const gender = oneLine(n.gender) ? `·${oneLine(n.gender)}` : '';
+        const title = oneLine(n.title) ? `·${oneLine(n.title)}` : '';
+        const head = gender || title ? `${n.name}(${[gender, title].filter(Boolean).join('')})` : n.name;
         return `  - ${head}${npcStateTail(n, true)}`;
       })
       .join('\n');
@@ -364,7 +366,10 @@ function fmtNpcContext(npcs: MemNpc[], scenes: MemScene[], here: string, locatio
     const detailed = present
       .map(n => {
         const parts = [n.name];
-        if (oneLine(n.title)) parts.push(`(${oneLine(n.title)})`);
+        const inBracket: string[] = [];
+        if (oneLine(n.gender)) inBracket.push(oneLine(n.gender));
+        if (oneLine(n.title)) inBracket.push(oneLine(n.title));
+        if (inBracket.length) parts.push(`(${inBracket.join('·')})`);
         const profile: string[] = [];
         if (oneLine(n.personality)) profile.push(`Tính cách: ${oneLine(n.personality)}`);
         if (oneLine(n.desc)) profile.push(oneLine(n.desc));
@@ -379,10 +384,13 @@ function fmtNpcContext(npcs: MemNpc[], scenes: MemScene[], here: string, locatio
     // 同区域:名 + 身份 + 性格 + 所在地;砍掉外貌/即时状态。留性格以稳住临时出场时的人设。
     const brief = nearby
       .map(n => {
-        const title = oneLine(n.title) ? `(${oneLine(n.title)})` : '';
+        const inBracket: string[] = [];
+        if (oneLine(n.gender)) inBracket.push(oneLine(n.gender));
+        if (oneLine(n.title)) inBracket.push(oneLine(n.title));
+        const bracket = inBracket.length ? `(${inBracket.join('·')})` : '';
         const pers = oneLine(n.personality) ? ` —— Tính cách: ${oneLine(n.personality)}` : '';
-        const place = oneLine(n.location) ? ` [Tại:${oneLine(n.location)}]` : '';
-        return `  - ${n.name}${title}${pers}${place}`;
+        const place = oneLine(n.location) ? ` [Ở: ${oneLine(n.location)}]` : '';
+        return `  - ${n.name}${bracket}${pers}${place}`;
       })
       .join('\n');
     lines.push(`Nhân vật cùng khu vực (ở gần nhưng chưa chắc chạm mặt; có thể cho xuất hiện tự nhiên khi cần, không tự ý đổi thiết lập):\n${brief}`);
@@ -391,9 +399,12 @@ function fmtNpcContext(npcs: MemNpc[], scenes: MemScene[], here: string, locatio
     // 不在场:仅名 + 身份,按所在地括注;无外貌/性格/状态
     const brief = absent
       .map(n => {
-        const title = oneLine(n.title) ? `(${oneLine(n.title)})` : '';
+        const inBracket: string[] = [];
+        if (oneLine(n.gender)) inBracket.push(oneLine(n.gender));
+        if (oneLine(n.title)) inBracket.push(oneLine(n.title));
+        const bracket = inBracket.length ? `(${inBracket.join('·')})` : '';
         const loc = oneLine(n.location);
-        return `  - ${n.name}${title}${loc ? ` [Tại:${loc}]` : ''}`;
+        return `  - ${n.name}${bracket}${loc ? ` [Ở: ${loc}]` : ''}`;
       })
       .join('\n');
     lines.push(`Các nhân vật đã biết khác (không ở bối cảnh hiện tại, chỉ tên và thân phận):\n${brief}`);

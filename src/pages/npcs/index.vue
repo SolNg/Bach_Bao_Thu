@@ -64,6 +64,7 @@ const composerOpen = ref(false);
 const nameInput = ref<HTMLInputElement | null>(null);
 interface NpcDraft {
   name: string;
+  gender: string;
   title: string;
   personality: string;
   desc: string;
@@ -74,7 +75,7 @@ interface NpcDraft {
   location: string;
 }
 function emptyDraft(): NpcDraft {
-  return { name: '', title: '', personality: '', desc: '', outfit: '', condition: '', important: false, follow: false, location: memory.state.location || '' };
+  return { name: '', gender: '', title: '', personality: '', desc: '', outfit: '', condition: '', important: false, follow: false, location: memory.state.location || '' };
 }
 const draft = ref<NpcDraft>(emptyDraft());
 
@@ -92,6 +93,7 @@ function addNpc() {
   if (!d.name.trim()) return;
   const ok = upsertNpc({
     name: d.name,
+    gender: d.gender,
     title: d.title,
     personality: d.personality,
     desc: d.desc,
@@ -115,6 +117,7 @@ function openEdit(npc: MemNpc) {
   editing.value = {
     oldName: npc.name,
     name: npc.name,
+    gender: npc.gender ?? '',
     title: npc.title ?? '',
     personality: npc.personality ?? '',
     desc: npc.desc ?? '',
@@ -133,6 +136,7 @@ function saveEdit() {
   if (!e || !e.name.trim()) return;
   editNpc(e.oldName, {
     name: e.name,
+    gender: e.gender,
     title: e.title,
     personality: e.personality,
     desc: e.desc,
@@ -182,6 +186,7 @@ function confirmRemove() {
             <div class="bbs-npc-body">
               <div class="bbs-npc-head">
                 <span class="bbs-npc-name">{{ n.name }}</span>
+                <span v-if="n.gender" class="bbs-npc-gender">{{ n.gender }}</span>
                 <span v-if="n.title" class="bbs-npc-flag">{{ n.title }}</span>
                 <span class="bbs-npc-acts">
                   <button class="bbs-item-act bbs-npc-star active" type="button" title="Nhân vật chính · Nhấn hủy" @click="toggleImportant(n)"><Icon name="star" /></button>
@@ -213,6 +218,7 @@ function confirmRemove() {
             <div class="bbs-npc-body">
               <div class="bbs-npc-head">
                 <span class="bbs-npc-name">{{ n.name }}</span>
+                <span v-if="n.gender" class="bbs-npc-gender">{{ n.gender }}</span>
                 <span v-if="n.follow" class="bbs-npc-flag is-follow"><Icon name="pin" />Đồng hành</span>
                 <span v-else-if="n.location" class="bbs-npc-flag"><Icon name="scenes" />{{ n.location }}</span>
                 <span class="bbs-npc-acts">
@@ -260,6 +266,7 @@ function confirmRemove() {
             <div class="bbs-npc-body">
               <div class="bbs-npc-head">
                 <span class="bbs-npc-name">{{ n.name }}</span>
+                <span v-if="n.gender" class="bbs-npc-gender">{{ n.gender }}</span>
                 <span v-if="n.location" class="bbs-npc-flag"><Icon name="scenes" />{{ n.location }}</span>
                 <span class="bbs-npc-acts">
                   <button
@@ -302,6 +309,7 @@ function confirmRemove() {
             <div class="bbs-npc-body">
               <div class="bbs-npc-head">
                 <span class="bbs-npc-name">{{ n.name }}</span>
+                <span v-if="n.gender" class="bbs-npc-gender">{{ n.gender }}</span>
                 <span v-if="n.location" class="bbs-npc-flag"><Icon name="scenes" />{{ n.location }}</span>
                 <span v-else class="bbs-npc-flag is-nowhere">Không rõ vị trí</span>
                 <span class="bbs-npc-acts">
@@ -349,6 +357,10 @@ function confirmRemove() {
         <label class="bbs-modal-field">
           <span class="bbs-modal-label">Tên</span>
           <input ref="nameInput" v-model="draft.name" class="bbs-input" type="text" placeholder="Tên nhân vật" @keydown.enter="addNpc" />
+        </label>
+        <label class="bbs-modal-field">
+          <span class="bbs-modal-label">Giới tính</span>
+          <input v-model="draft.gender" class="bbs-input" type="text" placeholder="Ví dụ: Nam, Nữ" @keydown.enter="addNpc" />
         </label>
         <label class="bbs-modal-field">
           <span class="bbs-modal-label">Thân phận (nghề nghiệp / quan hệ với nhân vật chính)</span>
@@ -399,6 +411,10 @@ function confirmRemove() {
         <label class="bbs-modal-field">
           <span class="bbs-modal-label">Tên</span>
           <input v-model="editing.name" class="bbs-input" type="text" placeholder="Tên nhân vật" />
+        </label>
+        <label class="bbs-modal-field">
+          <span class="bbs-modal-label">Giới tính</span>
+          <input v-model="draft.gender" class="bbs-input" type="text" placeholder="Ví dụ: Nam, Nữ" @keydown.enter="addNpc" />
         </label>
         <label class="bbs-modal-field">
           <span class="bbs-modal-label">Thân phận (nghề nghiệp / quan hệ với nhân vật chính)</span>
@@ -592,6 +608,13 @@ function confirmRemove() {
   flex: 0 0 auto;
   white-space: nowrap;
 }
+/* Nhãn giới tính: nhỏ gọn, chữ xám, theo sau tên nhân vật */
+.bbs-npc-gender {
+  font-size: 11px;
+  color: var(--bbs-ink-muted);
+  flex: 0 0 auto;
+  white-space: nowrap;
+}
 .bbs-npc-acts {
   flex-shrink: 0;
   display: inline-flex;
@@ -693,7 +716,14 @@ function confirmRemove() {
 
 /* PC(支持 hover)上操作按钮Mặc định隐藏,悬停整卡才浮现;触屏常驻(与物品页一致) */
 @media (hover: hover) {
-  .bbs-npc-acts {
+  /* Nhãn giới tính: nhỏ gọn, chữ xám, theo sau tên nhân vật */
+.bbs-npc-gender {
+  font-size: 11px;
+  color: var(--bbs-ink-muted);
+  flex: 0 0 auto;
+  white-space: nowrap;
+}
+.bbs-npc-acts {
     opacity: 0;
     transition: opacity var(--bbs-dur) var(--bbs-ease);
   }
@@ -741,7 +771,14 @@ function confirmRemove() {
   background: var(--bbs-accent-soft);
 }
 /* 主要Nhân vật卡的操作区常驻(置顶组Không có需 hover 才显,星标本身就是状态指示) */
-.bbs-npc.is-main .bbs-npc-acts {
+.bbs-npc.is-main /* Nhãn giới tính: nhỏ gọn, chữ xám, theo sau tên nhân vật */
+.bbs-npc-gender {
+  font-size: 11px;
+  color: var(--bbs-ink-muted);
+  flex: 0 0 auto;
+  white-space: nowrap;
+}
+.bbs-npc-acts {
   opacity: 1;
 }
 
